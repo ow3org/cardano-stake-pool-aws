@@ -1,0 +1,15 @@
+{
+  "name": "cardano-stake-pool",
+  "description": "This repository will easily and quickly provision an optimized Cardano Stake Pool environment for your core and relay nodes. And more.",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "create-aws-network:prod": "SLS_DEBUG=* serverless deploy --verbose --stage production",
+    "create-aws-network:dev": "SLS_DEBUG=* serverless deploy --verbose --stage development"
+  },
+  "author": {
+    "name": "Chris Breuer",
+    "url": "https://pool.meema.io",
+    "email": "chris@meema.io"
+  }
+}

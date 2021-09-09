@@ -1,0 +1,23 @@
+name: "\U0001F41B Bug Report"
+description: Report a general library issue.
+labels: [bug]
+body:
+- type: input
+  attributes:
+    label: Which `cardano-stake-pool-aws` version are you using?
+    description: "Please provide the full version you used to create a stake pool."
+    placeholder: "v1.0.0"
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Description
+    description: "Please describe what is happening and what you expect to happen."
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Steps to reproduce
+    description: "Please provide accurate steps to reproduce the bug."
+  validations:
+    required: true

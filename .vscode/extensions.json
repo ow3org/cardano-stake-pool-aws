@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        "amazonwebservices.aws-toolkit-vscode",
+        "kddejong.vscode-cfn-lint"
+    ]
+}
