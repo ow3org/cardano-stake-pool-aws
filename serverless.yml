@@ -58,7 +58,7 @@ resources:
           - !Ref AllowRelayElasticIp
         RoleName: relay_elasticip
 
-    EC2_EIP:
+    EC2EIP:
       Type: "AWS::IAM::InstanceProfile"
       Properties:
         Path: "/"
@@ -76,23 +76,54 @@ resources:
           - Key: Name
             Value: 'cardano-stake-pool-network'
 
-    CoreNodeElasticIp:
-      Type: AWS::EC2::EIP
-      Properties:
-        Domain: vpc
-        InstanceId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: 'Core Node IP - ${self:provider.stage}'
-
     RelayNodeElasticIp:
       Type: AWS::EC2::EIP
       Properties:
         Domain: vpc
-        InstanceId: !Ref VPC
+        # InstanceId: !Ref VPC
         Tags:
           - Key: Name
             Value: 'Relay Node IP - ${self:provider.stage}'
+
+    CoreNodeIp:
+      Type: AWS::EC2::EIP
+      Properties:
+        Domain: vpc
+        Tags:
+          - Key: Name
+            Value: 'Core Node IP - ${self:provider.stage}'
+
+    RelayNode1Ip:
+      Type: AWS::EC2::EIP
+      Properties:
+        Tags:
+          - Key: Name
+            Value: 'Relay-1 Node IP - ${self:provider.stage}'
+
+    RelayNode2Ip:
+      Type: AWS::EC2::EIP
+      Properties:
+        Tags:
+          - Key: Name
+            Value: 'Relay-2 Node IP - ${self:provider.stage}'
+
+    # CoreNodeIpAssociation:
+    #   Type: AWS::EC2::EIPAssociation
+    #   Properties:
+    #     InstanceId: !Ref 'CoreNode'
+    #     EIP: !Ref 'CoreNodeIp'
+
+    RelayNode1IpAssociation:
+      Type: AWS::EC2::EIPAssociation
+      Properties:
+        InstanceId: !Ref 'RelayNode1'
+        EIP: !Ref 'RelayNode1Ip'
+
+    # RelayNode2IpAssociation:
+    #   Type: AWS::EC2::EIPAssociation
+    #   Properties:
+    #     InstanceId: !Ref 'RelayNode2'
+    #     EIP: !Ref 'RelayNode2Ip'
 
     VPCCidrBlock:
       Type: 'AWS::EC2::VPCCidrBlock'
@@ -112,7 +143,7 @@ resources:
       Properties:
         VpcId: !Ref VPC
 
-    VPCGatewayAttachment:
+    GatewayToInternet:
       Type: 'AWS::EC2::VPCGatewayAttachment'
       Properties:
         VpcId: !Ref VPC
@@ -297,7 +328,7 @@ resources:
 
     RouteTablePublicInternetRoute: # should be RouteTablePublicAInternetRoute, but logical id was not changed for backward compatibility
       Type: 'AWS::EC2::Route'
-      DependsOn: VPCGatewayAttachment
+      DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTablePublic
         DestinationCidrBlock: '0.0.0.0/0'
@@ -305,7 +336,7 @@ resources:
 
     RouteTablePublicAInternetRouteIPv6:
       Type: 'AWS::EC2::Route'
-      DependsOn: VPCGatewayAttachment
+      DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTablePublic
         DestinationIpv6CidrBlock: '::/0'
@@ -320,7 +351,7 @@ resources:
 
     RouteTablePublicBInternetRoute:
       Type: 'AWS::EC2::Route'
-      DependsOn: VPCGatewayAttachment
+      DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTableBPublic
         DestinationCidrBlock: '0.0.0.0/0'
@@ -328,7 +359,7 @@ resources:
 
     RouteTablePublicBInternetRouteIPv6:
       Type: 'AWS::EC2::Route'
-      DependsOn: VPCGatewayAttachment
+      DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTableBPublic
         DestinationIpv6CidrBlock: '::/0'
@@ -343,7 +374,7 @@ resources:
 
     RouteTablePublicCInternetRoute:
       Type: 'AWS::EC2::Route'
-      DependsOn: VPCGatewayAttachment
+      DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTableCPublic
         DestinationCidrBlock: '0.0.0.0/0'
@@ -351,7 +382,7 @@ resources:
 
     RouteTablePublicCInternetRouteIPv6:
       Type: 'AWS::EC2::Route'
-      DependsOn: VPCGatewayAttachment
+      DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTableCPublic
         DestinationIpv6CidrBlock: '::/0'
@@ -495,6 +526,66 @@ resources:
         RuleAction: allow
         Egress: true
         Ipv6CidrBlock: '::/0'
+
+    RelayNode1:
+      Type: AWS::EC2::Instance
+      DependsOn: GatewayToInternet
+      Properties:
+        ImageId: ${ENV:AWS_EC2_IMAGE_ID}
+        InstanceInitiatedShutdownBehavior: stop
+        InstanceType: ${ENV:AWS_EC2_INSTANCE_TYPE} # t3a.xlarge
+        KeyName: ${ENV:AWS_KEY_NAME}
+        Monitoring: true
+        BlockDeviceMappings:
+          - DeviceName: /dev/sdh
+            Ebs:
+              DeleteOnTermination: true
+              # Encrypted: true
+              Iops: 100
+              SnapshotId: snap-0a52a8f51496c3782
+              VolumeSize: 50
+              VolumeType: gp2
+        # NetworkInterfaces:
+        #   - GroupSet:
+        #     - Ref: EC2SecurityGroup
+        #     AssociatePublicIpAddress: 'true'
+        #     DeviceIndex: '0'
+        #     DeleteOnTermination: 'true'
+        #     SubnetId:
+        #       Ref: PublicSubnet
+        # # PlacementGroupName: String
+        # # PrivateIpAddress: String
+        # # RamdiskId: String
+        # # SecurityGroupIds:
+        # #   - String
+        # # SecurityGroups:
+        # #   - String
+        # # SourceDestCheck: Boolean
+        # # SsmAssociations:
+        # #   - SsmAssociation
+        # # SubnetId: String
+        Tags:
+          - Tag
+        # Tenancy: String
+        # UserData: String need this
+
+    # RelayNode1Volume:
+    #   Type: AWS::EC2::Volume
+    #   DependsOn: RelayNode1
+    #   Properties:
+    #     Size: ${ENV:AWS_EC2_STORAGE}
+    #     Encrypted: true
+    #     AvailabilityZone: !GetAtt RelayNode1.AvailabilityZone
+    #     Tags:
+    #       - Key: MyTag
+    #         Value: TagValue
+
+    # VolumeMountPoint1:
+    #   Type: AWS::EC2::VolumeAttachment
+    #   Properties:
+    #     InstanceId: !Ref AwsInstance1
+    #     VolumeId: !Ref DiskVolume1
+    #     Device: /dev/sdh
 
   Outputs:
     TemplateID:
@@ -659,30 +750,14 @@ resources:
       Export:
         Name: !Sub '${AWS::StackName}-RouteTableCPrivate'
 
-    NetworkAclEntryInPublicAllowAllIPv6:
-      Type: AWS::EC2::Instance
-      Properties:
-        ImageId: ${ENV:AWS_EC2_IMAGE_ID}
-        InstanceInitiatedShutdownBehavior: stop
-        InstanceType: ${ENV:AWS_EC2_INSTANCE_TYPE} # t3a.xlarge
-        KeyName: String
-        Monitoring: true
-        NetworkInterfaces:
-          - NetworkInterface
-        PlacementGroupName: String
-        PrivateIpAddress: String
-        RamdiskId: String
-        SecurityGroupIds:
-          - String
-        SecurityGroups:
-          - String
-        SourceDestCheck: Boolean
-        SsmAssociations:
-          - SsmAssociation
-        SubnetId: String
-        Tags:
-          - Tag
-        Tenancy: String
-        UserData: String
-        Volumes:
-          - Volume
+    RelayNode1IPAddress:
+      Description: 'IP address of the newly created Relay-1 Node (EC2 instance)'
+      Value: !Ref 'RelayNode1Ip'
+
+    # RelayNode2IPAddress:
+    #   Description: 'IP address of the newly created Relay-2 Node (EC2 instance)'
+    #   Value: !Ref 'RelayNode2Ip'
+
+    # CoreNodeIPAddress:
+    #   Description: 'IP address of the newly created Core Node (EC2 instance)'
+    #   Value: !Ref 'RelayNode1Ip'

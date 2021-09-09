@@ -10,6 +10,17 @@ This project aims to simplify the setup of a Cardano Stake Pool (core & relay no
 
 Our managed pools offer a "High Pledge" and great rewards. Feel free to join! We would love to get to know you.
 
+## Prerequisite
+
+This guide assumes that you have `aws-cli` setup locally. It's an incredibly simple process and well explained within the official documentation that can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
+
+Once you have the `aws` binary installed on your machine, run the following command to get authenticated:
+
+```bash
+# follow the prompts
+aws configure
+```
+
 ## 🐙 Usage
 
 ```bash
