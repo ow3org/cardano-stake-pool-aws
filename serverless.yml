@@ -568,28 +568,22 @@ resources:
             Ebs:
               DeleteOnTermination: true
               # Encrypted: true
-              Iops: 100
               SnapshotId: snap-0a52a8f51496c3782
               VolumeSize: 50
               VolumeType: gp2
         NetworkInterfaces:
           - GroupSet:
-            - Ref: EC2SecurityGroup
+            - Ref: SecurityGroup
             DeviceIndex: '0'
             DeleteOnTermination: 'true'
             SubnetId:
-              Ref: PublicSubnet
-        # # PlacementGroupName: String
-        # # PrivateIpAddress: String
-        # # RamdiskId: String
-        # # SecurityGroupIds:
-        # #   - String
-        # # SecurityGroups:
-        # #   - String
-        # # SourceDestCheck: Boolean
-        # # SsmAssociations:
-        # #   - SsmAssociation
-        # # SubnetId: String
+              Ref: SubnetAPublic
+        # PlacementGroupName: String
+        # PrivateIpAddress: String
+        # RamdiskId: String
+        # SecurityGroupIds:
+        #   - Ref: SecurityGroup
+        # SubnetId: String
         Tags:
           - Key: Name
             Value: 'cardano-stake-pool-network'
