@@ -75,15 +75,8 @@ resources:
         Tags:
           - Key: Name
             Value: 'cardano-stake-pool-network'
-
-    RelayNodeElasticIp:
-      Type: AWS::EC2::EIP
-      Properties:
-        Domain: vpc
-        # InstanceId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: 'Relay Node IP - ${self:provider.stage}'
+          - Key: Type
+            Value: 'Cardano VPC'
 
     CoreNodeIp:
       Type: AWS::EC2::EIP
@@ -91,6 +84,8 @@ resources:
         Domain: vpc
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Core Node IP - ${self:provider.stage}'
 
     RelayNode1Ip:
@@ -98,6 +93,8 @@ resources:
       Properties:
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Relay-1 Node IP - ${self:provider.stage}'
 
     RelayNode2Ip:
@@ -105,6 +102,8 @@ resources:
       Properties:
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Relay-2 Node IP - ${self:provider.stage}'
 
     # CoreNodeIpAssociation:
@@ -136,6 +135,8 @@ resources:
       Properties:
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: !Sub '10.${ClassB}.0.0/16'
 
     EgressOnlyInternetGateway:
@@ -161,6 +162,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - A public'
           - Key: Reach
             Value: public
@@ -176,6 +179,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - A private'
           - Key: Reach
             Value: private
@@ -192,6 +197,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - B public'
           - Key: Reach
             Value: public
@@ -207,6 +214,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - B private'
           - Key: Reach
             Value: private
@@ -223,6 +232,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - C public'
           - Key: Reach
             Value: public
@@ -238,6 +249,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - C private'
           - Key: Reach
             Value: private
@@ -248,6 +261,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: Public
 
     RouteTablePrivate:
@@ -256,6 +271,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: Private
 
     RouteTableBPublic:
@@ -264,6 +281,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - B Public'
 
     RouteTableBPrivate:
@@ -272,6 +291,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - B Private'
 
     RouteTableCPublic:
@@ -280,6 +301,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - C Public'
 
     RouteTableCPrivate:
@@ -288,6 +311,8 @@ resources:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
             Value: 'Stake Pool - C Private'
 
     RouteTableAssociationAPublic:
@@ -408,8 +433,10 @@ resources:
       Properties:
         VpcId: !Ref VPC
         Tags:
-        - Key: Name
-          Value: Private
+          - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
+            Value: Private
 
     SubnetNetworkAclAssociationAPublic:
       Type: 'AWS::EC2::SubnetNetworkAclAssociation'
@@ -531,10 +558,10 @@ resources:
       Type: AWS::EC2::Instance
       DependsOn: GatewayToInternet
       Properties:
-        ImageId: ${ENV:AWS_EC2_IMAGE_ID}
+        ImageId: ${env:AWS_EC2_IMAGE_ID}
         InstanceInitiatedShutdownBehavior: stop
-        InstanceType: ${ENV:AWS_EC2_INSTANCE_TYPE} # t3a.xlarge
-        KeyName: ${ENV:AWS_KEY_NAME}
+        InstanceType: ${env:AWS_EC2_INSTANCE_TYPE} # t3a.xlarge
+        KeyName: ${env:AWS_KEY_NAME}
         Monitoring: true
         BlockDeviceMappings:
           - DeviceName: /dev/sdh
@@ -545,14 +572,13 @@ resources:
               SnapshotId: snap-0a52a8f51496c3782
               VolumeSize: 50
               VolumeType: gp2
-        # NetworkInterfaces:
-        #   - GroupSet:
-        #     - Ref: EC2SecurityGroup
-        #     AssociatePublicIpAddress: 'true'
-        #     DeviceIndex: '0'
-        #     DeleteOnTermination: 'true'
-        #     SubnetId:
-        #       Ref: PublicSubnet
+        NetworkInterfaces:
+          - GroupSet:
+            - Ref: EC2SecurityGroup
+            DeviceIndex: '0'
+            DeleteOnTermination: 'true'
+            SubnetId:
+              Ref: PublicSubnet
         # # PlacementGroupName: String
         # # PrivateIpAddress: String
         # # RamdiskId: String
@@ -565,15 +591,42 @@ resources:
         # #   - SsmAssociation
         # # SubnetId: String
         Tags:
-          - Tag
+          - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
+            Value: 'Relay Node 1'
         # Tenancy: String
         # UserData: String need this
+
+    SecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: 'Cardano secure network - SG'
+        GroupName: 'Cardano Network'
+        # SecurityGroupEgress:
+        #   - Description: 'Only allow myself to access'
+        #     # DestinationSecurityGroupId: String
+        #     FromPort: 22
+        #     IpProtocol: tcp
+        #     ToPort: 22
+        SecurityGroupIngress:
+          - Description: 'Only allow myself to access'
+            # DestinationSecurityGroupId: String
+            FromPort: 22
+            IpProtocol: tcp
+            ToPort: 22
+        Tags:
+          - Key: Name
+            Value: 'cardano-stake-pool-network'
+          - Key: Type
+            Value: 'Cardano Security Group'
+        VpcId: !Ref VPC
 
     # RelayNode1Volume:
     #   Type: AWS::EC2::Volume
     #   DependsOn: RelayNode1
     #   Properties:
-    #     Size: ${ENV:AWS_EC2_STORAGE}
+    #     Size: ${env:AWS_EC2_STORAGE}
     #     Encrypted: true
     #     AvailabilityZone: !GetAtt RelayNode1.AvailabilityZone
     #     Tags:
