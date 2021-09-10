@@ -1,33 +1,242 @@
 org: meemalabs
 app: cardano
-service: 'stake-pools'
+service: "stake-pools"
 useDotenv: true
 configValidationMode: error
 
 provider:
   name: aws
   stage: ${opt:stage, 'development'}
-  region: 'us-east-1'
+  region: "us-east-1"
 
 resources:
   Metadata:
-    'AWS::CloudFormation::Interface':
+    "AWS::CloudFormation::Interface":
       ParameterGroups:
         - Label:
-            default: 'VPC Parameters'
+            default: "VPC Parameters"
           Parameters:
             - ClassB
+        - Label:
+          default: "Alert Parameters"
+          Parameters:
+            - Email
+            - HttpEndpoint
+            - HttpsEndpoint
+        - Label:
+            default: "Fallback Parameters"
+          Parameters:
+            - FallbackEmail
 
   Parameters:
     ClassB:
-      Description: 'Class B of VPC (10.XXX.0.0/16)'
+      Description: "Class B of VPC (10.XXX.0.0/16)"
       Type: Number
       Default: 0
-      ConstraintDescription: 'Must be in the range [0-255]'
+      ConstraintDescription: "Must be in the range [0-255]"
       MinValue: 0
       MaxValue: 255
 
+    # The following params are needed for our alerting logic
+    Email:
+      Description: "Optional email address that will receive alerts."
+      Type: String
+      Default: "${env:ALERT_EMAIL}"
+
+    FallbackEmail:
+      Description: "Optional email address that will receive alerts if alerts can not be delivered."
+      Type: String
+      Default: "${env:ALERT_FALLBACK_EMAIL}"
+
+    HttpsEndpoint:
+      Description: "Optional HTTPS endpoint that will receive alerts via POST requests (e.g., a marbot.io endpoint for incident management in Slack)."
+      Type: String
+      Default: "${env:ALERT_HTTPS_ENDPOINT}"
+
+  Conditions:
+    # these conditions are used to determine the "alert" channel
+    HasEmail: !Not [!Equals [!Ref Email, ""]]
+    HasHttpEndpoint: !Not [!Equals [!Ref HttpEndpoint, ""]]
+    HasHttpsEndpoint: !Not [!Equals [!Ref HttpsEndpoint, ""]]
+    HasFallbackEmail: !Not [!Equals [!Ref FallbackEmail, ""]]
+
   Resources:
+    # these resources are needed for our "system alerts," e.g. downtime, computing, pricing alerts, etc.
+    Topic:
+      Type: "AWS::SNS::Topic"
+      Properties: {}
+
+    TopicPolicy:
+      Type: "AWS::SNS::TopicPolicy"
+      Properties:
+        PolicyDocument:
+          Id: Id1
+          Version: "2012-10-17"
+          Statement:
+            - Sid: Sid1
+              Effect: Allow
+              Principal:
+                Service:
+                  - "events.amazonaws.com" # Allow CloudWatch Events
+                  - "budgets.amazonaws.com" # Allow Budget Notifications
+                  - "rds.amazonaws.com" # Allow RDS Events
+                  - "s3.amazonaws.com" # Allow S3 Event Notifications
+                  - "backup.amazonaws.com" # Allow Backup Events
+                  - "codestar-notifications.amazonaws.com" # Allow CodeStart Notifications
+              Action: "sns:Publish"
+              Resource: !Ref Topic
+            - Sid: Sid2
+              Effect: Allow
+              Principal:
+                AWS: "*" # Allow CloudWatch Alarms, ElastiCache Notifications, Elastic Beanstalk Notifications, Auto Scaling Notification
+              Action: "sns:Publish"
+              Resource: !Ref Topic
+              Condition:
+                StringEquals:
+                  "AWS:SourceOwner": !Ref "AWS::AccountId"
+            - Sid: Sid3
+              Effect: Allow
+              Principal:
+                Service: "ses.amazonaws.com" # Allow SES Notifications & Events
+              Action: "sns:Publish"
+              Resource: !Ref Topic
+              Condition:
+                StringEquals:
+                  "AWS:Referer": !Ref "AWS::AccountId"
+        Topics:
+          - !Ref Topic
+
+    FallbackTopic:
+      Type: "AWS::SNS::Topic"
+      Properties: {}
+
+    NumberOfNotificationsFailedTooHighAlarm:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Alerts could not be delivered"
+        Namespace: "AWS/SNS"
+        MetricName: NumberOfNotificationsFailed
+        Statistic: Sum
+        Period: 60
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 0
+        AlarmActions:
+          - !Ref FallbackTopic
+        Dimensions:
+          - Name: TopicName
+            Value: !GetAtt Topic.TopicName
+        TreatMissingData: notBreaching
+
+    EmailSubscription:
+      Condition: HasEmail
+      Type: "AWS::SNS::Subscription"
+      Properties:
+        Endpoint: !Ref Email
+        Protocol: email
+        TopicArn: !Ref Topic
+
+    HttpsEndpointSubscription:
+      Condition: HasHttpsEndpoint
+      Type: "AWS::SNS::Subscription"
+      Properties:
+        DeliveryPolicy:
+          healthyRetryPolicy:
+            minDelayTarget: 1
+            maxDelayTarget: 60
+            numRetries: 100
+            numNoDelayRetries: 0
+            backoffFunction: exponential
+          throttlePolicy:
+            maxReceivesPerSecond: 1
+        Endpoint: !Ref HttpsEndpoint
+        Protocol: https
+        TopicArn: !Ref Topic
+
+    FallbackEmailSubscription:
+      Condition: HasFallbackEmail
+      Type: "AWS::SNS::Subscription"
+      Properties:
+        Endpoint: !Ref FallbackEmail
+        Protocol: email
+        TopicArn: !Ref FallbackTopic
+
+    RecoveryAlarm:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Recovering instance when underlying hardware fails."
+        Namespace: "AWS/EC2"
+        MetricName: StatusCheckFailed_System
+        Statistic: Minimum
+        Period: 60
+        EvaluationPeriods: 5
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 0
+        AlarmActions:
+          - !Sub "arn:aws:automate:${AWS::Region}:ec2:recover"
+        Dimensions:
+          - Name: InstanceId
+            Value: !Ref RelayNode1
+
+    CPUTooHighAlarm:
+      Condition: HasAlertTopic
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Average CPU utilization over last 10 minutes higher than 80%"
+        Namespace: "AWS/EC2"
+        MetricName: CPUUtilization
+        Statistic: Average
+        Period: 600
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 80
+        AlarmActions:
+          - { "Fn::ImportValue": !Sub "${ParentAlertStack}-TopicARN" }
+        Dimensions:
+          - Name: InstanceId
+            Value: !Ref RelayNode1
+
+    MemoryTooHighAlarm:
+      Condition: HasAlertTopic
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Average memory utilization over last 10 minutes higher than 80%"
+        Namespace: !Ref "AWS::StackName"
+        MetricName: mem_used_percent
+        Statistic: Average
+        Period: 600
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 80
+        AlarmActions:
+          - { "Fn::ImportValue": !Sub "${ParentAlertStack}-TopicARN" }
+        Dimensions:
+          - Name: InstanceId
+            Value: !Ref RelayNode1
+
+    DiskTooHighAlarm:
+      Condition: HasAlertTopic
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Average disk utilization over last 10 minutes higher than 80%"
+        Namespace: !Ref "AWS::StackName"
+        MetricName: disk_used_percent
+        Statistic: Average
+        Period: 600
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 80
+        AlarmActions:
+          - { "Fn::ImportValue": !Sub "${ParentAlertStack}-TopicARN" }
+        Dimensions:
+          - Name: InstanceId
+            Value: !Ref RelayNode1
+          - Name: fstype
+            Value: xfs
+          - Name: path
+            Value: "/"
+
+    # the following resources create the a secure EC2 environment
     AllowRelayElasticIp:
       Type: AWS::IAM::ManagedPolicy
       Properties:
@@ -36,24 +245,24 @@ resources:
           Statement:
             - Effect: Allow
               Action:
-                - 'ec2:DescribeAddresses'
-                - 'ec2:AllocateAddress'
-                - 'ec2:DescribeInstances'
-                - 'ec2:AssociateAddress'
+                - "ec2:DescribeAddresses"
+                - "ec2:AllocateAddress"
+                - "ec2:DescribeInstances"
+                - "ec2:AssociateAddress"
               Resource: "*"
 
     RootRole:
-      Type: 'AWS::IAM::Role'
+      Type: "AWS::IAM::Role"
       Properties:
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Principal:
                 Service:
                   - ec2.amazonaws.com
               Action:
-                - 'sts:AssumeRole'
+                - "sts:AssumeRole"
         ManagedPolicyArns:
           - !Ref AllowRelayElasticIp
         RoleName: relay_elasticip
@@ -66,17 +275,17 @@ resources:
           - Ref: "RootRole"
 
     VPC:
-      Type: 'AWS::EC2::VPC'
+      Type: "AWS::EC2::VPC"
       Properties:
-        CidrBlock: !Sub '10.${ClassB}.0.0/16'
+        CidrBlock: !Sub "10.${ClassB}.0.0/16"
         EnableDnsSupport: true
         EnableDnsHostnames: true
         InstanceTenancy: default
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Cardano VPC'
+            Value: "Cardano VPC"
 
     CoreNodeIp:
       Type: AWS::EC2::EIP
@@ -84,27 +293,27 @@ resources:
         Domain: vpc
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Core Node IP - ${self:provider.stage}'
+            Value: "Core Node IP - ${self:provider.stage}"
 
     RelayNode1Ip:
       Type: AWS::EC2::EIP
       Properties:
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Relay-1 Node IP - ${self:provider.stage}'
+            Value: "Relay-1 Node IP - ${self:provider.stage}"
 
     RelayNode2Ip:
       Type: AWS::EC2::EIP
       Properties:
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Relay-2 Node IP - ${self:provider.stage}'
+            Value: "Relay-2 Node IP - ${self:provider.stage}"
 
     # CoreNodeIpAssociation:
     #   Type: AWS::EC2::EIPAssociation
@@ -115,8 +324,8 @@ resources:
     RelayNode1IpAssociation:
       Type: AWS::EC2::EIPAssociation
       Properties:
-        InstanceId: !Ref 'RelayNode1'
-        EIP: !Ref 'RelayNode1Ip'
+        InstanceId: !Ref "RelayNode1"
+        EIP: !Ref "RelayNode1Ip"
 
     # RelayNode2IpAssociation:
     #   Type: AWS::EC2::EIPAssociation
@@ -125,434 +334,440 @@ resources:
     #     EIP: !Ref 'RelayNode2Ip'
 
     VPCCidrBlock:
-      Type: 'AWS::EC2::VPCCidrBlock'
+      Type: "AWS::EC2::VPCCidrBlock"
       Properties:
         AmazonProvidedIpv6CidrBlock: true
         VpcId: !Ref VPC
 
     InternetGateway:
-      Type: 'AWS::EC2::InternetGateway'
+      Type: "AWS::EC2::InternetGateway"
       Properties:
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: !Sub '10.${ClassB}.0.0/16'
+            Value: !Sub "10.${ClassB}.0.0/16"
 
     EgressOnlyInternetGateway:
-      Type: 'AWS::EC2::EgressOnlyInternetGateway'
+      Type: "AWS::EC2::EgressOnlyInternetGateway"
       Properties:
         VpcId: !Ref VPC
 
     GatewayToInternet:
-      Type: 'AWS::EC2::VPCGatewayAttachment'
+      Type: "AWS::EC2::VPCGatewayAttachment"
       Properties:
         VpcId: !Ref VPC
         InternetGatewayId: !Ref InternetGateway
 
     SubnetAPublic:
       DependsOn: VPCCidrBlock
-      Type: 'AWS::EC2::Subnet'
+      Type: "AWS::EC2::Subnet"
       Properties:
         #AssignIpv6AddressOnCreation: true
-        AvailabilityZone: !Select [0, !GetAZs '']
-        CidrBlock: !Sub '10.${ClassB}.0.0/20'
-        Ipv6CidrBlock: !Select [0, !Cidr [!Select [0, !GetAtt 'VPC.Ipv6CidrBlocks'], 6, 64]]
+        AvailabilityZone: !Select [0, !GetAZs ""]
+        CidrBlock: !Sub "10.${ClassB}.0.0/20"
+        Ipv6CidrBlock:
+          !Select [0, !Cidr [!Select [0, !GetAtt "VPC.Ipv6CidrBlocks"], 6, 64]]
         MapPublicIpOnLaunch: true
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - A public'
+            Value: "Stake Pool - A public"
           - Key: Reach
             Value: public
 
     SubnetAPrivate:
       DependsOn: VPCCidrBlock
-      Type: 'AWS::EC2::Subnet'
+      Type: "AWS::EC2::Subnet"
       Properties:
         AssignIpv6AddressOnCreation: false
-        AvailabilityZone: !Select [0, !GetAZs '']
-        CidrBlock: !Sub '10.${ClassB}.16.0/20'
-        Ipv6CidrBlock: !Select [1, !Cidr [!Select [0, !GetAtt 'VPC.Ipv6CidrBlocks'], 6, 64]]
+        AvailabilityZone: !Select [0, !GetAZs ""]
+        CidrBlock: !Sub "10.${ClassB}.16.0/20"
+        Ipv6CidrBlock:
+          !Select [1, !Cidr [!Select [0, !GetAtt "VPC.Ipv6CidrBlocks"], 6, 64]]
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - A private'
+            Value: "Stake Pool - A private"
           - Key: Reach
             Value: private
 
     SubnetBPublic:
       DependsOn: VPCCidrBlock
-      Type: 'AWS::EC2::Subnet'
+      Type: "AWS::EC2::Subnet"
       Properties:
         #AssignIpv6AddressOnCreation: true
-        AvailabilityZone: !Select [1, !GetAZs '']
-        CidrBlock: !Sub '10.${ClassB}.32.0/20'
-        Ipv6CidrBlock: !Select [2, !Cidr [!Select [0, !GetAtt 'VPC.Ipv6CidrBlocks'], 6, 64]]
+        AvailabilityZone: !Select [1, !GetAZs ""]
+        CidrBlock: !Sub "10.${ClassB}.32.0/20"
+        Ipv6CidrBlock:
+          !Select [2, !Cidr [!Select [0, !GetAtt "VPC.Ipv6CidrBlocks"], 6, 64]]
         MapPublicIpOnLaunch: true
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - B public'
+            Value: "Stake Pool - B public"
           - Key: Reach
             Value: public
 
     SubnetBPrivate:
       DependsOn: VPCCidrBlock
-      Type: 'AWS::EC2::Subnet'
+      Type: "AWS::EC2::Subnet"
       Properties:
         AssignIpv6AddressOnCreation: false
-        AvailabilityZone: !Select [1, !GetAZs '']
-        CidrBlock: !Sub '10.${ClassB}.48.0/20'
-        Ipv6CidrBlock: !Select [3, !Cidr [!Select [0, !GetAtt 'VPC.Ipv6CidrBlocks'], 6, 64]]
+        AvailabilityZone: !Select [1, !GetAZs ""]
+        CidrBlock: !Sub "10.${ClassB}.48.0/20"
+        Ipv6CidrBlock:
+          !Select [3, !Cidr [!Select [0, !GetAtt "VPC.Ipv6CidrBlocks"], 6, 64]]
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - B private'
+            Value: "Stake Pool - B private"
           - Key: Reach
             Value: private
 
     SubnetCPublic:
       DependsOn: VPCCidrBlock
-      Type: 'AWS::EC2::Subnet'
+      Type: "AWS::EC2::Subnet"
       Properties:
         #AssignIpv6AddressOnCreation: true
-        AvailabilityZone: !Select [2, !GetAZs '']
-        CidrBlock: !Sub '10.${ClassB}.64.0/20'
-        Ipv6CidrBlock: !Select [4, !Cidr [!Select [0, !GetAtt 'VPC.Ipv6CidrBlocks'], 6, 64]]
+        AvailabilityZone: !Select [2, !GetAZs ""]
+        CidrBlock: !Sub "10.${ClassB}.64.0/20"
+        Ipv6CidrBlock:
+          !Select [4, !Cidr [!Select [0, !GetAtt "VPC.Ipv6CidrBlocks"], 6, 64]]
         MapPublicIpOnLaunch: true
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - C public'
+            Value: "Stake Pool - C public"
           - Key: Reach
             Value: public
 
     SubnetCPrivate:
       DependsOn: VPCCidrBlock
-      Type: 'AWS::EC2::Subnet'
+      Type: "AWS::EC2::Subnet"
       Properties:
         AssignIpv6AddressOnCreation: false
-        AvailabilityZone: !Select [2, !GetAZs '']
-        CidrBlock: !Sub '10.${ClassB}.80.0/20'
-        Ipv6CidrBlock: !Select [5, !Cidr [!Select [0, !GetAtt 'VPC.Ipv6CidrBlocks'], 6, 64]]
+        AvailabilityZone: !Select [2, !GetAZs ""]
+        CidrBlock: !Sub "10.${ClassB}.80.0/20"
+        Ipv6CidrBlock:
+          !Select [5, !Cidr [!Select [0, !GetAtt "VPC.Ipv6CidrBlocks"], 6, 64]]
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - C private'
+            Value: "Stake Pool - C private"
           - Key: Reach
             Value: private
 
     RouteTablePublic:
-      Type: 'AWS::EC2::RouteTable'
+      Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
             Value: Public
 
     RouteTablePrivate:
-      Type: 'AWS::EC2::RouteTable'
+      Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
             Value: Private
 
     RouteTableBPublic:
-      Type: 'AWS::EC2::RouteTable'
+      Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - B Public'
+            Value: "Stake Pool - B Public"
 
     RouteTableBPrivate:
-      Type: 'AWS::EC2::RouteTable'
+      Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - B Private'
+            Value: "Stake Pool - B Private"
 
     RouteTableCPublic:
-      Type: 'AWS::EC2::RouteTable'
+      Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - C Public'
+            Value: "Stake Pool - C Public"
 
     RouteTableCPrivate:
-      Type: 'AWS::EC2::RouteTable'
+      Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Stake Pool - C Private'
+            Value: "Stake Pool - C Private"
 
     RouteTableAssociationAPublic:
-      Type: 'AWS::EC2::SubnetRouteTableAssociation'
+      Type: "AWS::EC2::SubnetRouteTableAssociation"
       Properties:
         SubnetId: !Ref SubnetAPublic
         RouteTableId: !Ref RouteTablePublic
 
     RouteTableAssociationAPrivate:
-      Type: 'AWS::EC2::SubnetRouteTableAssociation'
+      Type: "AWS::EC2::SubnetRouteTableAssociation"
       Properties:
         SubnetId: !Ref SubnetAPrivate
         RouteTableId: !Ref RouteTablePrivate
 
     RouteTableAssociationBPublic:
-      Type: 'AWS::EC2::SubnetRouteTableAssociation'
+      Type: "AWS::EC2::SubnetRouteTableAssociation"
       Properties:
         SubnetId: !Ref SubnetBPublic
         RouteTableId: !Ref RouteTableBPublic
 
     RouteTableAssociationBPrivate:
-      Type: 'AWS::EC2::SubnetRouteTableAssociation'
+      Type: "AWS::EC2::SubnetRouteTableAssociation"
       Properties:
         SubnetId: !Ref SubnetBPrivate
         RouteTableId: !Ref RouteTableBPrivate
 
     RouteTableAssociationCPublic:
-      Type: 'AWS::EC2::SubnetRouteTableAssociation'
+      Type: "AWS::EC2::SubnetRouteTableAssociation"
       Properties:
         SubnetId: !Ref SubnetCPublic
         RouteTableId: !Ref RouteTableCPublic
 
     RouteTableAssociationCPrivate:
-      Type: 'AWS::EC2::SubnetRouteTableAssociation'
+      Type: "AWS::EC2::SubnetRouteTableAssociation"
       Properties:
         SubnetId: !Ref SubnetCPrivate
         RouteTableId: !Ref RouteTableCPrivate
 
     RouteTablePublicInternetRoute: # should be RouteTablePublicAInternetRoute, but logical id was not changed for backward compatibility
-      Type: 'AWS::EC2::Route'
+      Type: "AWS::EC2::Route"
       DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTablePublic
-        DestinationCidrBlock: '0.0.0.0/0'
+        DestinationCidrBlock: "0.0.0.0/0"
         GatewayId: !Ref InternetGateway
 
     RouteTablePublicAInternetRouteIPv6:
-      Type: 'AWS::EC2::Route'
+      Type: "AWS::EC2::Route"
       DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTablePublic
-        DestinationIpv6CidrBlock: '::/0'
+        DestinationIpv6CidrBlock: "::/0"
         GatewayId: !Ref InternetGateway
 
     RouteTablePrivateAInternetRouteIPv6:
-      Type: 'AWS::EC2::Route'
+      Type: "AWS::EC2::Route"
       Properties:
         RouteTableId: !Ref RouteTablePrivate
-        DestinationIpv6CidrBlock: '::/0'
+        DestinationIpv6CidrBlock: "::/0"
         EgressOnlyInternetGatewayId: !Ref EgressOnlyInternetGateway
 
     RouteTablePublicBInternetRoute:
-      Type: 'AWS::EC2::Route'
+      Type: "AWS::EC2::Route"
       DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTableBPublic
-        DestinationCidrBlock: '0.0.0.0/0'
+        DestinationCidrBlock: "0.0.0.0/0"
         GatewayId: !Ref InternetGateway
 
     RouteTablePublicBInternetRouteIPv6:
-      Type: 'AWS::EC2::Route'
+      Type: "AWS::EC2::Route"
       DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTableBPublic
-        DestinationIpv6CidrBlock: '::/0'
+        DestinationIpv6CidrBlock: "::/0"
         GatewayId: !Ref InternetGateway
 
     RouteTablePrivateBInternetRouteIPv6:
-      Type: 'AWS::EC2::Route'
+      Type: "AWS::EC2::Route"
       Properties:
         RouteTableId: !Ref RouteTableBPrivate
-        DestinationIpv6CidrBlock: '::/0'
+        DestinationIpv6CidrBlock: "::/0"
         EgressOnlyInternetGatewayId: !Ref EgressOnlyInternetGateway
 
     RouteTablePublicCInternetRoute:
-      Type: 'AWS::EC2::Route'
+      Type: "AWS::EC2::Route"
       DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTableCPublic
-        DestinationCidrBlock: '0.0.0.0/0'
+        DestinationCidrBlock: "0.0.0.0/0"
         GatewayId: !Ref InternetGateway
 
     RouteTablePublicCInternetRouteIPv6:
-      Type: 'AWS::EC2::Route'
+      Type: "AWS::EC2::Route"
       DependsOn: GatewayToInternet
       Properties:
         RouteTableId: !Ref RouteTableCPublic
-        DestinationIpv6CidrBlock: '::/0'
+        DestinationIpv6CidrBlock: "::/0"
         GatewayId: !Ref InternetGateway
 
     RouteTablePrivateCInternetRouteIPv6:
-      Type: 'AWS::EC2::Route'
+      Type: "AWS::EC2::Route"
       Properties:
         RouteTableId: !Ref RouteTableCPrivate
-        DestinationIpv6CidrBlock: '::/0'
+        DestinationIpv6CidrBlock: "::/0"
         EgressOnlyInternetGatewayId: !Ref EgressOnlyInternetGateway
 
     NetworkAclPublic:
-      Type: 'AWS::EC2::NetworkAcl'
-      Properties:
-        VpcId: !Ref VPC
-        Tags:
-        - Key: Name
-          Value: Public
-
-    NetworkAclPrivate:
-      Type: 'AWS::EC2::NetworkAcl'
+      Type: "AWS::EC2::NetworkAcl"
       Properties:
         VpcId: !Ref VPC
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: Public
+
+    NetworkAclPrivate:
+      Type: "AWS::EC2::NetworkAcl"
+      Properties:
+        VpcId: !Ref VPC
+        Tags:
+          - Key: Name
+            Value: "cardano-stake-pool-network"
           - Key: Type
             Value: Private
 
     SubnetNetworkAclAssociationAPublic:
-      Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+      Type: "AWS::EC2::SubnetNetworkAclAssociation"
       Properties:
         SubnetId: !Ref SubnetAPublic
         NetworkAclId: !Ref NetworkAclPublic
 
     SubnetNetworkAclAssociationAPrivate:
-      Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+      Type: "AWS::EC2::SubnetNetworkAclAssociation"
       Properties:
         SubnetId: !Ref SubnetAPrivate
         NetworkAclId: !Ref NetworkAclPrivate
 
     SubnetNetworkAclAssociationBPublic:
-      Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+      Type: "AWS::EC2::SubnetNetworkAclAssociation"
       Properties:
         SubnetId: !Ref SubnetBPublic
         NetworkAclId: !Ref NetworkAclPublic
 
     SubnetNetworkAclAssociationBPrivate:
-      Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+      Type: "AWS::EC2::SubnetNetworkAclAssociation"
       Properties:
         SubnetId: !Ref SubnetBPrivate
         NetworkAclId: !Ref NetworkAclPrivate
 
     SubnetNetworkAclAssociationCPublic:
-      Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+      Type: "AWS::EC2::SubnetNetworkAclAssociation"
       Properties:
         SubnetId: !Ref SubnetCPublic
         NetworkAclId: !Ref NetworkAclPublic
 
     SubnetNetworkAclAssociationCPrivate:
-      Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+      Type: "AWS::EC2::SubnetNetworkAclAssociation"
       Properties:
         SubnetId: !Ref SubnetCPrivate
         NetworkAclId: !Ref NetworkAclPrivate
 
     NetworkAclEntryInPublicAllowAll:
-      Type: 'AWS::EC2::NetworkAclEntry'
+      Type: "AWS::EC2::NetworkAclEntry"
       Properties:
         NetworkAclId: !Ref NetworkAclPublic
         RuleNumber: 99
         Protocol: -1
         RuleAction: allow
         Egress: false
-        CidrBlock: '0.0.0.0/0'
+        CidrBlock: "0.0.0.0/0"
 
     NetworkAclEntryInPublicAllowAllIPv6:
-      Type: 'AWS::EC2::NetworkAclEntry'
+      Type: "AWS::EC2::NetworkAclEntry"
       Properties:
         NetworkAclId: !Ref NetworkAclPublic
         RuleNumber: 98
         Protocol: -1
         RuleAction: allow
         Egress: false
-        Ipv6CidrBlock: '::/0'
+        Ipv6CidrBlock: "::/0"
 
     NetworkAclEntryOutPublicAllowAll:
-      Type: 'AWS::EC2::NetworkAclEntry'
+      Type: "AWS::EC2::NetworkAclEntry"
       Properties:
         NetworkAclId: !Ref NetworkAclPublic
         RuleNumber: 99
         Protocol: -1
         RuleAction: allow
         Egress: true
-        CidrBlock: '0.0.0.0/0'
+        CidrBlock: "0.0.0.0/0"
 
     NetworkAclEntryOutPublicAllowAllIPv6:
-      Type: 'AWS::EC2::NetworkAclEntry'
+      Type: "AWS::EC2::NetworkAclEntry"
       Properties:
         NetworkAclId: !Ref NetworkAclPublic
         RuleNumber: 98
         Protocol: -1
         RuleAction: allow
         Egress: true
-        Ipv6CidrBlock: '::/0'
+        Ipv6CidrBlock: "::/0"
 
     NetworkAclEntryInPrivateAllowAll:
-      Type: 'AWS::EC2::NetworkAclEntry'
+      Type: "AWS::EC2::NetworkAclEntry"
       Properties:
         NetworkAclId: !Ref NetworkAclPrivate
         RuleNumber: 99
         Protocol: -1
         RuleAction: allow
         Egress: false
-        CidrBlock: '0.0.0.0/0'
+        CidrBlock: "0.0.0.0/0"
 
     NetworkAclEntryInPrivateAllowAllIPv6:
-      Type: 'AWS::EC2::NetworkAclEntry'
+      Type: "AWS::EC2::NetworkAclEntry"
       Properties:
         NetworkAclId: !Ref NetworkAclPrivate
         RuleNumber: 98
         Protocol: -1
         RuleAction: allow
         Egress: false
-        Ipv6CidrBlock: '::/0'
+        Ipv6CidrBlock: "::/0"
 
     NetworkAclEntryOutPrivateAllowAll:
-      Type: 'AWS::EC2::NetworkAclEntry'
+      Type: "AWS::EC2::NetworkAclEntry"
       Properties:
         NetworkAclId: !Ref NetworkAclPrivate
         RuleNumber: 99
         Protocol: -1
         RuleAction: allow
         Egress: true
-        CidrBlock: '0.0.0.0/0'
+        CidrBlock: "0.0.0.0/0"
 
     NetworkAclEntryOutPrivateAllowAllIPv6:
-      Type: 'AWS::EC2::NetworkAclEntry'
+      Type: "AWS::EC2::NetworkAclEntry"
       Properties:
         NetworkAclId: !Ref NetworkAclPrivate
         RuleNumber: 98
         Protocol: -1
         RuleAction: allow
         Egress: true
-        Ipv6CidrBlock: '::/0'
+        Ipv6CidrBlock: "::/0"
 
     RelayNode1:
       Type: AWS::EC2::Instance
@@ -569,13 +784,13 @@ resources:
               DeleteOnTermination: true
               # Encrypted: true
               SnapshotId: snap-0a52a8f51496c3782
-              VolumeSize: 50
+              VolumeSize: ${env:AWS_EC2_STORAGE}
               VolumeType: gp2
         NetworkInterfaces:
           - GroupSet:
-            - Ref: SecurityGroup
-            DeviceIndex: '0'
-            DeleteOnTermination: 'true'
+              - Ref: RelayNodeSecurityGroup
+            DeviceIndex: "0"
+            DeleteOnTermination: "true"
             SubnetId:
               Ref: SubnetAPublic
         # PlacementGroupName: String
@@ -586,34 +801,46 @@ resources:
         # SubnetId: String
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Relay Node 1'
-        # Tenancy: String
-        # UserData: String need this
+            Value: "Relay Node 1"
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-general.html#scenario-one-pseudo-parameter
+        UserData:
+          Fn::Base64: !Sub |
+            #!/usr/bin/env bash
+            error(){
+              printf "\n Error:  Exiting"
+              ls -ltr; pwd
+              exit 1
+            }
+            mkdir -p ${HOME}/git
+            cd ${HOME}/git || error
+            git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers || error
+            cd cardano-helpers || error
+            chmod +x ./build.sh
+            ./build.sh
 
-    SecurityGroup:
+    RelayNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupDescription: 'Cardano secure network - SG'
-        GroupName: 'Cardano Network'
-        # SecurityGroupEgress:
-        #   - Description: 'Only allow myself to access'
-        #     # DestinationSecurityGroupId: String
-        #     FromPort: 22
-        #     IpProtocol: tcp
-        #     ToPort: 22
+        GroupDescription: "Cardano Network"
+        GroupName: "relay-node-sg"
         SecurityGroupIngress:
-          - Description: 'Only allow myself to access'
-            # DestinationSecurityGroupId: String
-            FromPort: 22
+          - Description: "Allow access to myself on my local machine"
             IpProtocol: tcp
+            CidrIp: ${env:PERSONAL_LOCAL_IP}/32
+            FromPort: 22
             ToPort: 22
+          # - Description: 'Allow Relay Node myself to '
+          #   IpProtocol: -1
+          #   CidrIp: !Ref 'RelayNode1Ip' /32 this needs to be fixed but this should be part of the Core Node SG
+          #   FromPort: 0
+          #   ToPort: 65535
         Tags:
           - Key: Name
-            Value: 'cardano-stake-pool-network'
+            Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: 'Cardano Security Group'
+            Value: "relay-node-sg"
         VpcId: !Ref VPC
 
     # RelayNode1Volume:
@@ -636,170 +863,202 @@ resources:
 
   Outputs:
     TemplateID:
-      Description: 'cloudonaut.io template id.'
-      Value: 'vpc/vpc-3azs'
+      Description: "cloudonaut.io template id."
+      Value: "vpc/vpc-3azs"
 
     TemplateVersion:
-      Description: 'cloudonaut.io template version.'
-      Value: '13.6.0'
+      Description: "cloudonaut.io template version."
+      Value: "13.6.0"
 
     StackName:
-      Description: 'Stack name.'
-      Value: !Sub '${AWS::StackName}'
+      Description: "Stack name."
+      Value: !Sub "${AWS::StackName}"
 
     AZs:
-      Description: 'Number of AZs'
+      Description: "Number of AZs"
       Value: 3
       Export:
-        Name: !Sub '${AWS::StackName}-AZs'
+        Name: !Sub "${AWS::StackName}-AZs"
 
     AZList:
-      Description: 'List of AZs'
-      Value: !Join [',', [!Select [0, !GetAZs ''], !Select [1, !GetAZs ''], !Select [2, !GetAZs '']]]
+      Description: "List of AZs"
+      Value:
+        !Join [
+          ",",
+          [
+            !Select [0, !GetAZs ""],
+            !Select [1, !GetAZs ""],
+            !Select [2, !GetAZs ""],
+          ],
+        ]
       Export:
-        Name: !Sub '${AWS::StackName}-AZList'
+        Name: !Sub "${AWS::StackName}-AZList"
 
     AZA:
-      Description: 'AZ of A'
-      Value: !Select [0, !GetAZs '']
+      Description: "AZ of A"
+      Value: !Select [0, !GetAZs ""]
       Export:
-        Name: !Sub '${AWS::StackName}-AZA'
+        Name: !Sub "${AWS::StackName}-AZA"
 
     AZB:
-      Description: 'AZ of B'
-      Value: !Select [1, !GetAZs '']
+      Description: "AZ of B"
+      Value: !Select [1, !GetAZs ""]
       Export:
-        Name: !Sub '${AWS::StackName}-AZB'
+        Name: !Sub "${AWS::StackName}-AZB"
 
     AZC:
-      Description: 'AZ of C'
-      Value: !Select [2, !GetAZs '']
+      Description: "AZ of C"
+      Value: !Select [2, !GetAZs ""]
       Export:
-        Name: !Sub '${AWS::StackName}-AZC'
+        Name: !Sub "${AWS::StackName}-AZC"
 
     CidrBlock:
-      Description: 'The set of IP addresses for the VPC.'
-      Value: !GetAtt 'VPC.CidrBlock'
+      Description: "The set of IP addresses for the VPC."
+      Value: !GetAtt "VPC.CidrBlock"
       Export:
-        Name: !Sub '${AWS::StackName}-CidrBlock'
+        Name: !Sub "${AWS::StackName}-CidrBlock"
 
     CidrBlockIPv6:
-      Description: 'The set of IPv6 addresses for the VPC.'
-      Value: !Select [0, !GetAtt 'VPC.Ipv6CidrBlocks']
+      Description: "The set of IPv6 addresses for the VPC."
+      Value: !Select [0, !GetAtt "VPC.Ipv6CidrBlocks"]
       Export:
-        Name: !Sub '${AWS::StackName}-CidrBlockIPv6'
+        Name: !Sub "${AWS::StackName}-CidrBlockIPv6"
 
     VPC:
-      Description: 'VPC.'
+      Description: "VPC."
       Value: !Ref VPC
       Export:
-        Name: !Sub '${AWS::StackName}-VPC'
+        Name: !Sub "${AWS::StackName}-VPC"
 
     InternetGateway:
-      Description: 'InternetGateway.'
+      Description: "InternetGateway."
       Value: !Ref InternetGateway
       Export:
-        Name: !Sub '${AWS::StackName}-InternetGateway'
+        Name: !Sub "${AWS::StackName}-InternetGateway"
 
     SubnetsPublic:
-      Description: 'Subnets public.'
-      Value: !Join [',', [!Ref SubnetAPublic, !Ref SubnetBPublic, !Ref SubnetCPublic]]
+      Description: "Subnets public."
+      Value:
+        !Join [
+          ",",
+          [!Ref SubnetAPublic, !Ref SubnetBPublic, !Ref SubnetCPublic],
+        ]
       Export:
-        Name: !Sub '${AWS::StackName}-SubnetsPublic'
+        Name: !Sub "${AWS::StackName}-SubnetsPublic"
 
     SubnetsPrivate:
-      Description: 'Subnets private.'
-      Value: !Join [',', [!Ref SubnetAPrivate, !Ref SubnetBPrivate, !Ref SubnetCPrivate]]
+      Description: "Subnets private."
+      Value:
+        !Join [
+          ",",
+          [!Ref SubnetAPrivate, !Ref SubnetBPrivate, !Ref SubnetCPrivate],
+        ]
       Export:
-        Name: !Sub '${AWS::StackName}-SubnetsPrivate'
+        Name: !Sub "${AWS::StackName}-SubnetsPrivate"
 
     RouteTablesPrivate:
-      Description: 'Route tables private.'
-      Value: !Join [',', [!Ref RouteTablePrivate, !Ref RouteTableBPrivate, !Ref RouteTableCPrivate]]
+      Description: "Route tables private."
+      Value:
+        !Join [
+          ",",
+          [
+            !Ref RouteTablePrivate,
+            !Ref RouteTableBPrivate,
+            !Ref RouteTableCPrivate,
+          ],
+        ]
       Export:
-        Name: !Sub '${AWS::StackName}-RouteTablesPrivate'
+        Name: !Sub "${AWS::StackName}-RouteTablesPrivate"
 
     RouteTablesPublic:
-      Description: 'Route tables public.'
-      Value: !Join [',', [!Ref RouteTablePublic, !Ref RouteTableBPublic, !Ref RouteTableCPublic]]
+      Description: "Route tables public."
+      Value:
+        !Join [
+          ",",
+          [
+            !Ref RouteTablePublic,
+            !Ref RouteTableBPublic,
+            !Ref RouteTableCPublic,
+          ],
+        ]
       Export:
-        Name: !Sub '${AWS::StackName}-RouteTablesPublic'
+        Name: !Sub "${AWS::StackName}-RouteTablesPublic"
 
     SubnetAPublic:
-      Description: 'Subnet A public.'
+      Description: "Subnet A public."
       Value: !Ref SubnetAPublic
       Export:
-        Name: !Sub '${AWS::StackName}-SubnetAPublic'
+        Name: !Sub "${AWS::StackName}-SubnetAPublic"
 
     RouteTableAPublic:
-      Description: 'Route table A public.'
+      Description: "Route table A public."
       Value: !Ref RouteTablePublic
       Export:
-        Name: !Sub '${AWS::StackName}-RouteTableAPublic'
+        Name: !Sub "${AWS::StackName}-RouteTableAPublic"
 
     SubnetAPrivate:
-      Description: 'Subnet A private.'
+      Description: "Subnet A private."
       Value: !Ref SubnetAPrivate
       Export:
-        Name: !Sub '${AWS::StackName}-SubnetAPrivate'
+        Name: !Sub "${AWS::StackName}-SubnetAPrivate"
 
     RouteTableAPrivate:
-      Description: 'Route table A private.'
+      Description: "Route table A private."
       Value: !Ref RouteTablePrivate
       Export:
-        Name: !Sub '${AWS::StackName}-RouteTableAPrivate'
+        Name: !Sub "${AWS::StackName}-RouteTableAPrivate"
 
     SubnetBPublic:
-      Description: 'Subnet B public.'
+      Description: "Subnet B public."
       Value: !Ref SubnetBPublic
       Export:
-        Name: !Sub '${AWS::StackName}-SubnetBPublic'
+        Name: !Sub "${AWS::StackName}-SubnetBPublic"
 
     RouteTableBPublic:
-      Description: 'Route table B public.'
+      Description: "Route table B public."
       Value: !Ref RouteTableBPublic
       Export:
-        Name: !Sub '${AWS::StackName}-RouteTableBPublic'
+        Name: !Sub "${AWS::StackName}-RouteTableBPublic"
 
     SubnetBPrivate:
-      Description: 'Subnet B private.'
+      Description: "Subnet B private."
       Value: !Ref SubnetBPrivate
       Export:
-        Name: !Sub '${AWS::StackName}-SubnetBPrivate'
+        Name: !Sub "${AWS::StackName}-SubnetBPrivate"
 
     RouteTableBPrivate:
-      Description: 'Route table B private.'
+      Description: "Route table B private."
       Value: !Ref RouteTableBPrivate
       Export:
-        Name: !Sub '${AWS::StackName}-RouteTableBPrivate'
+        Name: !Sub "${AWS::StackName}-RouteTableBPrivate"
 
     SubnetCPublic:
-      Description: 'Subnet C public.'
+      Description: "Subnet C public."
       Value: !Ref SubnetCPublic
       Export:
-        Name: !Sub '${AWS::StackName}-SubnetCPublic'
+        Name: !Sub "${AWS::StackName}-SubnetCPublic"
 
     RouteTableCPublic:
-      Description: 'Route table C public.'
+      Description: "Route table C public."
       Value: !Ref RouteTableCPublic
       Export:
-        Name: !Sub '${AWS::StackName}-RouteTableCPublic'
+        Name: !Sub "${AWS::StackName}-RouteTableCPublic"
 
     SubnetCPrivate:
-      Description: 'Subnet C private.'
+      Description: "Subnet C private."
       Value: !Ref SubnetCPrivate
       Export:
-        Name: !Sub '${AWS::StackName}-SubnetCPrivate'
+        Name: !Sub "${AWS::StackName}-SubnetCPrivate"
 
     RouteTableCPrivate:
-      Description: 'Route table C private.'
+      Description: "Route table C private."
       Value: !Ref RouteTableCPrivate
       Export:
-        Name: !Sub '${AWS::StackName}-RouteTableCPrivate'
+        Name: !Sub "${AWS::StackName}-RouteTableCPrivate"
 
     RelayNode1IPAddress:
-      Description: 'IP address of the newly created Relay-1 Node (EC2 instance)'
-      Value: !Ref 'RelayNode1Ip'
+      Description: "IP address of the newly created Relay-1 Node (EC2 instance)"
+      Value: !Ref "RelayNode1Ip"
 
     # RelayNode2IPAddress:
     #   Description: 'IP address of the newly created Relay-2 Node (EC2 instance)'
@@ -808,3 +1067,15 @@ resources:
     # CoreNodeIPAddress:
     #   Description: 'IP address of the newly created Core Node (EC2 instance)'
     #   Value: !Ref 'RelayNode1Ip'
+
+    TopicARN:
+      Description: "The ARN of the alert topic."
+      Value: !Ref Topic
+      Export:
+        Name: !Sub "${AWS::StackName}-TopicARN"
+
+    TopicName:
+      Description: "The name of the alert topic."
+      Value: !GetAtt "Topic.TopicName"
+      Export:
+        Name: !Sub "${AWS::StackName}-TopicName"

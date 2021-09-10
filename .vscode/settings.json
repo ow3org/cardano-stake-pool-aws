@@ -49,6 +49,5 @@
         "!Join mapping",
         "!Join sequence"
     ],
-    "yaml.format.enable": true,
-    "yaml.validate": false
+    // "yaml.format.enable": true
 }
