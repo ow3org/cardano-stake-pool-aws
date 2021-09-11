@@ -18,7 +18,7 @@ resources:
           Parameters:
             - ClassB
         - Label:
-          default: "Alert Parameters"
+            default: "Alert Parameters"
           Parameters:
             - Email
             - HttpEndpoint
@@ -56,7 +56,6 @@ resources:
   Conditions:
     # these conditions are used to determine the "alert" channel
     HasEmail: !Not [!Equals [!Ref Email, ""]]
-    HasHttpEndpoint: !Not [!Equals [!Ref HttpEndpoint, ""]]
     HasHttpsEndpoint: !Not [!Equals [!Ref HttpsEndpoint, ""]]
     HasFallbackEmail: !Not [!Equals [!Ref FallbackEmail, ""]]
 
@@ -179,7 +178,6 @@ resources:
             Value: !Ref RelayNode1
 
     CPUTooHighAlarm:
-      Condition: HasAlertTopic
       Type: "AWS::CloudWatch::Alarm"
       Properties:
         AlarmDescription: "Average CPU utilization over last 10 minutes higher than 80%"
@@ -191,13 +189,12 @@ resources:
         ComparisonOperator: GreaterThanThreshold
         Threshold: 80
         AlarmActions:
-          - { "Fn::ImportValue": !Sub "${ParentAlertStack}-TopicARN" }
+          - !Ref Topic
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
 
     MemoryTooHighAlarm:
-      Condition: HasAlertTopic
       Type: "AWS::CloudWatch::Alarm"
       Properties:
         AlarmDescription: "Average memory utilization over last 10 minutes higher than 80%"
@@ -209,13 +206,12 @@ resources:
         ComparisonOperator: GreaterThanThreshold
         Threshold: 80
         AlarmActions:
-          - { "Fn::ImportValue": !Sub "${ParentAlertStack}-TopicARN" }
+          - !Ref Topic
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
 
     DiskTooHighAlarm:
-      Condition: HasAlertTopic
       Type: "AWS::CloudWatch::Alarm"
       Properties:
         AlarmDescription: "Average disk utilization over last 10 minutes higher than 80%"
@@ -227,7 +223,7 @@ resources:
         ComparisonOperator: GreaterThanThreshold
         Threshold: 80
         AlarmActions:
-          - { "Fn::ImportValue": !Sub "${ParentAlertStack}-TopicARN" }
+          - !Ref Topic
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
@@ -779,7 +775,7 @@ resources:
         KeyName: ${env:AWS_KEY_NAME}
         Monitoring: true
         BlockDeviceMappings:
-          - DeviceName: /dev/sdh
+          - DeviceName: /dev/sda1
             Ebs:
               DeleteOnTermination: true
               # Encrypted: true
@@ -808,15 +804,11 @@ resources:
         UserData:
           Fn::Base64: !Sub |
             #!/usr/bin/env bash
-            error(){
-              printf "\n Error:  Exiting"
-              ls -ltr; pwd
-              exit 1
-            }
-            mkdir -p ${HOME}/git
-            cd ${HOME}/git || error
-            git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers || error
-            cd cardano-helpers || error
+            cd ~
+            git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
+            cd cardano-helpers
+            echo "PORT ${env:SSH_PORT}" >> /etc/ssh/sshd_config
+            service ssh restart
             chmod +x ./build.sh
             ./build.sh
 
@@ -829,8 +821,8 @@ resources:
           - Description: "Allow access to myself on my local machine"
             IpProtocol: tcp
             CidrIp: ${env:PERSONAL_LOCAL_IP}/32
-            FromPort: 22
-            ToPort: 22
+            FromPort: ${env:SSH_PORT}
+            ToPort: ${env:SSH_PORT}
           # - Description: 'Allow Relay Node myself to '
           #   IpProtocol: -1
           #   CidrIp: !Ref 'RelayNode1Ip' /32 this needs to be fixed but this should be part of the Core Node SG

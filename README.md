@@ -21,6 +21,13 @@ Once you have the `aws` binary installed on your machine, run the following comm
 aws configure
 ```
 
+## TODO
+
+- make sure the initial relay node is created
+- create an image of the relay node
+- create relay node 2 and the core node
+- trigger all the alerts
+
 ## 🐙 Usage
 
 ```bash
