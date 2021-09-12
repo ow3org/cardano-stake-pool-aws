@@ -283,7 +283,7 @@ resources:
           - Key: Type
             Value: "Cardano VPC"
 
-    CoreNodeIp:
+    BlockProducerNodeIp:
       Type: AWS::EC2::EIP
       Properties:
         Domain: vpc
@@ -291,7 +291,7 @@ resources:
           - Key: Name
             Value: "cardano-stake-pool-network"
           - Key: Type
-            Value: "Core Node IP - ${self:provider.stage}"
+            Value: "Block Producer Node IP - ${self:provider.stage}"
 
     RelayNode1Ip:
       Type: AWS::EC2::EIP
@@ -311,11 +311,11 @@ resources:
           - Key: Type
             Value: "Relay-2 Node IP - ${self:provider.stage}"
 
-    # CoreNodeIpAssociation:
+    # BlockProducerNodeIpAssociation:
     #   Type: AWS::EC2::EIPAssociation
     #   Properties:
-    #     InstanceId: !Ref 'CoreNode'
-    #     EIP: !Ref 'CoreNodeIp'
+    #     InstanceId: !Ref 'BlockProducerNode'
+    #     EIP: !Ref 'BlockProducerNodeIp'
 
     RelayNode1IpAssociation:
       Type: AWS::EC2::EIPAssociation
@@ -809,8 +809,8 @@ resources:
             cd cardano-helpers
             echo "PORT ${env:SSH_PORT}" >> /etc/ssh/sshd_config
             service ssh restart
-            chmod +x ./build.sh
-            ./build.sh
+            chmod +x ./scripts/*
+            ./scripts/build.sh
 
     RelayNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -825,7 +825,7 @@ resources:
             ToPort: ${env:SSH_PORT}
           # - Description: 'Allow Relay Node myself to '
           #   IpProtocol: -1
-          #   CidrIp: !Ref 'RelayNode1Ip' /32 this needs to be fixed but this should be part of the Core Node SG
+          #   CidrIp: !Ref 'RelayNode1Ip' /32 this needs to be fixed but this should be part of the Block Producer Node SG
           #   FromPort: 0
           #   ToPort: 65535
         Tags:
@@ -1056,8 +1056,8 @@ resources:
     #   Description: 'IP address of the newly created Relay-2 Node (EC2 instance)'
     #   Value: !Ref 'RelayNode2Ip'
 
-    # CoreNodeIPAddress:
-    #   Description: 'IP address of the newly created Core Node (EC2 instance)'
+    # BlockProducerNodeIPAddress:
+    #   Description: 'IP address of the newly created Block Producer Node (EC2 instance)'
     #   Value: !Ref 'RelayNode1Ip'
 
     TopicARN:
