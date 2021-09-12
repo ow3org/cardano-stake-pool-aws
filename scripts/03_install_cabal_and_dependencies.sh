@@ -4,32 +4,8 @@
 # Telegram Channel: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
-# Let's install all of our Cardano Node dependencies to ensure we are up to date and have all the latest security and bug fixes included.
+# Let's install Cabal and its dependencies
 
-sudo apt-get update -y
-sudo apt-get upgrade -y
-sudo apt-get install -y \
-    git jq bc \
-    make automake rsync \
-    htop curl build-essential \
-    pkg-config libffi-dev libgmp-dev \
-    libssl-dev libtinfo-dev libsystemd-dev \
-    zlib1g-dev make g++ wget libncursesw5 libtool \
-    libncurses-dev libtinfo5 autoconf
-
-## let's install Libsodium
-mkdir $HOME/git
-cd $HOME/git
-git clone https://github.com/input-output-hk/libsodium
-cd libsodium
-git checkout 66f017f1
-./autogen.sh
-./configure
-make
-sudo make install
-sudo ln -s /usr/local/lib/libsodium.so.23.3.0 /usr/lib/libsodium.so.23
-
-## now we need to install Cabal and its dependencies
 export BOOTSTRAP_HASKELL_NONINTERACTIVE=true
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 

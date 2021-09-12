@@ -34,6 +34,19 @@ aws configure
 # useful scripts
 ```
 
+### How to use the testnet?
+
+When testing the nodes, it is important you practice enough in the testnet first before moving to the mainnet. While this guide explains how to get setup for the mainnet, simply run the following command:
+
+```bash
+echo export NODE_CONFIG=testnet >> $HOME/.bashrc
+source $HOME/.bashrc
+```
+
+In other words, you simply have to ensure the `NODE_CONFIG` variable is set to `testnet`.
+
+Additionally, when using the `cardano-cli`, make sure you do not use the `--mainnet` parameter but rather use `--testnet-magic 1097911063` instead.
+
 ## 📈 Changelog
 
 Please see our [releases](https://github.com/meemalabs/cardano-node/releases) page for more information on what has changed recently.

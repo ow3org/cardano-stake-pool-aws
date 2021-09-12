@@ -8,12 +8,18 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-cd $HOME/cardano-helpers
+echo '$HOME/ubuntu is '
+echo $HOME/ubuntu
+cd $HOME/ubuntu
+git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
+cd cardano-helpers
 
-./scripts/01_install_cardano-node_dependencies.sh
-./scripts/02_build_node_and_configure.sh
-./scripts/03_create_startup_scripts.sh
-# ./scripts/04_install_gLiveView_monitoring_tool.sh
+chmod +x ./scripts/*
+
+./scripts/02_install_libsodium.sh
+./scripts/03_install_cabal_and_dependencies.sh
+./scripts/04_build_node_and_configure.sh
+./scripts/05_create_startup_scripts.sh
 
 end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
