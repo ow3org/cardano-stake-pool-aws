@@ -60,6 +60,43 @@ resources:
     HasFallbackEmail: !Not [!Equals [!Ref FallbackEmail, ""]]
 
   Resources:
+    AllowRelayElasticIp:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - "ec2:DescribeAddresses"
+                - "ec2:AllocateAddress"
+                - "ec2:DescribeInstances"
+                - "ec2:AssociateAddress"
+              Resource: "*"
+
+    RootRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - ec2.amazonaws.com
+              Action:
+                - "sts:AssumeRole"
+        ManagedPolicyArns:
+          - !Ref AllowRelayElasticIp
+        RoleName: relay_elasticip
+
+    EC2EIP:
+      Type: "AWS::IAM::InstanceProfile"
+      Properties:
+        Path: "/"
+        Roles:
+          - Ref: "RootRole"
+
     # these resources are needed for our "system alerts," e.g. downtime, computing, pricing alerts, etc.
     Topic:
       Type: "AWS::SNS::Topic"
@@ -176,6 +213,8 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
+          - Name: InstanceId
+            Value: !Ref BlockProducerNode
 
     CPUTooHighAlarm:
       Type: "AWS::CloudWatch::Alarm"
@@ -193,6 +232,8 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
+          - Name: InstanceId
+            Value: !Ref BlockProducerNode
 
     MemoryTooHighAlarm:
       Type: "AWS::CloudWatch::Alarm"
@@ -210,6 +251,8 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
+          - Name: InstanceId
+            Value: !Ref BlockProducerNode
 
     DiskTooHighAlarm:
       Type: "AWS::CloudWatch::Alarm"
@@ -227,48 +270,12 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
+          - Name: InstanceId
+            Value: !Ref BlockProducerNode
           - Name: fstype
             Value: xfs
           - Name: path
             Value: "/"
-
-    # the following resources create the a secure EC2 environment
-    AllowRelayElasticIp:
-      Type: AWS::IAM::ManagedPolicy
-      Properties:
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action:
-                - "ec2:DescribeAddresses"
-                - "ec2:AllocateAddress"
-                - "ec2:DescribeInstances"
-                - "ec2:AssociateAddress"
-              Resource: "*"
-
-    RootRole:
-      Type: "AWS::IAM::Role"
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - ec2.amazonaws.com
-              Action:
-                - "sts:AssumeRole"
-        ManagedPolicyArns:
-          - !Ref AllowRelayElasticIp
-        RoleName: relay_elasticip
-
-    EC2EIP:
-      Type: "AWS::IAM::InstanceProfile"
-      Properties:
-        Path: "/"
-        Roles:
-          - Ref: "RootRole"
 
     VPC:
       Type: "AWS::EC2::VPC"
@@ -765,6 +772,56 @@ resources:
         Egress: true
         Ipv6CidrBlock: "::/0"
 
+    BlockProducerNode:
+      Type: AWS::EC2::Instance
+      DependsOn: GatewayToInternet
+      Properties:
+        ImageId: ${env:AWS_EC2_IMAGE_ID}
+        InstanceInitiatedShutdownBehavior: stop
+        InstanceType: ${env:AWS_EC2_INSTANCE_TYPE} # t3a.xlarge
+        KeyName: ${env:AWS_KEY_NAME}
+        Monitoring: true
+        BlockDeviceMappings:
+          - DeviceName: /dev/sda1
+            Ebs:
+              DeleteOnTermination: true
+              # Encrypted: true
+              SnapshotId: snap-0a52a8f51496c3782
+              VolumeSize: ${env:AWS_EC2_STORAGE}
+              VolumeType: gp2
+        NetworkInterfaces:
+          - GroupSet:
+              - Ref: BlockProducerNodeSecurityGroup
+            DeviceIndex: "0"
+            DeleteOnTermination: "true"
+            SubnetId:
+              Ref: SubnetAPublic
+        # PlacementGroupName: String
+        # PrivateIpAddress: String
+        # RamdiskId: String
+        # SecurityGroupIds:
+        #   - Ref: SecurityGroup
+        # SubnetId: String
+        Tags:
+          - Key: Name
+            Value: "cardano-stake-pool-network"
+          - Key: Type
+            Value: "Block Producer Node"
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-general.html#scenario-one-pseudo-parameter
+        UserData:
+          Fn::Base64: !Sub |
+            #!/usr/bin/env bash
+            echo export IS_RELAY_NODE=false >> $HOME/.bashrc
+            echo export NODE_CONFIG={env:NETWORK} >> $HOME/.bashrc
+            echo export BLOCK_PRODUCER_IP=${env:SSH_PORT} >> $HOME/.bashrc
+            cd ~
+            git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
+            cd cardano-helpers
+            echo "PORT ${env:SSH_PORT}" >> /etc/ssh/sshd_config
+            service ssh restart
+            chmod +x ./scripts/*
+            ./scripts/build.sh
+
     RelayNode1:
       Type: AWS::EC2::Instance
       DependsOn: GatewayToInternet
@@ -804,6 +861,7 @@ resources:
         UserData:
           Fn::Base64: !Sub |
             #!/usr/bin/env bash
+            echo export IS_RELAY_NODE=true >> $HOME/.bashrc
             echo export NODE_CONFIG={env:NETWORK} >> $HOME/.bashrc
 
             echo export BLOCK_PRODUCER_IP=${env:SSH_PORT} >> $HOME/.bashrc
@@ -815,6 +873,29 @@ resources:
             service ssh restart
             chmod +x ./scripts/*
             ./scripts/build.sh
+
+    BlockProducerNodeSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: "Cardano Network - Block Producer Node"
+        GroupName: "block-producer-node-sg"
+        SecurityGroupIngress:
+          - Description: "Allow access to myself on my local machine"
+            IpProtocol: tcp
+            CidrIp: ${env:PERSONAL_LOCAL_IP}/32
+            FromPort: ${env:SSH_PORT}
+            ToPort: ${env:SSH_PORT}
+          # - Description: 'Allow Relay Node myself to '
+          #   IpProtocol: -1
+          #   CidrIp: !Ref 'RelayNode1Ip' /32 this needs to be fixed but this should be part of the Block Producer Node SG
+          #   FromPort: 0
+          #   ToPort: 65535
+        Tags:
+          - Key: Name
+            Value: "cardano-stake-pool-network"
+          - Key: Type
+            Value: "relay-node-sg"
+        VpcId: !Ref VPC
 
     RelayNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -1062,7 +1143,7 @@ resources:
 
     BlockProducerNodeIPAddress:
       Description: 'IP address of the newly created Block Producer Node (EC2 instance)'
-      Value: !Ref 'BlockProducerNode1Ip'
+      Value: !Ref 'BlockProducerNodeIp'
 
     TopicARN:
       Description: "The ARN of the alert topic."

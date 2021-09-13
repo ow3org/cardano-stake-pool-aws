@@ -1,12 +1,13 @@
 # Cardano Stake Pool Ops
 
-This project aims to be the most simple way to set up a Cardano Stake Pool (core & relay nodes) inside a secure AWS cloud network. It implements an easily configurable, yet a well-opinionated approach, based on some of the best practices found inside the community.
+This project aims to be the most simple way to set up a Cardano Stake Pool (core & relay nodes) inside a secure, highly-available, and fault-tolerant AWS cloud network. It implements an easily configurable, yet a well-opinionated approach, based on some of the best practices found inside the community.
 
 ## 🐋 Features
 
 - Most simple way to setup a secure "Cardano Stake Pool"
-- Well configured AWS cloud
-- Management tools & beautiful graphs
+- Highly-available & fault-tolerant cloud
+- Several management tools & beautiful graphs
+- Secure by default
 
 _Our managed pools offer a "High Pledge" and great rewards. Feel free to join! We would love to get to know you._
 
@@ -24,7 +25,7 @@ npm install -g serverless
 serverless
 ```
 
-Serverless is an amazing tool that _automates the setup of our AWS account._
+Serverless is an amazing tool that _automates the setup of our AWS account._ It is important to note that while you configure your AWS account, you need to select a region that, at least, offers 3 Availability Zones, like `us-east-1`. View the regions you may select [here](./AWS_AZ_ZONES.md).
 
 ## Get Started
 
@@ -41,7 +42,7 @@ npm run create-aws-stake-pools:testnet # this may take around ~3h
 ## or else if you are provisioning a production environment, run this command
 npm run create-aws-stake-pools:mainnet # this may take around ~8h
 
-# 4. you can now securely SSH into your Cardano node
+# 4. you can now securely SSH into your Cardano node (navigate to AWS EC2 to figure out the host)
 ssh -i "~/.ssh/cardano-stake-pool.pem" ubuntu@ec2-12-68-116-220.compute-1.amazonaws.com -p 22
 
 # 5. once ssh'ed into the machine, you can run gLiveView to check the status of the sync
@@ -55,12 +56,11 @@ Last but not least, you will need to still need to generate your cold keys and y
 
 ## TODO
 
-- create an image of the relay node
 - create relay node 2 and the core node
 - trigger all the alerts
 - run gLiveView in the background after it is installed
 
-## 🐙 Usage
+## 🐙 Useful snippets
 
 ```bash
 # Useful snippets
@@ -85,6 +85,7 @@ journalctl --unit=cardano-node --since='2021-09-01 00:00:00' --until='2021-09-30
 - On mainnet, you will need to regenerate the KES key every 90 days
 - Cold keys must be generated and stored on your air-gapped offline machine
 - Please test plenty in the testnet before launching a production node
+- You may also want to check out the `.bash_aliases` file for some helpful shortcuts
 
 ## 📈 Changelog
 
