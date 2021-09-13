@@ -1,1 +1,1 @@
-alias gLiveView="cd $NODE_HOME; ./gLiveView"
+alias gLiveView="cd $NODE_HOME; ./gLiveView.sh"
