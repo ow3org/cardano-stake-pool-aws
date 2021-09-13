@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "delete-aws-stake-pools:testnet": "serverless remove",
-    "delete-aws-stake-pools:mainnet": "serverless remove --stage production",
+    "cleanup-aws:testnet": "serverless remove",
+    "cleanup-aws:mainnet": "serverless remove --stage production",
     "create-aws-stake-pools:testnet": "SLS_DEBUG=* serverless deploy --verbose",
     "create-aws-stake-pools:mainnet": "SLS_DEBUG=* serverless deploy --verbose --stage production"
   },

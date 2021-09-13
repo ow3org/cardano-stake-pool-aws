@@ -63,7 +63,10 @@ Last but not least, you will need to still need to generate your cold keys and y
 ## 🐙 Useful snippets
 
 ```bash
-# Useful snippets
+## if you want to remove the AWS resources out of your account. Please beware, this will delete your stake pool environment
+npm run cleanup-aws:testnet
+npm run cleanup-aws:mainnet
+
 ## Starting the "Block Producer Node" or one of the "Relay Nodes"
 sudo systemctl start cardano-node
 

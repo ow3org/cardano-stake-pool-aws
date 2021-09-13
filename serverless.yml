@@ -197,7 +197,24 @@ resources:
         Protocol: email
         TopicArn: !Ref FallbackTopic
 
-    RecoveryAlarm:
+    RecoveryAlarmBlockProducer:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Recovering instance when underlying hardware fails."
+        Namespace: "AWS/EC2"
+        MetricName: StatusCheckFailed_System
+        Statistic: Minimum
+        Period: 60
+        EvaluationPeriods: 5
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 0
+        AlarmActions:
+          - !Sub "arn:aws:automate:${AWS::Region}:ec2:recover"
+        Dimensions:
+          - Name: InstanceId
+            Value: !Ref BlockProducerNode
+
+    RecoveryAlarmRelay1:
       Type: "AWS::CloudWatch::Alarm"
       Properties:
         AlarmDescription: "Recovering instance when underlying hardware fails."
@@ -213,10 +230,25 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
+
+    CPUTooHighAlarmBlockProducer:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Average CPU utilization over last 10 minutes higher than 80%"
+        Namespace: "AWS/EC2"
+        MetricName: CPUUtilization
+        Statistic: Average
+        Period: 600
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 80
+        AlarmActions:
+          - !Ref Topic
+        Dimensions:
           - Name: InstanceId
             Value: !Ref BlockProducerNode
 
-    CPUTooHighAlarm:
+    CPUTooHighAlarmRelay1:
       Type: "AWS::CloudWatch::Alarm"
       Properties:
         AlarmDescription: "Average CPU utilization over last 10 minutes higher than 80%"
@@ -232,10 +264,25 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
+
+    MemoryTooHighAlarmBlockProducer:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Average memory utilization over last 10 minutes higher than 80%"
+        Namespace: !Ref "AWS::StackName"
+        MetricName: mem_used_percent
+        Statistic: Average
+        Period: 600
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 80
+        AlarmActions:
+          - !Ref Topic
+        Dimensions:
           - Name: InstanceId
             Value: !Ref BlockProducerNode
 
-    MemoryTooHighAlarm:
+    MemoryTooHighAlarmRelay1:
       Type: "AWS::CloudWatch::Alarm"
       Properties:
         AlarmDescription: "Average memory utilization over last 10 minutes higher than 80%"
@@ -251,10 +298,29 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
+
+    DiskTooHighAlarmBlockProducer:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Average disk utilization over last 10 minutes higher than 80%"
+        Namespace: !Ref "AWS::StackName"
+        MetricName: disk_used_percent
+        Statistic: Average
+        Period: 600
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 80
+        AlarmActions:
+          - !Ref Topic
+        Dimensions:
           - Name: InstanceId
             Value: !Ref BlockProducerNode
+          - Name: fstype
+            Value: xfs
+          - Name: path
+            Value: "/"
 
-    DiskTooHighAlarm:
+    DiskTooHighAlarmRelay1:
       Type: "AWS::CloudWatch::Alarm"
       Properties:
         AlarmDescription: "Average disk utilization over last 10 minutes higher than 80%"
@@ -270,8 +336,6 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
-          - Name: InstanceId
-            Value: !Ref BlockProducerNode
           - Name: fstype
             Value: xfs
           - Name: path
@@ -811,14 +875,14 @@ resources:
         UserData:
           Fn::Base64: !Sub |
             #!/usr/bin/env bash
-            echo export IS_RELAY_NODE=false >> $HOME/.bashrc
-            echo export NODE_CONFIG={env:NETWORK} >> $HOME/.bashrc
-            echo export BLOCK_PRODUCER_IP=${env:SSH_PORT} >> $HOME/.bashrc
-            cd ~
-            git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
-            cd cardano-helpers
             echo "PORT ${env:SSH_PORT}" >> /etc/ssh/sshd_config
             service ssh restart
+            cd /home/ubuntu
+            echo "IS_RELAY_NODE=false" >> ./.bashrc
+            echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
+            echo "BLOCK_PRODUCER_IP=${BlockProducerNodeIp}" >> ./.bashrc
+            git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
+            cd cardano-helpers
             chmod +x ./scripts/*
             ./scripts/build.sh
 
@@ -861,16 +925,14 @@ resources:
         UserData:
           Fn::Base64: !Sub |
             #!/usr/bin/env bash
-            echo export IS_RELAY_NODE=true >> $HOME/.bashrc
-            echo export NODE_CONFIG={env:NETWORK} >> $HOME/.bashrc
-
-            echo export BLOCK_PRODUCER_IP=${env:SSH_PORT} >> $HOME/.bashrc
-
-            cd ~
-            git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
-            cd cardano-helpers
             echo "PORT ${env:SSH_PORT}" >> /etc/ssh/sshd_config
             service ssh restart
+            cd /home/ubuntu
+            echo "IS_RELAY_NODE=true" >> ./.bashrc
+            echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
+            echo "BLOCK_PRODUCER_IP=${RelayNode1Ip}" >> ./.bashrc
+            git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
+            cd cardano-helpers
             chmod +x ./scripts/*
             ./scripts/build.sh
 
@@ -939,14 +1001,6 @@ resources:
     #     Device: /dev/sdh
 
   Outputs:
-    TemplateID:
-      Description: "cloudonaut.io template id."
-      Value: "vpc/vpc-3azs"
-
-    TemplateVersion:
-      Description: "cloudonaut.io template version."
-      Value: "13.6.0"
-
     StackName:
       Description: "Stack name."
       Value: !Sub "${AWS::StackName}"
