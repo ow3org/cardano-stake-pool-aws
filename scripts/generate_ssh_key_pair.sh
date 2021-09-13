@@ -1,11 +1,17 @@
+# Maintainer: Meema Labs
+# Telegram Channel: https://telegram.meema.io
+# Discord: https://discord.meema.io
+
+# Generates the AWS SSH Key Pair.
+
 # TODO: we need to check if the key exists before we would create it
 
-# only used temporary for testing
-aws ec2 delete-key-pair \
-    --region us-east-1 \
-    --key-name cardano-stake-pool \
-    --query "KeyMaterial" \
-    --output text > cardano-stake-pool.pem
+# # only used temporary for testing
+# aws ec2 delete-key-pair \
+#     --region us-east-1 \
+#     --key-name cardano-stake-pool \
+#     --query "KeyMaterial" \
+#     --output text > cardano-stake-pool.pem
 
 # create the AWS Key Pair which we need to ssh into the server
 aws ec2 create-key-pair \

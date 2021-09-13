@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "amazonwebservices.aws-toolkit-vscode",
-        "kddejong.vscode-cfn-lint"
+        "kddejong.vscode-cfn-lint",
+        "coolbear.systemd-unit-file"
     ]
 }
