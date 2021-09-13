@@ -32,9 +32,21 @@ aws configure
 ## 🐙 Usage
 
 ```bash
-# useful scripts
-docker run --rm -it meemalabs/cardano-node bash
-docker run -d --rm -v $(pwd):/home/ubuntu/cardano-helpers meemalabs/cardano-node
+# Useful snippets
+## Starting the "Block Producer Node" or one of the "Relay Nodes"
+sudo systemctl start cardano-node
+
+## Restarting the node service
+sudo systemctl reload-or-restart cardano-node
+
+## Stopping the node service
+sudo systemctl stop cardano-node
+
+## Viewing & filtering logs
+journalctl --unit=cardano-node --follow
+journalctl --unit=cardano-node --since=yesterday
+journalctl --unit=cardano-node --since=today
+journalctl --unit=cardano-node --since='2021-09-01 00:00:00' --until='2021-09-30 12:00:00'
 ```
 
 ### How to use the testnet?
