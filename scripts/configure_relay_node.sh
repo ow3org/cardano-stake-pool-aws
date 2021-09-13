@@ -10,7 +10,7 @@ cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF
  {
     "Producers": [
       {
-        "addr": "<BLOCK PRODUCER NODE'S PUBLIC IP ADDRESS>",
+        "addr": "${BLOCK_PRODUCER_IP}",
         "port": 6000,
         "valency": 1
       },
@@ -22,4 +22,3 @@ cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF
     ]
   }
 EOF
-

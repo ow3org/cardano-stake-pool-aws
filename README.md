@@ -1,6 +1,6 @@
 # Cardano Stake Pool Ops
 
-This project aims to simplify the setup of a Cardano Stake Pool (core & relay nodes) by implementing a dead simple setup to get up and running quickly and, most importantly, securely inside the AWS cloud.
+This project aims to be the most simple way to set up a Cardano Stake Pool (core & relay nodes) inside a secure AWS cloud network. It implements an easily configurable, yet a well-opinionated approach, based on some of the best practices found inside the community.
 
 ## 🐋 Features
 
@@ -8,26 +8,57 @@ This project aims to simplify the setup of a Cardano Stake Pool (core & relay no
 - Well configured AWS cloud
 - Management tools & beautiful graphs
 
-Our managed pools offer a "High Pledge" and great rewards. Feel free to join! We would love to get to know you.
+_Our managed pools offer a "High Pledge" and great rewards. Feel free to join! We would love to get to know you._
 
 ## Prerequisite
 
 This guide assumes that you have `aws-cli` setup locally. It's an incredibly simple process and well explained within the official documentation that can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
 
-Once you have the `aws` binary installed on your machine, run the following command to get authenticated:
+Once you have the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) installed on your machine, run the following command to get authenticated:
 
 ```bash
-# follow the prompts
 aws configure
+
+# next, let's install the serverless CLI tool and also authenticate into it
+npm install -g serverless
+serverless
 ```
+
+Serverless is an amazing tool that _automates the setup of our AWS account._
+
+## Get Started
+
+```bash
+# 1. let's create a .env file and make sure to set all variables as appropriate
+cp .env.example .env
+
+# 2. now, we need to create a SSH key pair that can authenticate our device securely with AWS
+./scripts/generate_ssh_key_pair.sh
+
+# 3. if you are creating a development environment for testing purposes, run the following command
+npm run create-aws-stake-pools:testnet # this may take around ~3h
+
+## or else if you are provisioning a production environment, run this command
+npm run create-aws-stake-pools:mainnet # this may take around ~8h
+
+# 4. you can now securely SSH into your Cardano node
+ssh -i "~/.ssh/cardano-stake-pool.pem" ubuntu@ec2-12-68-116-220.compute-1.amazonaws.com -p 22
+
+# 5. once ssh'ed into the machine, you can run gLiveView to check the status of the sync
+gLiveView
+
+# 6. once fully synced
+
+```
+
+Last but not least, you will need to still need to generate your cold keys and you may
 
 ## TODO
 
-- make sure the initial relay node is created
 - create an image of the relay node
 - create relay node 2 and the core node
 - trigger all the alerts
-- create a local Docker env for the cold machine
+- run gLiveView in the background after it is installed
 
 ## 🐙 Usage
 
@@ -49,18 +80,11 @@ journalctl --unit=cardano-node --since=today
 journalctl --unit=cardano-node --since='2021-09-01 00:00:00' --until='2021-09-30 12:00:00'
 ```
 
-### How to use the testnet?
+## Important notes
 
-When testing the nodes, it is important you practice enough in the testnet first before moving to the mainnet. While this guide explains how to get setup for the mainnet, simply run the following command:
-
-```bash
-echo export NODE_CONFIG=testnet >> $HOME/.bashrc
-source $HOME/.bashrc
-```
-
-In other words, you simply have to ensure the `NODE_CONFIG` variable is set to `testnet`.
-
-Additionally, when using the `cardano-cli`, make sure you do not use the `--mainnet` parameter but rather use `--testnet-magic 1097911063` instead.
+- On mainnet, you will need to regenerate the KES key every 90 days
+- Cold keys must be generated and stored on your air-gapped offline machine
+- Please test plenty in the testnet before launching a production node
 
 ## 📈 Changelog
 

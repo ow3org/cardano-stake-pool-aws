@@ -4,9 +4,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "deploy": "SLS_DEBUG=* serverless deploy --verbose",
-    "create-aws-network:prod": "SLS_DEBUG=* serverless deploy --verbose --stage production",
-    "create-aws-network:dev": "SLS_DEBUG=* serverless deploy --verbose --stage development"
+    "create-aws-stake-pools:testnet": "SLS_DEBUG=* serverless deploy --verbose",
+    "create-aws-stake-pools:mainnet": "SLS_DEBUG=* serverless deploy --verbose --stage production"
   },
   "author": {
     "name": "Chris Breuer",

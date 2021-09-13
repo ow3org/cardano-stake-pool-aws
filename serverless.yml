@@ -311,11 +311,11 @@ resources:
           - Key: Type
             Value: "Relay-2 Node IP - ${self:provider.stage}"
 
-    # BlockProducerNodeIpAssociation:
-    #   Type: AWS::EC2::EIPAssociation
-    #   Properties:
-    #     InstanceId: !Ref 'BlockProducerNode'
-    #     EIP: !Ref 'BlockProducerNodeIp'
+    BlockProducerNodeIpAssociation:
+      Type: AWS::EC2::EIPAssociation
+      Properties:
+        InstanceId: !Ref 'BlockProducerNode'
+        EIP: !Ref 'BlockProducerNodeIp'
 
     RelayNode1IpAssociation:
       Type: AWS::EC2::EIPAssociation
@@ -804,6 +804,14 @@ resources:
         UserData:
           Fn::Base64: !Sub |
             #!/usr/bin/env bash
+            echo export NODE_CONFIG={env:NETWORK} >> $HOME/.bashrc
+
+
+
+
+
+            echo export BLOCK_PRODUCER_IP=${env:SSH_PORT} >> $HOME/.bashrc
+
             cd ~
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
             cd cardano-helpers
@@ -1052,13 +1060,13 @@ resources:
       Description: "IP address of the newly created Relay-1 Node (EC2 instance)"
       Value: !Ref "RelayNode1Ip"
 
-    # RelayNode2IPAddress:
-    #   Description: 'IP address of the newly created Relay-2 Node (EC2 instance)'
-    #   Value: !Ref 'RelayNode2Ip'
+    RelayNode2IPAddress:
+      Description: 'IP address of the newly created Relay-2 Node (EC2 instance)'
+      Value: !Ref 'RelayNode2Ip'
 
-    # BlockProducerNodeIPAddress:
-    #   Description: 'IP address of the newly created Block Producer Node (EC2 instance)'
-    #   Value: !Ref 'RelayNode1Ip'
+    BlockProducerNodeIPAddress:
+      Description: 'IP address of the newly created Block Producer Node (EC2 instance)'
+      Value: !Ref 'BlockProducerNode1Ip'
 
     TopicARN:
       Description: "The ARN of the alert topic."

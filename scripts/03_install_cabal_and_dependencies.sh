@@ -27,8 +27,6 @@ echo export NODE_HOME=$HOME/cardano-my-node >> $HOME/.bashrc
 # it is a variable that's used in guild-operator's cnode-helper-scripts
 echo export CNODE_HOME=$HOME/cardano-my-node >> $HOME/.bashrc
 
-# TODO: document how to use testnet
-echo export NODE_CONFIG=mainnet >> $HOME/.bashrc
 echo export NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-deployment/latest-finished/download/1/index.html | grep -e "build" | sed 's/.*build\/\([0-9]*\)\/download.*/\1/g') >> $HOME/.bashrc
 eval "$(cat $HOME/.bashrc | tail -n +10)"
 
