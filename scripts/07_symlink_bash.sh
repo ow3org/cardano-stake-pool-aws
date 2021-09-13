@@ -8,7 +8,7 @@
 
 cd $HOME/cardano-helpers
 
-sudo ln -s $HOME/cardano-helpers/config/.bashrc $HOME/.bashrc
+# sudo ln -s $HOME/cardano-helpers/config/.bashrc $HOME/.bashrc
 sudo ln -s $HOME/cardano-helpers/config/.bash_aliases $HOME/.bash_aliases
 
 eval "$(cat $HOME/.bashrc | tail -n +10)"

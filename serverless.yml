@@ -806,10 +806,6 @@ resources:
             #!/usr/bin/env bash
             echo export NODE_CONFIG={env:NETWORK} >> $HOME/.bashrc
 
-
-
-
-
             echo export BLOCK_PRODUCER_IP=${env:SSH_PORT} >> $HOME/.bashrc
 
             cd ~
