@@ -859,18 +859,7 @@ resources:
             DeviceIndex: "0"
             DeleteOnTermination: "true"
             SubnetId:
-              Ref: SubnetAPublic
-        # PlacementGroupName: String
-        # PrivateIpAddress: String
-        # RamdiskId: String
-        # SecurityGroupIds:
-        #   - Ref: SecurityGroup
-        # SubnetId: String
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Block Producer Node"
+              Ref: SubnetAPublic # TODO: this should be a private subnet once done fully testing
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-general.html#scenario-one-pseudo-parameter
         UserData:
           Fn::Base64: !Sub |
@@ -882,9 +871,13 @@ resources:
             echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
             echo "BLOCK_PRODUCER_IP=${BlockProducerNodeIp}" >> ./.bashrc
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
-            cd cardano-helpers
-            chmod +x ./scripts/*
-            ./scripts/build.sh
+            chmod +x /home/ubuntu/cardano-helpers/scripts/*
+            /home/ubuntu/cardano-helpers/scripts/build.sh
+        Tags:
+          - Key: Name
+            Value: "cardano-stake-pool-network"
+          - Key: Type
+            Value: "Block Producer Node"
 
     RelayNode1:
       Type: AWS::EC2::Instance
@@ -910,17 +903,6 @@ resources:
             DeleteOnTermination: "true"
             SubnetId:
               Ref: SubnetAPublic
-        # PlacementGroupName: String
-        # PrivateIpAddress: String
-        # RamdiskId: String
-        # SecurityGroupIds:
-        #   - Ref: SecurityGroup
-        # SubnetId: String
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Relay Node 1"
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-general.html#scenario-one-pseudo-parameter
         UserData:
           Fn::Base64: !Sub |
@@ -932,9 +914,13 @@ resources:
             echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
             echo "BLOCK_PRODUCER_IP=${RelayNode1Ip}" >> ./.bashrc
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
-            cd cardano-helpers
-            chmod +x ./scripts/*
-            ./scripts/build.sh
+            chmod +x /home/ubuntu/cardano-helpers/scripts/*
+            /home/ubuntu/cardano-helpers/scripts/build.sh
+        Tags:
+          - Key: Name
+            Value: "cardano-stake-pool-network"
+          - Key: Type
+            Value: "Relay Node 1"
 
     BlockProducerNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup

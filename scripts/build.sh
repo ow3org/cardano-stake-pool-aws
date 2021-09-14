@@ -8,8 +8,6 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-cd $HOME/cardano-helpers
-
 $HOME/cardano-helpers/scripts/01_install_server_dependencies.sh
 $HOME/cardano-helpers/scripts/02_install_libsodium.sh
 $HOME/cardano-helpers/scripts/03_install_cabal_and_dependencies.sh
