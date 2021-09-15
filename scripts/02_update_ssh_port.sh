@@ -8,4 +8,4 @@
 ## We need this step executed after we updated the server dependencies in "Step 1" because otherwise there will be install issues due to the sshd_config file having been modified.
 
 echo "PORT ${env:SSH_PORT}" >> /etc/ssh/sshd_config
-service ssh restart
+sudo service ssh restart
