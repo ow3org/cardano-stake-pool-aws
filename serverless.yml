@@ -1,4 +1,4 @@
-org: meemalabs # you should edit this value
+org: meemalabs # you should edit this value for your own use
 app: cardano
 service: "meema-stake-pools"
 useDotenv: true
@@ -10,6 +10,8 @@ provider:
   region: "us-east-1"
 
 resources:
+  Description: "Meema's Cardano Stake Pool environment"
+
   Metadata:
     "AWS::CloudFormation::Interface":
       ParameterGroups:
@@ -21,7 +23,6 @@ resources:
             default: "Alert Parameters"
           Parameters:
             - Email
-            - HttpEndpoint
             - HttpsEndpoint
         - Label:
             default: "Fallback Parameters"
@@ -777,8 +778,6 @@ resources:
         UserData:
           Fn::Base64: !Sub |
             #!/usr/bin/env bash
-            echo "PORT ${env:SSH_PORT}" >> /etc/ssh/sshd_config
-            service ssh restart
             cd /home/ubuntu
             echo "IS_RELAY_NODE=false" >> ./.bashrc
             echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
@@ -786,6 +785,9 @@ resources:
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
             chmod +x /home/ubuntu/cardano-helpers/scripts/*
             /home/ubuntu/cardano-helpers/scripts/build.sh
+        Tags:
+          - Key: Name
+            Value: "cardano-stake-pool-network-${self:provider.stage}"
 
     RelayNode1:
       Type: AWS::EC2::Instance
@@ -815,8 +817,6 @@ resources:
         UserData:
           Fn::Base64: !Sub |
             #!/usr/bin/env bash
-            echo "PORT ${env:SSH_PORT}" >> /etc/ssh/sshd_config
-            service ssh restart
             cd /home/ubuntu
             echo "IS_RELAY_NODE=true" >> ./.bashrc
             echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
@@ -824,6 +824,9 @@ resources:
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
             chmod +x /home/ubuntu/cardano-helpers/scripts/*
             /home/ubuntu/cardano-helpers/scripts/build.sh
+        Tags:
+          - Key: Name
+            Value: "cardano-stake-pool-network-${self:provider.stage}"
 
     BlockProducerNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -836,9 +839,22 @@ resources:
             CidrIp: ${env:PERSONAL_LOCAL_IP}/32
             FromPort: ${env:SSH_PORT}
             ToPort: ${env:SSH_PORT}
-          # - Description: 'Allow Relay Node myself to '
-          #   IpProtocol: -1
-          #   CidrIp: !Ref 'RelayNode1Ip' /32 this needs to be fixed but this should be part of the Block Producer Node SG
+          - Description: "Allow Relay Node 1 access machine"
+            IpProtocol: -1
+            CidrIp:
+              !Join [
+                "/",
+                [!Ref RelayNode1Ip, 32],
+              ]
+            FromPort: 0
+            ToPort: 65535
+          # - Description: "Allow Relay Node 2 access machine"
+          #   IpProtocol: tcp
+          #   CidrIp:
+          #     !Join [
+          #       "/",
+          #       [!Ref RelayNode2Ip, 32],
+          #     ]
           #   FromPort: 0
           #   ToPort: 65535
         VpcId: !Ref VPC
@@ -850,7 +866,7 @@ resources:
         GroupName: "relay-node-sg"
         SecurityGroupIngress:
           - Description: "Allow access to myself on my local machine"
-            IpProtocol: tcp
+            IpProtocol: tcp-1
             CidrIp: ${env:PERSONAL_LOCAL_IP}/32
             FromPort: ${env:SSH_PORT}
             ToPort: ${env:SSH_PORT}

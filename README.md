@@ -38,11 +38,11 @@ cp .env.example .env
 
 # 3. if you are creating a development environment for testing purposes, run the following command
 npm run create-aws-stake-pools:testnet # this may take around ~3h
-
 ## or else if you are provisioning a production environment, run this command
 npm run create-aws-stake-pools:mainnet # this may take around ~8h
+### during this process you will receive 2 emails asking you to confirm a "subscription" which are needed for our "system alerts"
 
-# 4. you can now securely SSH into your Cardano node (navigate to AWS EC2 to figure out the host)
+# 4. you can now securely SSH into your Cardano node (navigate to AWS EC2 to figure out the host and use the port defined in .env)
 ssh -i "~/.ssh/cardano-stake-pool.pem" ubuntu@ec2-12-68-116-220.compute-1.amazonaws.com -p 22
 
 # 5. once ssh'ed into the machine, you can run gLiveView to check the status of the sync
