@@ -1,6 +1,6 @@
-org: meemalabs
+org: meemalabs # you should edit this value
 app: cardano
-service: "stake-pools"
+service: "meema-stake-pools"
 useDotenv: true
 configValidationMode: error
 
@@ -348,31 +348,17 @@ resources:
         EnableDnsSupport: true
         EnableDnsHostnames: true
         InstanceTenancy: default
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     BlockProducerNodeIp:
       Type: AWS::EC2::EIP
       Properties:
         Domain: vpc
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RelayNode1Ip:
       Type: AWS::EC2::EIP
-      Properties:
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RelayNode2Ip:
       Type: AWS::EC2::EIP
-      Properties:
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     BlockProducerNodeIpAssociation:
       Type: AWS::EC2::EIPAssociation
@@ -400,10 +386,6 @@ resources:
 
     InternetGateway:
       Type: "AWS::EC2::InternetGateway"
-      Properties:
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     EgressOnlyInternetGateway:
       Type: "AWS::EC2::EgressOnlyInternetGateway"
@@ -428,8 +410,6 @@ resources:
         MapPublicIpOnLaunch: true
         VpcId: !Ref VPC
         Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
           - Key: Reach
             Value: public
 
@@ -444,8 +424,6 @@ resources:
           !Select [1, !Cidr [!Select [0, !GetAtt "VPC.Ipv6CidrBlocks"], 6, 64]]
         VpcId: !Ref VPC
         Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
           - Key: Reach
             Value: private
 
@@ -461,8 +439,6 @@ resources:
         MapPublicIpOnLaunch: true
         VpcId: !Ref VPC
         Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
           - Key: Reach
             Value: public
 
@@ -477,8 +453,6 @@ resources:
           !Select [3, !Cidr [!Select [0, !GetAtt "VPC.Ipv6CidrBlocks"], 6, 64]]
         VpcId: !Ref VPC
         Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
           - Key: Reach
             Value: private
 
@@ -494,8 +468,6 @@ resources:
         MapPublicIpOnLaunch: true
         VpcId: !Ref VPC
         Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
           - Key: Reach
             Value: public
 
@@ -510,8 +482,6 @@ resources:
           !Select [5, !Cidr [!Select [0, !GetAtt "VPC.Ipv6CidrBlocks"], 6, 64]]
         VpcId: !Ref VPC
         Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
           - Key: Reach
             Value: private
 
@@ -519,49 +489,31 @@ resources:
       Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RouteTablePrivate:
       Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RouteTableBPublic:
       Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RouteTableBPrivate:
       Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RouteTableCPublic:
       Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RouteTableCPrivate:
       Type: "AWS::EC2::RouteTable"
       Properties:
         VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RouteTableAssociationAPublic:
       Type: "AWS::EC2::SubnetRouteTableAssociation"
@@ -680,9 +632,6 @@ resources:
       Type: "AWS::EC2::NetworkAcl"
       Properties:
         VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     SubnetNetworkAclAssociationAPublic:
       Type: "AWS::EC2::SubnetNetworkAclAssociation"
@@ -837,9 +786,6 @@ resources:
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
             chmod +x /home/ubuntu/cardano-helpers/scripts/*
             /home/ubuntu/cardano-helpers/scripts/build.sh
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RelayNode1:
       Type: AWS::EC2::Instance
@@ -878,9 +824,6 @@ resources:
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
             chmod +x /home/ubuntu/cardano-helpers/scripts/*
             /home/ubuntu/cardano-helpers/scripts/build.sh
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     BlockProducerNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -899,9 +842,6 @@ resources:
           #   FromPort: 0
           #   ToPort: 65535
         VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     RelayNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -920,9 +860,6 @@ resources:
           #   FromPort: 0
           #   ToPort: 65535
         VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: "cardano-stake-pool-network"
 
     # RelayNode1Volume:
     #   Type: AWS::EC2::Volume
