@@ -8,14 +8,16 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-$HOME/cardano-helpers/scripts/01_install_server_dependencies.sh
-$HOME/cardano-helpers/scripts/02_update_ssh_port.sh
-$HOME/cardano-helpers/scripts/03_install_libsodium
-$HOME/cardano-helpers/scripts/04_install_cabal_and_dependencies.sh
-$HOME/cardano-helpers/scripts/05_create_startup_scripts.sh
-$HOME/cardano-helpers/scripts/06_build_node_and_configure.sh
-$HOME/cardano-helpers/scripts/07_install_gLiveView_monitoring_tool.sh
-$HOME/cardano-helpers/scripts/08_symlink_bash.sh
+ cd $HOME/cardano-helpers/scripts
+
+./01_install_server_dependencies.sh
+./02_update_ssh_port.sh
+./03_install_libsodium
+./04_install_cabal_and_dependencies.sh
+./05_create_startup_scripts.sh
+./06_build_node_and_configure.sh
+./07_install_gLiveView_monitoring_tool.sh
+./08_symlink_bash.sh
 
 end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true

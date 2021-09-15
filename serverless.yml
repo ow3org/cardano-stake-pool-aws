@@ -779,12 +779,13 @@ resources:
           Fn::Base64: !Sub |
             #!/usr/bin/env bash
             cd /home/ubuntu
+            echo "SSH_PORT=${env:SSH_PORT}" >> ./.bashrc
             echo "IS_RELAY_NODE=false" >> ./.bashrc
             echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
             echo "BLOCK_PRODUCER_IP=${BlockProducerNodeIp}" >> ./.bashrc
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
-            chmod +x /home/ubuntu/cardano-helpers/scripts/*
-            /home/ubuntu/cardano-helpers/scripts/build.sh
+            chmod +x ./cardano-helpers/scripts/*
+            ./cardano-helpers/scripts/build.sh
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network-${self:provider.stage}"
