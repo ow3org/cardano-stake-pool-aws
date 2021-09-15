@@ -841,20 +841,12 @@ resources:
             ToPort: ${env:SSH_PORT}
           - Description: "Allow Relay Node 1 access machine"
             IpProtocol: -1
-            CidrIp:
-              !Join [
-                "/",
-                [!Ref RelayNode1Ip, 32],
-              ]
+            CidrIp: !Join ["/", [!Ref RelayNode1Ip, 32]]
             FromPort: 0
             ToPort: 65535
           # - Description: "Allow Relay Node 2 access machine"
           #   IpProtocol: tcp
-          #   CidrIp:
-          #     !Join [
-          #       "/",
-          #       [!Ref RelayNode2Ip, 32],
-          #     ]
+          #  CidrIp: !Join ["/", [!Ref RelayNode2Ip, 32]]
           #   FromPort: 0
           #   ToPort: 65535
         VpcId: !Ref VPC
@@ -866,7 +858,7 @@ resources:
         GroupName: "relay-node-sg"
         SecurityGroupIngress:
           - Description: "Allow access to myself on my local machine"
-            IpProtocol: tcp-1
+            IpProtocol: tcp
             CidrIp: ${env:PERSONAL_LOCAL_IP}/32
             FromPort: ${env:SSH_PORT}
             ToPort: ${env:SSH_PORT}
