@@ -351,8 +351,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Cardano VPC"
 
     BlockProducerNodeIp:
       Type: AWS::EC2::EIP
@@ -361,8 +359,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Block Producer Node IP - ${self:provider.stage}"
 
     RelayNode1Ip:
       Type: AWS::EC2::EIP
@@ -370,8 +366,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Relay-1 Node IP - ${self:provider.stage}"
 
     RelayNode2Ip:
       Type: AWS::EC2::EIP
@@ -379,8 +373,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Relay-2 Node IP - ${self:provider.stage}"
 
     BlockProducerNodeIpAssociation:
       Type: AWS::EC2::EIPAssociation
@@ -412,8 +404,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: !Sub "10.${ClassB}.0.0/16"
 
     EgressOnlyInternetGateway:
       Type: "AWS::EC2::EgressOnlyInternetGateway"
@@ -440,8 +430,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - A public"
           - Key: Reach
             Value: public
 
@@ -458,8 +446,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - A private"
           - Key: Reach
             Value: private
 
@@ -477,8 +463,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - B public"
           - Key: Reach
             Value: public
 
@@ -495,8 +479,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - B private"
           - Key: Reach
             Value: private
 
@@ -514,8 +496,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - C public"
           - Key: Reach
             Value: public
 
@@ -532,8 +512,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - C private"
           - Key: Reach
             Value: private
 
@@ -544,8 +522,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: Public
 
     RouteTablePrivate:
       Type: "AWS::EC2::RouteTable"
@@ -554,8 +530,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: Private
 
     RouteTableBPublic:
       Type: "AWS::EC2::RouteTable"
@@ -564,8 +538,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - B Public"
 
     RouteTableBPrivate:
       Type: "AWS::EC2::RouteTable"
@@ -574,8 +546,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - B Private"
 
     RouteTableCPublic:
       Type: "AWS::EC2::RouteTable"
@@ -584,8 +554,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - C Public"
 
     RouteTableCPrivate:
       Type: "AWS::EC2::RouteTable"
@@ -594,8 +562,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Stake Pool - C Private"
 
     RouteTableAssociationAPublic:
       Type: "AWS::EC2::SubnetRouteTableAssociation"
@@ -717,8 +683,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: Private
 
     SubnetNetworkAclAssociationAPublic:
       Type: "AWS::EC2::SubnetNetworkAclAssociation"
@@ -876,8 +840,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Block Producer Node"
 
     RelayNode1:
       Type: AWS::EC2::Instance
@@ -919,8 +881,6 @@ resources:
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "Relay Node 1"
 
     BlockProducerNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -938,12 +898,10 @@ resources:
           #   CidrIp: !Ref 'RelayNode1Ip' /32 this needs to be fixed but this should be part of the Block Producer Node SG
           #   FromPort: 0
           #   ToPort: 65535
+        VpcId: !Ref VPC
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "relay-node-sg"
-        VpcId: !Ref VPC
 
     RelayNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -961,12 +919,10 @@ resources:
           #   CidrIp: !Ref 'RelayNode1Ip' /32 this needs to be fixed but this should be part of the Block Producer Node SG
           #   FromPort: 0
           #   ToPort: 65535
+        VpcId: !Ref VPC
         Tags:
           - Key: Name
             Value: "cardano-stake-pool-network"
-          - Key: Type
-            Value: "relay-node-sg"
-        VpcId: !Ref VPC
 
     # RelayNode1Volume:
     #   Type: AWS::EC2::Volume
@@ -989,7 +945,7 @@ resources:
   Outputs:
     StackName:
       Description: "Stack name."
-      Value: !Sub "${AWS::StackName}"
+      Value: !Sub "Meema ${AWS::StackName}"
 
     AZs:
       Description: "Number of AZs"
