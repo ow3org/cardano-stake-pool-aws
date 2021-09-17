@@ -8,7 +8,7 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
- cd /home/ubuntu/cardano-helpers/scripts
+cd /home/ubuntu/cardano-helpers/scripts
 
 ./01_install_server_dependencies.sh
 ./02_update_ssh_port.sh
