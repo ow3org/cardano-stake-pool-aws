@@ -13,7 +13,12 @@ cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF
         "addr": "${RELAY_NODE_1_IP}",
         "port": 6000,
         "valency": 1
-      }
+      },
+      {
+        "addr": "${RELAY_NODE_2_IP}",
+        "port": 6000,
+        "valency": 1
+      },
     ]
   }
 EOF
