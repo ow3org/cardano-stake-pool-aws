@@ -13,7 +13,7 @@ cd $HOME/cardano-helpers/scripts
 ./01_configure_bash.sh
 ./02_install_server_dependencies.sh
 ./03_update_ssh_port.sh
-./04_install_libsodium
+./04_install_libsodium.sh
 ./05_install_cabal_and_dependencies.sh
 ./06_build_and_configure_node.sh
 ./07_create_startup_scripts.sh

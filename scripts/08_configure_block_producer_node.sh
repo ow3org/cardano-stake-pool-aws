@@ -4,7 +4,7 @@
 # Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
-# Configures the block producer node. If running this file manually, only execute this on your Block Producer Node.
+# Configures the block producer node. If running this file manually, only execute this on your "Block Producer Node."
 
 cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF
  {
