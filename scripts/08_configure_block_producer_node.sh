@@ -4,20 +4,15 @@
 # Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
-# Install gLiveView Monitoring tool.
+# Configures the block producer node. If running this file manually, only execute this on your Block Producer Node.
 
 cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF
  {
     "Producers": [
       {
-        "addr": "${BLOCK_PRODUCER_IP}",
+        "addr": "${RELAY_NODE_1_IP}",
         "port": 6000,
         "valency": 1
-      },
-      {
-        "addr": "relays-new.cardano-mainnet.iohk.io",
-        "port": 3001,
-        "valency": 2
       }
     ]
   }

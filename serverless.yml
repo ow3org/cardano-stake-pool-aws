@@ -795,11 +795,13 @@ resources:
             echo "SSH_PORT=${env:SSH_PORT}" >> ./.bashrc
             echo "IS_RELAY_NODE=false" >> ./.bashrc
             echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
-            echo "BLOCK_PRODUCER_IP=${BlockProducerNodeIp}" >> ./.bashrc
+            echo "BLOCK_PRODUCER_NODE_IP=${BlockProducerNodeIp}" >> ./.bashrc
+            echo "RELAY_NODE_1_IP=${RelayNode1Ip}" >> ./.bashrc
+            echo "RELAY_NODE_2_IP=${RelayNode2Ip}" >> ./.bashrc
             source ./.bashrc
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
             chmod +x ./cardano-helpers/scripts/*
-            #./cardano-helpers/scripts/build.sh
+            #./cardano-helpers/scripts/build_block_producer_node.sh
         Tags:
           - Key: Name
             Value: "cardano-block-producer-${self:provider.stage}"
