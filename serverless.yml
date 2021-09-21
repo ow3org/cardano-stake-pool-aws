@@ -354,12 +354,25 @@ resources:
       Type: AWS::EC2::EIP
       Properties:
         Domain: vpc
+        Tags:
+          - Key: Name
+            Value: "block-producer-ip"
 
     RelayNode1Ip:
       Type: AWS::EC2::EIP
+      Properties:
+        Domain: vpc
+        Tags:
+          - Key: Name
+            Value: "relay-node-1-ip"
 
     RelayNode2Ip:
       Type: AWS::EC2::EIP
+      Properties:
+        Domain: vpc
+        Tags:
+          - Key: Name
+            Value: "relay-node-2-ip"
 
     BlockProducerNodeIpAssociation:
       Type: AWS::EC2::EIPAssociation
@@ -783,12 +796,13 @@ resources:
             echo "IS_RELAY_NODE=false" >> ./.bashrc
             echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
             echo "BLOCK_PRODUCER_IP=${BlockProducerNodeIp}" >> ./.bashrc
+            source ./.bashrc
             git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
             chmod +x ./cardano-helpers/scripts/*
             #./cardano-helpers/scripts/build.sh
         Tags:
           - Key: Name
-            Value: "cardano-stake-pool-network-${self:provider.stage}"
+            Value: "cardano-block-producer-${self:provider.stage}"
 
     RelayNode1:
       Type: AWS::EC2::Instance
@@ -815,19 +829,10 @@ resources:
             SubnetId:
               Ref: SubnetAPublic
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-general.html#scenario-one-pseudo-parameter
-        # UserData: temp disable this
-        #   Fn::Base64: !Sub |
-        #     #!/usr/bin/env bash
-        #     cd /home/ubuntu
-        #     echo "IS_RELAY_NODE=true" >> ./.bashrc
-        #     echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
-        #     echo "BLOCK_PRODUCER_IP=${RelayNode1Ip}" >> ./.bashrc
-        #     git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
-        #     chmod +x /home/ubuntu/cardano-helpers/scripts/*
-        #     /home/ubuntu/cardano-helpers/scripts/build.sh
+        # UserData: todo once Block Produce Node's script is done
         Tags:
           - Key: Name
-            Value: "cardano-stake-pool-network-${self:provider.stage}"
+            Value: "cardano-block-relay-node-1-${self:provider.stage}"
 
     BlockProducerNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup

@@ -6,6 +6,8 @@
 
 # Let's install all of our Cardano Node dependencies to ensure we are up to date and have all the latest security and bug fixes included.
 
+eval "$(cat $HOME/.bashrc | tail -n +10)"
+
 sudo apt-get update -y
 sudo apt-get upgrade -y
 sudo apt-get install -y \
