@@ -22,7 +22,6 @@ cardano-cli node key-gen \
     --cold-signing-key-file $HOME/cold-keys/node.skey \
     --operational-certificate-issue-counter node.counter
 
-
 pushd +1
 slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
 echo slotsPerKESPeriod: ${slotsPerKESPeriod}

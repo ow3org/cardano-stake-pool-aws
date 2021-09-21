@@ -8,14 +8,6 @@
 
 eval "$(cat $HOME/.bashrc | tail -n +10)"
 
-echo export NODE_HOME="$HOME/cardano-my-node" >> $HOME/.bashrc
-# CNODE_HOME is the same variable as NODE_HOME, but we need to keep this alias around because
-# it is a variable that's used in guild-operator's cnode-helper-scripts
-echo export CNODE_HOME="$HOME/cardano-my-node" >> $HOME/.bashrc
-echo export NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-deployment/latest-finished/download/1/index.html | grep -e "build" | sed 's/.*build\/\([0-9]*\)\/download.*/\1/g') >> $HOME/.bashrc
-
-source $HOME/.bashrc
-
 cd $HOME/git
 git clone https://github.com/input-output-hk/cardano-node.git
 cd cardano-node
@@ -46,5 +38,4 @@ wget -N https://hydra.iohk.io/build/${NODE_BUILD_NUM}/download/1/${NODE_CONFIG}-
 sed -i ${NODE_CONFIG}-config.json \
     -e "s/TraceBlockFetchDecisions\": false/TraceBlockFetchDecisions\": true/g"
 
-echo export CARDANO_NODE_SOCKET_PATH="$NODE_HOME/db/socket" >> $HOME/.bashrc
 eval "$(cat $HOME/.bashrc | tail -n +10)"

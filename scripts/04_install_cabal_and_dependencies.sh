@@ -23,9 +23,6 @@ ghcup set ghc 8.10.4
 ghcup install cabal 3.4.0.0
 ghcup set cabal 3.4.0.0
 
-echo PATH="$HOME/.local/bin:$PATH" >> $HOME/.bashrc
-echo export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH" >> $HOME/.bashrc
-
 eval "$(cat $HOME/.bashrc | tail -n +10)"
 
 cabal update
