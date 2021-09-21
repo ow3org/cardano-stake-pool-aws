@@ -10,14 +10,14 @@ banner="------------------------------------------------------------------------
 
 cd $HOME/cardano-helpers/scripts
 
-./00_configure_bash.sh
-./01_install_server_dependencies.sh
-./02_update_ssh_port.sh
-./03_install_libsodium
-./04_install_cabal_and_dependencies.sh
-./05_build_and_configure_node.sh
-./06_create_startup_scripts.sh
-./07_install_gLiveView_monitoring_tool.sh
+./01_configure_bash.sh
+./02_install_server_dependencies.sh
+./03_update_ssh_port.sh
+./04_install_libsodium
+./05_install_cabal_and_dependencies.sh
+./06_build_and_configure_node.sh
+./07_create_startup_scripts.sh
+./08_install_gLiveView_monitoring_tool.sh
 
 end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
