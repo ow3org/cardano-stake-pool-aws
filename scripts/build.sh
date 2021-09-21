@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Maintainer: Meema Labs
-# Telegram Channel: https://telegram.meema.io
+# Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
 start=`date +%s.%N`
@@ -14,8 +14,8 @@ cd /home/ubuntu/cardano-helpers/scripts
 ./02_update_ssh_port.sh
 ./03_install_libsodium
 ./04_install_cabal_and_dependencies.sh
-./05_create_startup_scripts.sh
-./06_build_node_and_configure.sh
+./05_build_and_configure_node.sh
+./06_create_startup_scripts.sh
 ./07_install_gLiveView_monitoring_tool.sh
 ./08_symlink_bash.sh
 

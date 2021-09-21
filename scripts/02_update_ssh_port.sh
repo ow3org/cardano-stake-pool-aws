@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Maintainer: Meema Labs
-# Telegram Channel: https://telegram.meema.io
+# Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
 # This updates the SSH port to whatever is defined in your .env file to "harden your server."
@@ -10,5 +10,4 @@
 eval "$(cat $HOME/.bashrc | tail -n +10)"
 
 echo "PORT $SSH_PORT" | sudo tee -a /etc/ssh/sshd_config > /dev/null
-source ~/.bashrc
 sudo service ssh restart

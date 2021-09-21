@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
 # Maintainer: Meema Labs
-# Telegram Channel: https://telegram.meema.io
+# Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
 # Let's install Libsodium
 
-mkdir /home/ubuntu/git
-cd /home/ubuntu/git
+eval "$(cat $HOME/.bashrc | tail -n +10)"
+
+mkdir $HOME/git
+cd $HOME/git
 git clone https://github.com/input-output-hk/libsodium
 cd libsodium
 git checkout 66f017f1

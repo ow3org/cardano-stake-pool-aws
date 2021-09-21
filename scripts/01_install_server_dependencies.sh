@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Maintainer: Meema Labs
-# Telegram Channel: https://telegram.meema.io
+# Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
 # Let's install all of our Cardano Node dependencies to ensure we are up to date and have all the latest security and bug fixes included.

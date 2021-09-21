@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 # Maintainer: Meema Labs
-# Telegram Channel: https://telegram.meema.io
+# Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
 # Install gLiveView Monitoring tool.
+
+eval "$(cat $HOME/.bashrc | tail -n +10)"
 
 cd $NODE_HOME
 sudo apt install bc tcptraceroute -y

@@ -1,5 +1,5 @@
 # Maintainer: Meema Labs
-# Telegram Channel: https://telegram.meema.io
+# Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
 # Generates the AWS SSH Key Pair.
