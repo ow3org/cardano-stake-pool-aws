@@ -12,6 +12,8 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
+cd /home/ubuntu/git
+
 export BOOTSTRAP_HASKELL_NONINTERACTIVE=true
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
