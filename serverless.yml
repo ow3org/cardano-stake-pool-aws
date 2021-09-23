@@ -790,9 +790,7 @@ resources:
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-general.html#scenario-one-pseudo-parameter
         UserData:
           Fn::Base64: !Sub |
-            #!/bin/bash -xe
-            exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
-            su ubuntu
+            #!/bin/bash
             cd /home/ubuntu
             echo "SSH_PORT=${env:SSH_PORT}" >> ./.bashrc
             echo "IS_RELAY_NODE=false" >> ./.bashrc
@@ -803,7 +801,7 @@ resources:
             source ./.bashrc
             git clone ${env:GIT_REPO_URL} cardano-helpers
             chmod +x ./cardano-helpers/scripts/*
-            ./cardano-helpers/scripts/build_block_producer_node.sh
+            su ubuntu -c './cardano-helpers/scripts/build_block_producer_node.sh'
         Tags:
           - Key: Name
             Value: "cardano-block-producer-${self:provider.stage}"
