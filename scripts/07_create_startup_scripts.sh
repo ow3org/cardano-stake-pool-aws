@@ -60,6 +60,6 @@ end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
-echo "Total Time Took To Complete Script: $runtime seconds"
+echo "Script runtime: $runtime seconds"
 echo "Status of Cardano Node: $(sudo systemctl status cardano-node)"
 echo $banner

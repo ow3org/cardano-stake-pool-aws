@@ -35,8 +35,8 @@ end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
-echo "Total Time Took To Complete Script: $runtime seconds"
-echo "Installed CABAL Version: $(cabal -V)"
+echo "Script runtime: $runtime seconds"
+echo "Installed Cabal version: $(cabal -V)"
 echo "Installed GHC version: $(ghc -V)"
-echo "Node Location: $NODE_HOME"
+echo "Cardano Node location: $NODE_HOME"
 echo $banner

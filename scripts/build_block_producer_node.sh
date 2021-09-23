@@ -8,8 +8,6 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-su ubuntu
-
 cd /home/ubuntu/cardano-helpers/scripts
 
 ./01_configure_bash.sh
@@ -27,8 +25,8 @@ runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
 
-echo "Total Time Took To Complete Script: $runtime seconds"
-echo "Installed Cabal Version: $(cabal -V)"
+echo "Script runtime: $runtime seconds"
+echo "Installed Cabal version: $(cabal -V)"
 echo "Installed GHC version: $(ghc -V)"
 echo "Node Location: $NODE_HOME"
 echo "cardano-node version: $(cardano-node version)"

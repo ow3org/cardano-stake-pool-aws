@@ -48,7 +48,7 @@ runtime=$( echo "$end - $start" | bc -l ) || true
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 echo $banner
-echo "Total Time Took To Complete Script: $runtime seconds"
+echo "Script runtime: $runtime seconds"
 echo "cardano-node version: $(cardano-node version)"
 echo "cardano-cli version: $(cardano-cli version)"
 echo $banner

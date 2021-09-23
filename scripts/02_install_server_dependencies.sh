@@ -24,7 +24,6 @@ sudo apt-get install -y \
     libncurses-dev libtinfo5 autoconf \
 
 echo $banner
-echo "Total Time Took To Complete Script: $runtime seconds"
-echo "Installed cabal Version: $(cabal -V)"
-echo "Installed ghc version: $(ghc -V)"
+echo "Script runtime: $runtime seconds"
+echo "Finished installing server dependencies"
 echo $banner

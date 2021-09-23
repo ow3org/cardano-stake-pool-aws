@@ -8,8 +8,6 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-su ubuntu
-
 cd /home/ubuntu/cardano-helpers/scripts
 
 ./01_configure_bash.sh
@@ -26,14 +24,13 @@ end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
-
-echo "Total Time Took To Complete Script: $runtime seconds"
-echo "Installed Cabal Version: $(cabal -V)"
-echo "Installed GHC version: $(ghc -V)"
-echo "Node Location: $NODE_HOME"
+echo "Script runtime: $runtime seconds"
+echo "Installed cabal version: $(cabal -V)"
+echo "Installed ghc version: $(ghc -V)"
+echo "Cardano Node location: $NODE_HOME"
 echo "cardano-node version: $(cardano-node version)"
 echo "cardano-cli version: $(cardano-cli version)"
 echo "Status of Cardano Node: $(sudo systemctl status cardano-node)"
-echo "gLiveView is installed under Directory : $NODE_HOME/gLiveView.sh"
+echo "gLiveView location : $NODE_HOME/gLiveView.sh"
 
 echo $banner

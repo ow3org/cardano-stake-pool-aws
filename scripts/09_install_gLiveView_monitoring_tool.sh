@@ -27,6 +27,6 @@ end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
-echo "Total Time Took To Complete Script: $runtime seconds"
-echo "gLiveView is installed under Directory : $NODE_HOME/gLiveView.sh"
+echo "Script runtime: $runtime seconds"
+echo "gLiveView location : $NODE_HOME/gLiveView.sh"
 echo $banner

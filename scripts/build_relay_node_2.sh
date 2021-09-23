@@ -8,8 +8,6 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-su ubuntu
-
 cd /home/ubuntu/cardano-helpers/scripts
 
 ./01_configure_bash.sh
