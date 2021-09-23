@@ -18,7 +18,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 GHCUP_PROFILE_FILE="/home/ubuntu/.bashrc"
 GHCUP_DIR="/home/ubuntu/.ghcup"
 
-:qecho "[ -f \"${GHCUP_DIR}/env\" ] && source \"${GHCUP_DIR}/env\" # ghcup-env" >> "${GHCUP_PROFILE_FILE}"
+echo "[ -f \"${GHCUP_DIR}/env\" ] && source \"${GHCUP_DIR}/env\" # ghcup-env" >> "${GHCUP_PROFILE_FILE}"
 eval "$(cat "${GHCUP_PROFILE_FILE}" | tail -n +10)"
 
 ghcup upgrade
