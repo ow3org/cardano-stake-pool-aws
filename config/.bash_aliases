@@ -35,6 +35,8 @@ alias nodeLogsToday="journalctl --unit=cardano-node --since=today"
 alias nodeLogsYesterday="journalctl --unit=cardano-node --since=yesterday"
 alias nodeHome="cd $NODE_HOME;"
 
+alias slotNo="cardano-cli query tip --$NODE_CONFIG | jq -r '.slot'"
+
 alias home="cd $HOME"
 alias ..='cd ..'
 alias ...='cd ../..'
