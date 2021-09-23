@@ -98,6 +98,14 @@ Please see our [releases](https://github.com/meemalabs/cardano-stake-pool-aws/re
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
+One important command oftentimes used when debugging is:
+
+```bash
+tail -f /var/log/cloud-init-output.log
+```
+
+This command will log the "user data" script that builds the AWS Ubuntu server.
+
 ## 🏝 Community
 
 For help, discussion about best practices, or any other conversation that would benefit from being searchable:

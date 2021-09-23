@@ -40,8 +40,6 @@ Before submitting a pull request:
 
 If the project maintainer has any additional requirements, you will find them listed here.
 
-- **Docker experience** - A solid foundation of Docker experience and knowledge is very likely required to add features or improve current functionalities.
-
 - **Document any change in behavior** - Make sure the `README.md` and any other relevant documentation are kept up-to-date.
 
 - **One pull request per feature** - If you want to do more than one thing, send multiple pull requests.
