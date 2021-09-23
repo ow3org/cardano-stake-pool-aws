@@ -12,15 +12,16 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
-cd /home/ubuntu/git
-
 export BOOTSTRAP_HASKELL_NONINTERACTIVE=true
 export GHCUP_PROFILE_FILE="/home/ubuntu/.bashrc"
 export GHCUP_DIR="/home/ubuntu/.ghcup"
+
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
 echo "[ -f \"${GHCUP_DIR}/env\" ] && source \"${GHCUP_DIR}/env\" # ghcup-env" >> "${GHCUP_PROFILE_FILE}"
-eval "$(cat "${GHCUP_PROFILE_FILE}" | tail -n +10)"
+
+cd /home/ubuntu
+source .bashrc
 
 ghcup upgrade
 ghcup install ghc 8.10.4
