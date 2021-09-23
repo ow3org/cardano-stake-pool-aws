@@ -23,9 +23,9 @@ alias l='ls -CF'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # custom aliases
-alias gLiveView="cd $NODE_HOME; ./gLiveView.sh"
+alias gLiveView="$NODE_HOME/gLiveView.sh"
 
-alias startNode="cd $NODE_HOME; ./start_node.sh"
+alias startNode="$NODE_HOME/start_node.sh"
 alias stopNode="sudo systemctl stop cardano-node"
 alias restartNode="sudo systemctl reload-or-restart cardano-node"
 
