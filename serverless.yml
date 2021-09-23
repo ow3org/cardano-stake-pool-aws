@@ -800,7 +800,7 @@ resources:
             echo "RELAY_NODE_1_IP=${RelayNode1Ip}" >> ./.bashrc
             echo "RELAY_NODE_2_IP=${RelayNode2Ip}" >> ./.bashrc
             source ./.bashrc
-            git clone https://github.com/meemalabs/cardano-stake-pool-aws.git cardano-helpers
+            git clone ${env:GIT_REPO_URL} cardano-helpers
             chmod +x ./cardano-helpers/scripts/*
             ./cardano-helpers/scripts/build_block_producer_node.sh
         Tags:
