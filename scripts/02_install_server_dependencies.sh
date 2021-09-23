@@ -18,10 +18,10 @@ sudo apt-get install -y \
     git jq bc \
     make automake rsync \
     htop curl build-essential \
-    pkg-config libffi-dev libgmp-dev \
-    libssl-dev libtinfo-dev libsystemd-dev \
-    zlib1g-dev make g++ wget libncursesw5 libtool \
-    libncurses-dev libtinfo5 autoconf
+    pkg-config libffi-dev libffi7 libgmp-dev \
+    libssl-dev libtinfo-dev libsystemd-dev libgmp10 \
+    zlib1g-dev make g++ wget libncursesw5 libncurses5 libtool \
+    libncurses-dev libtinfo5 autoconf \
 
 echo $banner
 echo "Total Time Took To Complete Script: $runtime seconds"
