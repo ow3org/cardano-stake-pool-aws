@@ -37,6 +37,7 @@ alias nodeHome="cd $NODE_HOME;"
 
 alias slotNo="cardano-cli query tip --$NODE_CONFIG | jq -r '.slot'"
 
+alias ~="cd $HOME"
 alias home="cd $HOME"
 alias ..='cd ..'
 alias ...='cd ../..'
