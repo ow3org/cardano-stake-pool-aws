@@ -23,4 +23,4 @@ echo LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH" >> /home/ubuntu/.bashrc
 # sudo ln -s $HOME/cardano-helpers/config/.bashrc $HOME/.bashrc # TODO: figure out how to properly set variables from the UserData script
 sudo ln -s /home/ubuntu/cardano-helpers/config/.bash_aliases /home/ubuntu/.bash_aliases
 
-source /home/ubuntu/.bashrc
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"

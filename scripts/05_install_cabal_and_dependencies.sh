@@ -13,14 +13,13 @@ banner="------------------------------------------------------------------------
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 export BOOTSTRAP_HASKELL_NONINTERACTIVE=true
-
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
 GHCUP_PROFILE_FILE="/home/ubuntu/.bashrc"
 GHCUP_DIR="/home/ubuntu/.ghcup"
 echo "[ -f \"${GHCUP_DIR}/env\" ] && source \"${GHCUP_DIR}/env\" # ghcup-env" >> "${GHCUP_PROFILE_FILE}"
 
-source /home/ubuntu/.bashrc
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 ghcup upgrade
 ghcup install ghc 8.10.4
@@ -28,7 +27,7 @@ ghcup set ghc 8.10.4
 ghcup install cabal 3.4.0.0
 ghcup set cabal 3.4.0.0
 
-source /home/ubuntu/.bashrc
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 cabal update
 
