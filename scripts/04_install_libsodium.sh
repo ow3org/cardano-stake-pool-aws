@@ -6,10 +6,10 @@
 
 # Let's install Libsodium
 
-eval "$(cat $HOME/.bashrc | tail -n +10)"
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
-mkdir $HOME/git
-cd $HOME/git
+mkdir /home/ubuntu/git
+cd /home/ubuntu/git
 git clone https://github.com/input-output-hk/libsodium
 cd libsodium
 git checkout 66f017f1

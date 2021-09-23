@@ -6,7 +6,7 @@
 
 # Install gLiveView Monitoring tool.
 
-eval "$(cat $HOME/.bashrc | tail -n +10)"
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 cd $NODE_HOME
 sudo apt install bc tcptraceroute -y

@@ -6,7 +6,7 @@
 
 # Let's install and configure the Cardano node onto our server.
 
-eval "$(cat $HOME/.bashrc | tail -n +10)"
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 cat > $NODE_HOME/start_node.sh << EOF
 #!/bin/bash
