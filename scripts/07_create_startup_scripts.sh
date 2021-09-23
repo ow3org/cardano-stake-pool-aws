@@ -6,6 +6,10 @@
 
 # Let's install and configure the Cardano node onto our server.
 
+start=`date +%s.%N`
+
+banner="--------------------------------------------------------------------------"
+
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 cat > $NODE_HOME/start_node.sh << EOF
@@ -51,3 +55,11 @@ sudo systemctl daemon-reload
 sudo systemctl enable cardano-node
 
 sudo systemctl start cardano-node
+
+end=`date +%s.%N`
+runtime=$( echo "$end - $start" | bc -l ) || true
+
+echo $banner
+echo "Total Time Took To Complete Script: $runtime seconds"
+echo "Status of Cardano Node: $(sudo systemctl status cardano-node)"
+echo $banner

@@ -792,6 +792,7 @@ resources:
           Fn::Base64: !Sub |
             #!/bin/bash -xe
             exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+            su ubuntu
             cd /home/ubuntu
             echo "SSH_PORT=${env:SSH_PORT}" >> ./.bashrc
             echo "IS_RELAY_NODE=false" >> ./.bashrc
@@ -835,7 +836,7 @@ resources:
         # UserData: todo once Block Produce Node's script is done
         Tags:
           - Key: Name
-            Value: "cardano-block-relay-node-1-${self:provider.stage}"
+            Value: "cardano-relay-node-1-${self:provider.stage}"
 
     BlockProducerNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup

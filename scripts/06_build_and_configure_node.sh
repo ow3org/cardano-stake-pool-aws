@@ -6,6 +6,10 @@
 
 # Let's install and configure the Cardano node onto our server.
 
+start=`date +%s.%N`
+
+banner="--------------------------------------------------------------------------"
+
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 cd /home/ubuntu/git
@@ -38,4 +42,13 @@ wget -N https://hydra.iohk.io/build/${NODE_BUILD_NUM}/download/1/${NODE_CONFIG}-
 sed -i ${NODE_CONFIG}-config.json \
     -e "s/TraceBlockFetchDecisions\": false/TraceBlockFetchDecisions\": true/g"
 
+end=`date +%s.%N`
+runtime=$( echo "$end - $start" | bc -l ) || true
+
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
+
+echo $banner
+echo "Total Time Took To Complete Script: $runtime seconds"
+echo "cardano-node version: $(cardano-node version)"
+echo "cardano-cli version: $(cardano-cli version)"
+echo $banner
