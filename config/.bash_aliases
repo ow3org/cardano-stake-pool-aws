@@ -25,10 +25,6 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # custom aliases
 alias gLiveView="$NODE_HOME/gLiveView.sh"
 
-alias startNode="$NODE_HOME/start_node.sh"
-alias stopNode="sudo systemctl stop cardano-node"
-alias restartNode="sudo systemctl reload-or-restart cardano-node"
-
 alias nodeStatus="sudo systemctl status cardano-node"
 alias nodeLogs="journalctl --unit=cardano-node --follow"
 alias nodeLogsToday="journalctl --unit=cardano-node --since=today"
@@ -44,5 +40,8 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
 alias reloadshell="source $HOME/.bashrc"
-alias helpers="cd $HELPERS"
+alias helpers="cd $HELPERS/scripts"
 alias node="cd $NODE_HOME"
+alias start="$NODE_HOME/start_node.sh"
+alias stop="sudo systemctl stop cardano-node"
+alias restart="sudo systemctl reload-or-restart cardano-node"
