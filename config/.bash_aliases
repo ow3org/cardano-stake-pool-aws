@@ -33,7 +33,6 @@ alias nodeStatus="sudo systemctl status cardano-node"
 alias nodeLogs="journalctl --unit=cardano-node --follow"
 alias nodeLogsToday="journalctl --unit=cardano-node --since=today"
 alias nodeLogsYesterday="journalctl --unit=cardano-node --since=yesterday"
-alias nodeHome="cd $NODE_HOME;"
 
 alias slotNo="cardano-cli query tip --$NODE_CONFIG | jq -r '.slot'"
 
@@ -46,3 +45,4 @@ alias .....='cd ../../../..'
 
 alias reloadshell="source $HOME/.bashrc"
 alias helpers="cd $HELPERS"
+alias node="cd $NODE_HOME"
