@@ -36,7 +36,8 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
 alias reloadshell="source $HOME/.bashrc"
-alias helpers="cd $HELPERS/scripts"
+alias helpers="cd $HELPERS"
+alias scripts="cd $HELPERS/scripts"
 alias node="cd $NODE_HOME"
 alias start="$NODE_HOME/start_node.sh"
 alias stop="sudo systemctl stop cardano-node"
