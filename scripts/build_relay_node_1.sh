@@ -25,12 +25,12 @@ runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
 echo "Script runtime: $runtime seconds"
-echo "Installed cabal version: $(cabal -V)"
-echo "Installed ghc version: $(ghc -V)"
-echo "Cardano Node location: $NODE_HOME"
+echo "Installed Cabal version: $(cabal -V)"
+echo "Installed GHC version: $(ghc -V)"
+echo "Node Location: $NODE_HOME"
 echo "cardano-node version: $(cardano-node version)"
 echo "cardano-cli version: $(cardano-cli version)"
 echo "Status of Cardano Node: $(sudo systemctl status cardano-node)"
-echo "gLiveView location : $NODE_HOME/gLiveView.sh"
+echo "gLiveView is installed under Directory : $NODE_HOME/gLiveView.sh"
 
 echo $banner
