@@ -23,5 +23,5 @@ runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
 echo "Script runtime: $runtime seconds"
-echo "gLiveView location : $NODE_HOME/gLiveView.sh"
+echo "gLiveView location: $NODE_HOME/gLiveView.sh"
 echo $banner

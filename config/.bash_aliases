@@ -41,6 +41,7 @@ alias node="cd $NODE_HOME"
 alias start="$NODE_HOME/start_node.sh"
 alias stop="sudo systemctl stop cardano-node"
 alias restart="sudo systemctl reload-or-restart cardano-node"
+alias nah="sudo git clean -df && sudo git reset --hard"
 
 # Add an "alert" alias for long running commands.  Use like so: (currently unused, but left in for convenience)
 #   sleep 10; alert
