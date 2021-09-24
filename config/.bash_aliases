@@ -45,3 +45,4 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
 alias reloadshell="source $HOME/.bashrc"
+alias helpers="cd $HELPERS"

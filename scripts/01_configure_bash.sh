@@ -8,6 +8,7 @@
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
+echo HELPERS="/home/ubuntu/cardano-helpers" >> /home/ubuntu/.bashrc
 echo NODE_HOME="/home/ubuntu/cardano-my-node" >> /home/ubuntu/.bashrc
 echo NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-deployment/latest-finished/download/1/index.html | grep -e "build" | sed 's/.*build\/\([0-9]*\)\/download.*/\1/g') >> /home/ubuntu/.bashrc
 echo CARDANO_NODE_SOCKET_PATH="$NODE_HOME/db/socket" >> /home/ubuntu/.bashrc
