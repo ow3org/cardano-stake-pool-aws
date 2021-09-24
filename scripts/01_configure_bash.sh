@@ -16,10 +16,6 @@ echo CARDANO_NODE_SOCKET_PATH="$NODE_HOME/db/socket" >> /home/ubuntu/.bashrc
 # it is a variable that's used in guild-operator's cnode-helper-scripts
 echo CNODE_HOME="/home/ubuntu/cardano-my-node" >> /home/ubuntu/.bashrc
 
-# needed when configuring libsodium
-echo PATH="/home/ubuntu/.local/bin:$PATH" >> /home/ubuntu/.bashrc
-echo LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH" >> /home/ubuntu/.bashrc
-
 # sudo ln -s $HOME/cardano-helpers/config/.bashrc $HOME/.bashrc # TODO: figure out how to properly set variables from the UserData script
 sudo ln -s /home/ubuntu/cardano-helpers/config/.bash_aliases /home/ubuntu/.bash_aliases
 

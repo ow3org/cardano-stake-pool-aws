@@ -13,6 +13,9 @@ banner="------------------------------------------------------------------------
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 export BOOTSTRAP_HASKELL_NONINTERACTIVE=true
+export BOOTSTRAP_HASKELL_GHC_VERSION=8.10.4
+export BOOTSTRAP_HASKELL_CABAL_VERSION=3.4.0.0
+
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
 GHCUP_PROFILE_FILE="/home/ubuntu/.bashrc"
@@ -22,10 +25,14 @@ echo "[ -f \"${GHCUP_DIR}/env\" ] && source \"${GHCUP_DIR}/env\" # ghcup-env" >>
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 ghcup upgrade
-ghcup install ghc 8.10.4
-ghcup set ghc 8.10.4
-ghcup install cabal 3.4.0.0
-ghcup set cabal 3.4.0.0
+
+echo "Installing GHC v${BOOTSTRAP_HASKELL_GHC_VERSION} ..."
+ghcup install ghc ${BOOTSTRAP_HASKELL_GHC_VERSION}
+ghcup set ghc ${BOOTSTRAP_HASKELL_GHC_VERSION}
+
+echo "Installing Cabal v${BOOTSTRAP_HASKELL_CABAL_VERSION}.."
+ghcup install cabal ${BOOTSTRAP_HASKELL_CABAL_VERSION}
+ghcup set cabal ${BOOTSTRAP_HASKELL_CABAL_VERSION}
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
@@ -36,7 +43,7 @@ runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
 echo "Script runtime: $runtime seconds"
-echo "Installed Cabal version: $(cabal -V)"
 echo "Installed GHC version: $(ghc -V)"
+echo "Installed Cabal version: $(cabal -V)"
 echo "Cardano Node location: $NODE_HOME"
 echo $banner
