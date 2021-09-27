@@ -26,8 +26,6 @@ alias nodeLogs="journalctl --unit=cardano-node --follow"
 alias nodeLogsToday="journalctl --unit=cardano-node --since=today"
 alias nodeLogsYesterday="journalctl --unit=cardano-node --since=yesterday"
 
-alias slotNo="cardano-cli query tip --$NODE_CONFIG | jq -r '.slot'"
-
 alias ~="cd $HOME"
 alias home="cd $HOME"
 alias ..='cd ..'
@@ -39,10 +37,20 @@ alias reloadshell="source $HOME/.bashrc"
 alias helpers="cd $HELPERS"
 alias scripts="cd $HELPERS/scripts"
 alias node="cd $NODE_HOME"
-alias start="$NODE_HOME/start_node.sh"
+alias start="sudo systemctl start cardano-node"
 alias stop="sudo systemctl stop cardano-node"
 alias restart="sudo systemctl reload-or-restart cardano-node"
 alias nah="sudo git clean -df && sudo git reset --hard"
+alias linkaliases="sudo ln -s $HELPERS/config/.bash_aliases $HOME/.bash_aliases"
+
+# Stake Pool specific aliases
+alias slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
+alias slotNo=$(cardano-cli query tip --${NODE_CONFIG} | jq -r '.slot')
+alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) --${NODE_CONFIG})
+# alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) --testnet-magic 1097911063)
+
+# TODO: needs work still because updates does not persist custom edits
+alias update="helpers; nah; sudo git pull; linkaliases; reloadshell"
 
 # Add an "alert" alias for long running commands.  Use like so: (currently unused, but left in for convenience)
 #   sleep 10; alert
