@@ -48,13 +48,11 @@ alias systeminfo="sudo $HELPERS/scripts/system_info.sh"
 alias slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
 alias slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot')
 alias currentSlot=slotNo
-alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) ${NETWORK_ARGUMENT})
-# alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) --testnet-magic 1097911063)
 alias minPoolCost=$(cat $NODE_HOME/params.json | jq -r .minPoolCost)
+
+if [ -f "$NODE_HOME/payment.addr" ]; then
+    alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) ${NETWORK_ARGUMENT})
+fi
 
 # TODO: needs work still because updates does not persist custom edits
 alias update="helpers; nah; sudo git pull; linkaliases; reloadshell"
-
-# Add an "alert" alias for long running commands.  Use like so: (currently unused, but left in for convenience)
-#   sleep 10; alert
-# alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
