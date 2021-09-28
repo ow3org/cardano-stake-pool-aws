@@ -16,14 +16,14 @@ _Our managed pools offer a "High Pledge" and great rewards. Feel free to join! W
 
 ## Prerequisite
 
-This guide assumes that you have `aws-cli` setup locally. It's an incredibly simple process and well-explained within the official documentation that can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
+This guide assumes that you have `aws-cli` set up locally. It's an incredibly simple process and well-explained within the official documentation that can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
 
 Once you have the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) installed on your machine, run the following command to get authenticated:
 
 ```bash
 aws configure
 
-# next, let's install the serverless CLI tool and also authenticate into it
+# next, let's install the `serverless`-CLI tool & authenticate it
 npm install -g serverless
 serverless
 ```
