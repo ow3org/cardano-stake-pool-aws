@@ -48,11 +48,14 @@ alias systeminfo="sudo $HELPERS/scripts/system_info.sh"
 alias slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
 alias slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot')
 alias currentSlot=slotNo
-alias minPoolCost=$(cat $NODE_HOME/params.json | jq -r .minPoolCost)
 
 if [ -f "$NODE_HOME/payment.addr" ]; then
     alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) ${NETWORK_ARGUMENT})
 fi
 
+if [ -f "$NODE_HOME/params.json" ]; then
+    alias minPoolCost=$(cat $NODE_HOME/params.json | jq -r .minPoolCost)
+fi
+
 # TODO: needs work still because updates does not persist custom edits
-alias update="helpers; nah; sudo git pull; linkaliases; reloadshell"
+alias update="reloadshell; helpers; nah; sudo git pull; linkaliases; reloadshell"
