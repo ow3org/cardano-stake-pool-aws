@@ -41,7 +41,7 @@ alias start="sudo systemctl start cardano-node"
 alias stop="sudo systemctl stop cardano-node"
 alias restart="sudo systemctl reload-or-restart cardano-node"
 alias nah="sudo git clean -df && sudo git reset --hard"
-alias linkaliases="sudo ln -s $HELPERS/config/.bash_aliases $HOME/.bash_aliases"
+alias linkaliases="rm $HOME/.bash_aliases; sudo ln -s $HELPERS/config/.bash_aliases $HOME/.bash_aliases"
 alias systeminfo="sudo $HELPERS/scripts/system_info.sh"
 
 # Stake Pool specific aliases
