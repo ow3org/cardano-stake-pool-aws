@@ -1,3 +1,3 @@
 # Cardano Stake Pool - Config
 
-Here we will store all configuration files in order for ease of reusability.
+In this directory, we store all configuration files needed when operating this stake pool set up.

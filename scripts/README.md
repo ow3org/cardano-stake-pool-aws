@@ -1,3 +1,3 @@
 # Cardano Stake Pool - Config
 
-Here we will store all useful commands used when operating your stake pool.
+In this directory, we store all useful commands when operating stake pools.
