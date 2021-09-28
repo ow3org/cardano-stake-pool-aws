@@ -51,12 +51,12 @@ ssh -i "cardano-stake-pool.pem" ubuntu@ec2-12-68-116-220.compute-1.amazonaws.com
 ## 🐙 Useful commands
 
 ```bash
-## Cardano Node relating commands
+## "Cardano Node"-specific commands
 start # starts the "Block Producer" or a "Relay" node
 restart # restarts the node service
 stop # stops the node service
 status # view the status of your node
-update # alpha: currently wip but it will automatically update the node
+update # alpha: updates the node
 
 ## viewing & filtering logs
 logs
@@ -67,7 +67,7 @@ monitorNodeCreationLogs # view the log output of the "User Data" script (mostly 
 
 ## other useful commands
 gLiveView
-systeminfo # displays info about your node
+systeminfo # displays system info about your server
 
 ## please beware, this will delete your AWS stake pool resources
 npm run cleanup # cleans all environments
@@ -78,8 +78,8 @@ npm run cleanup:mainnet
 
 ## Important notes
 
-- On mainnet, you will need to regenerate the KES key every 90 days (use our provided script - will be automated in future release)
-- Cold keys must be generated and stored on your air-gapped offline machine
+- In `mainnet`, you will need to regenerate the KES key every 90 days (use our provided script - will be automated in future release)
+- Cold Keys must be generated and stored on your air-gapped offline machine
 - Exercise plenty in a "test network" before operating a `mainnet` node
 
 You may also want to check out the `.bash_aliases` file for some helpful shortcuts.
@@ -95,7 +95,7 @@ Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 One important command oftentimes used when debugging is:
 
 ```bash
-tail -f /var/log/cloud-init-output.log
+tail -f /var/log/cloud-init-output.log # alias `monitorNodeCreationLogs`
 ```
 
 This command will log the "user data" script that builds the AWS Ubuntu server.
