@@ -18,13 +18,14 @@ if [ "$NODE_CONFIG" = "mainnet" ]; then
 elif [ "$NODE_CONFIG" = "testnet" ]; then
     echo NETWORK="testnet" >> /home/ubuntu/.bashrc
     echo NETWORK_ARGUMENT="--testnet-magic 1097911063" >> /home/ubuntu/.bashrc
+elif [ "$NODE_CONFIG" = "guild" ]; then
+    # TODO: implement "guild"-network option
+    echo NETWORK="guild" >> /home/ubuntu/.bashrc
+    # echo NETWORK_ARGUMENT="--testnet-magic 1097911063" >> /home/ubuntu/.bashrc
 fi
-# TODO: implement "guild"-network option
 
-# DO NOT CHANGE: `CNODE_HOME` is utilized by cnode-helper-scripts
+# DO NOT CHANGE: utilized by cnode-helper-scripts
 echo CNODE_HOME="/home/ubuntu/cardano-my-node" >> /home/ubuntu/.bashrc
-
-# DO NOT CHANGE: `CARDANO_NODE_SOCKET_PATH` is utilized by cnode-helper-scripts
 echo CARDANO_NODE_SOCKET_PATH="/home/ubuntu/cardano-my-node/db/socket" >> /home/ubuntu/.bashrc
 
 # symlink a few config files

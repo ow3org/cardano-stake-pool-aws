@@ -21,10 +21,10 @@ alias l='ls -CF'
 # custom aliases
 alias gLiveView="$NODE_HOME/gLiveView.sh"
 
-alias nodeStatus="sudo systemctl status cardano-node"
-alias nodeLogs="journalctl --unit=cardano-node --follow"
-alias nodeLogsToday="journalctl --unit=cardano-node --since=today"
-alias nodeLogsYesterday="journalctl --unit=cardano-node --since=yesterday"
+alias status="sudo systemctl status cardano-node"
+alias logs="journalctl --unit=cardano-node --follow"
+alias logsToday="journalctl --unit=cardano-node --since=today"
+alias logsYesterday="journalctl --unit=cardano-node --since=yesterday"
 
 alias ~="cd $HOME"
 alias home="cd $HOME"

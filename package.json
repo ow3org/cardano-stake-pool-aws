@@ -1,13 +1,14 @@
 {
   "name": "cardano-stake-pool",
-  "description": "This repository will easily and quickly provision an optimized Cardano Stake Pool environment for your core and relay nodes. And more.",
+  "description": "This repository will easily and quickly provision an optimized Cardano Stake Pool environment for your core and relay nodes. And much more.",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "cleanup-aws:testnet": "serverless remove",
-    "cleanup-aws:mainnet": "serverless remove --stage production",
-    "create-aws-stake-pools:testnet": "SLS_DEBUG=* serverless deploy --verbose",
-    "create-aws-stake-pools:mainnet": "SLS_DEBUG=* serverless deploy --verbose --stage production"
+    "cleanup": "npm run cleanup:guild; npm run cleanup:testnet; npm run cleanup:mainnet;",
+    "cleanup:guild": "serverless remove --stage guild",
+    "cleanup:testnet": "serverless remove --stage testnet",
+    "cleanup:mainnet": "serverless remove --stage mainnet",
+    "build:stake-pool": "SLS_DEBUG=* serverless deploy --verbose"
   },
   "author": {
     "name": "Chris Breuer",

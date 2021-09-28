@@ -6,7 +6,7 @@ configValidationMode: error
 
 provider:
   name: aws
-  stage: ${opt:stage, 'development'}
+  stage: ${opt:stage, ${ENV:NETWORK}}
   region: "us-east-1"
 
 resources:
