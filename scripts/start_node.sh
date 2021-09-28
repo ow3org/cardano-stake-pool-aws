@@ -6,7 +6,6 @@
 
 # Starts the node.
 
-##
 if [[ -S "${CARDANO_NODE_SOCKET_PATH}" ]]; then
   if pgrep -f "[c]ardano-node.*.${CARDANO_NODE_SOCKET_PATH}"; then
      echo "ERROR: A Cardano node is already running, please terminate this node before starting a new one with this script. You may run the command `restart`"

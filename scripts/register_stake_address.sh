@@ -6,6 +6,8 @@
 
 # Register your stake pool.
 
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
+
 cd $NODE_HOME
 
 # creates a certificate using the stake.vkey
@@ -16,7 +18,7 @@ cardano-cli stake-address registration-certificate \
 # find your balance and UTXO
 cardano-cli query utxo \
     --address $(cat payment.addr) \
-    --testnet-magic 1097911063 > fullUtxo.out
+    ${NETWORK_ARGUMENT} > fullUtxo.out
 
 tail -n +3 fullUtxo.out | sort -k3 -nr > balance.out
 
@@ -57,7 +59,7 @@ fee=$(cardano-cli transaction calculate-min-fee \
     --tx-body-file tx.tmp \
     --tx-in-count ${txcnt} \
     --tx-out-count 1 \
-    --testnet-magic 1097911063 \
+    ${NETWORK_ARGUMENT} \
     --witness-count 2 \
     --byron-witness-count 0 \
     --protocol-params-file params.json | awk '{ print $1 }')
@@ -73,7 +75,7 @@ cardano-cli transaction sign \
     --tx-body-file tx.raw \
     --signing-key-file payment.skey \
     --signing-key-file stake.skey \
-    --testnet-magic 1097911063 \
+    ${NETWORK_ARGUMENT} \
     --out-file tx.signed
 
 # copy tx.signed to your hot environment
@@ -81,7 +83,7 @@ cardano-cli transaction sign \
 # send the signed transaction to the blockchain
 cardano-cli transaction submit \
     --tx-file tx.signed \
-    --testnet-magic 1097911063
+    ${NETWORK_ARGUMENT}
 
 # edit the poolMetaData.json now and then run the following command
 cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > poolMetaDataHash.txt

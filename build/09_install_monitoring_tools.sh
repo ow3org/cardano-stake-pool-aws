@@ -4,7 +4,7 @@
 # Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
-# Install gLiveView Monitoring tool.
+# Installs gLiveView monitoring tool.
 
 start=`date +%s.%N`
 

@@ -17,8 +17,8 @@ cd /home/ubuntu/cardano-helpers/scripts
 ./05_install_cabal_and_dependencies.sh
 ./06_build_and_configure_node.sh
 ./07_create_startup_scripts.sh
-./08_configure_block_producer_node.sh
-./09_install_gLiveView_monitoring_tool.sh
+./08_configure_node.sh
+./09_install_monitoring_tools.sh
 
 end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true

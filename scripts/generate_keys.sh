@@ -8,6 +8,12 @@
 
 # *Before continuing, please read & be cautious*
 # For any "live stake pools," *only* execute this script on servers not connected to any network ("cold machines")
+# Payment and stake keys must be generated and used to build transactions in a cold environment
+# The only steps performed in a hot environment (a machine connected to the internet) are those steps that require live data:
+## querying the current slot tip
+## querying the balance of an address
+## submitting a transaction
+
 # Be sure to back up your all your keys to another secure storage device. Make multiple copies.
 
 start=`date +%s.%N`
@@ -17,6 +23,7 @@ banner="------------------------------------------------------------------------
 eval "$(cat $HOME/.bashrc | tail -n +10)"
 
 cd $NODE_HOME
+
 cardano-cli node key-gen-KES \
     --verification-key-file kes.vkey \
     --signing-key-file kes.skey
@@ -56,10 +63,9 @@ chmod 400 vrf.skey
 
 # let's now create the payment and stake keys
 cardano-cli query protocol-parameters \
-    --testnet-magic 1097911063 \
+    ${NETWORK_ARGUMENT} \
     --out-file params.json
 
-cd $NODE_HOME
 cardano-cli address key-gen \
     --verification-key-file payment.vkey \
     --signing-key-file payment.skey
@@ -71,13 +77,13 @@ cardano-cli stake-address key-gen \
 cardano-cli stake-address build \
     --stake-verification-key-file stake.vkey \
     --out-file stake.addr \
-    --testnet-magic 1097911063
+    ${NETWORK_ARGUMENT}
 
 cardano-cli address build \
     --payment-verification-key-file payment.vkey \
     --stake-verification-key-file stake.vkey \
     --out-file payment.addr \
-    --testnet-magic 1097911063
+    ${NETWORK_ARGUMENT}
 
 end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
