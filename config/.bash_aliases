@@ -25,6 +25,7 @@ alias status="sudo systemctl status cardano-node"
 alias logs="journalctl --unit=cardano-node --follow"
 alias logsToday="journalctl --unit=cardano-node --since=today"
 alias logsYesterday="journalctl --unit=cardano-node --since=yesterday"
+alias monitorNodeCreationLogs="tail -f /var/log/cloud-init-output.log"
 
 alias ~="cd $HOME"
 alias home="cd $HOME"

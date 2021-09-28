@@ -56,17 +56,18 @@ start # starts the "Block Producer" or a "Relay" node
 restart # restarts the node service
 stop # stops the node service
 status # view the status of your node
+update # alpha: currently wip but it will automatically update the node
 
 ## viewing & filtering logs
 logs
 logsToday
 logsYesterday
 journalctl --unit=cardano-node --since='2021-09-01 00:00:00' --until='2021-09-30 12:00:00'
+monitorNodeCreationLogs # view the log output of the "User Data" script (mostly the `build_node.sh` log output)
 
 ## other useful commands
 gLiveView
 systeminfo # displays info about your node
-update # alpha: automatically update the node
 
 ## please beware, this will delete your AWS stake pool resources
 npm run cleanup # cleans all environments
