@@ -46,8 +46,10 @@ alias linkaliases="sudo ln -s $HELPERS/config/.bash_aliases $HOME/.bash_aliases"
 # Stake Pool specific aliases
 alias slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
 alias slotNo=$(cardano-cli query tip --${NODE_CONFIG} | jq -r '.slot')
+alias currentSlot=slotNo
 alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) --${NODE_CONFIG})
 # alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) --testnet-magic 1097911063)
+alias minPoolCost=$(cat $NODE_HOME/params.json | jq -r .minPoolCost)
 
 # TODO: needs work still because updates does not persist custom edits
 alias update="helpers; nah; sudo git pull; linkaliases; reloadshell"

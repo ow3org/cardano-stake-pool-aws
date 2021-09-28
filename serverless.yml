@@ -801,7 +801,7 @@ resources:
             source ./.bashrc
             git clone ${env:GIT_REPO_URL} cardano-helpers
             chmod +x ./cardano-helpers/scripts/*
-            su ubuntu -c './cardano-helpers/scripts/build_block_producer_node.sh'
+            su ubuntu -c './cardano-helpers/scripts/build_node.sh'
         Tags:
           - Key: Name
             Value: "cardano-block-producer-${self:provider.stage}"

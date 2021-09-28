@@ -1,3 +1,7 @@
+# Maintainer: Meema Labs
+# Telegram: https://telegram.meema.io
+# Discord: https://discord.meema.io
+
 # The Cardano node service (part of systemd)
 # file: /etc/systemd/system/cardano-node.service
 
@@ -10,7 +14,7 @@ After       = network-online.target
 User              = ${USER}
 Type              = simple
 WorkingDirectory  = ${NODE_HOME}
-ExecStart         = /bin/bash -c '${NODE_HOME}/start_node.sh'
+ExecStart         = /bin/bash -c '${NODE_HOME}/scripts/start_node.sh'
 KillSignal        = SIGINT
 RestartKillSignal = SIGINT
 TimeoutStopSec    = 2

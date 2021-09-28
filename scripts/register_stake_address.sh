@@ -1,3 +1,10 @@
+#!/usr/bin/env bash
+
+# Maintainer: Meema Labs
+# Telegram: https://telegram.meema.io
+# Discord: https://discord.meema.io
+
+# Register your stake pool.
 
 cd $NODE_HOME
 
@@ -5,9 +12,6 @@ cd $NODE_HOME
 cardano-cli stake-address registration-certificate \
     --stake-verification-key-file stake.vkey \
     --out-file stake.cert
-
-currentSlot=$(cardano-cli query tip --testnet-magic 1097911063 | jq -r '.slot')
-echo Current Slot: $currentSlot
 
 # find your balance and UTXO
 cardano-cli query utxo \
@@ -74,9 +78,17 @@ cardano-cli transaction sign \
 
 # copy tx.signed to your hot environment
 
-# send the signed transaction
+# send the signed transaction to the blockchain
 cardano-cli transaction submit \
     --tx-file tx.signed \
     --testnet-magic 1097911063
 
-# edit the poolMetaData.json now
+# edit the poolMetaData.json now and then run the following command
+cardano-cli stake-pool metadata-hash --pool-metadata-file poolMetaData.json > poolMetaDataHash.txt
+
+# now, copy poolMetaDataHash.txt to your cold environment
+
+# next, create a registration certificate for your stake pool
+cardano-cli stake-pool registration-certificate \
+    --pool-relay-port 6000 \
+    --pool-relay-ipv4 44.199.135.88

@@ -17,7 +17,7 @@ echo CARDANO_NODE_SOCKET_PATH="/home/ubuntu/cardano-my-node/db/socket" >> /home/
 # it is a variable that's used in guild-operator's cnode-helper-scripts
 echo CNODE_HOME="/home/ubuntu/cardano-my-node" >> /home/ubuntu/.bashrc
 
-# sudo ln -s $HOME/cardano-helpers/config/.bashrc $HOME/.bashrc # TODO: figure out how to properly set variables from the UserData script
+# symlink a few config files
 sudo ln -s /home/ubuntu/cardano-helpers/config/.bash_aliases /home/ubuntu/.bash_aliases
 sudo ln -s /home/ubuntu/cardano-helpers/config/poolMetaData.json /home/ubuntu/cardano-my-node/poolMetaData.json
 
