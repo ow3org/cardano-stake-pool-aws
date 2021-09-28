@@ -68,7 +68,7 @@ gLiveView
 systeminfo # displays info about your node
 update # alpha: automatically update the node
 
-## if you want to delete the AWS resources. Please beware, this will delete your stake pool resources
+## please beware, this will delete your AWS stake pool resources
 npm run cleanup # cleans all environments
 npm run cleanup:guild
 npm run cleanup:testnet
