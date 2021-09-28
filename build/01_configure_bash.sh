@@ -15,10 +15,11 @@ echo NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-de
 if [ "$NODE_CONFIG" = "mainnet" ]; then
     echo NETWORK="mainnet" >> /home/ubuntu/.bashrc
     echo NETWORK_ARGUMENT="--mainnet" >> /home/ubuntu/.bashrc
-else if [ "$NODE_CONFIG" = "testnet" ]; then
+elif [ "$NODE_CONFIG" = "testnet" ]; then
     echo NETWORK="testnet" >> /home/ubuntu/.bashrc
     echo NETWORK_ARGUMENT="--testnet-magic 1097911063" >> /home/ubuntu/.bashrc
 fi
+# TODO: implement "guild"-network option
 
 # DO NOT CHANGE: `CNODE_HOME` is utilized by cnode-helper-scripts
 echo CNODE_HOME="/home/ubuntu/cardano-my-node" >> /home/ubuntu/.bashrc

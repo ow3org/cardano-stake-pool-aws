@@ -12,8 +12,7 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
-sudo cp $HELPERS/config/cardano-node.service /etc/systemd/system/cardano-node.service
-sudo chmod 644 /etc/systemd/system/cardano-node.service
+linkservice
 
 sudo systemctl daemon-reload
 sudo systemctl enable cardano-node

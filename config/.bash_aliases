@@ -44,7 +44,7 @@ alias restart="sudo systemctl reload-or-restart cardano-node"
 alias nah="sudo git clean -df && sudo git reset --hard"
 
 alias linkaliases="rm $HOME/.bash_aliases; sudo ln -s $HELPERS/config/.bash_aliases $HOME/.bash_aliases"
-alias linkservice="sudo rm /etc/systemd/system/cardano-node.service; sudo ln -s $HELPERS/config/cardano-node.service /etc/systemd/system/cardano-node.service"
+alias linkservice="sudo rm /etc/systemd/system/cardano-node.service; sudo cp $HELPERS/config/cardano-node.service /etc/systemd/system/cardano-node.service; sudo chmod 644 /etc/systemd/system/cardano-node.service"
 alias setsymlinks="reloadshell; linkaliases; linkservice; reloadshell"
 
 alias systeminfo="sudo $HELPERS/scripts/system_info.sh"
