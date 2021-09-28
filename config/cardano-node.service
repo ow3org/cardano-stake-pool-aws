@@ -13,8 +13,8 @@ After       = network-online.target
 [Service]
 User              = ${USER}
 Type              = simple
-WorkingDirectory  = ${NODE_HOME}
-ExecStart         = /bin/bash -c '${NODE_HOME}/scripts/start_node.sh'
+WorkingDirectory  = ${HELPERS}
+ExecStart         = /bin/bash -c '${HELPERS}/scripts/start_node.sh'
 KillSignal        = SIGINT
 RestartKillSignal = SIGINT
 TimeoutStopSec    = 2
