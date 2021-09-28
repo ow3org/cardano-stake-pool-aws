@@ -1,6 +1,6 @@
 # Cardano Stake Pool Ops
 
-This project aims to be the most simple way to set up a Cardano Stake Pool (Block Producing & Relay nodes) inside a secure, highly-available, and fault-tolerant AWS cloud network. It implements an easily configurable, yet a well-opinionated approach, based on some of the best practices found inside the community.
+This project aims to be the most simple way to set up a Cardano Stake Pool (Block Producer & Relay nodes) inside a secure, highly-available, and fault-tolerant AWS cloud network. It implements an easily configurable, yet a well-opinionated approach, based on some of the best practices found inside the community.
 
 ## 🐋 Features
 
@@ -10,7 +10,7 @@ This project aims to be the most simple way to set up a Cardano Stake Pool (Bloc
 - Automatic notifications for CPU, RAM and storage alerts when certain thresholds are met
 - Several useful management tools & beautiful graphs
 
-Thanks to Guild Operators who have created some great tooling for stake pool operators!
+Thanks to Guild Operators who have created some great tooling for Stake Pool Operators (SPO)!
 
 _Our managed pools offer a "High Pledge" and great rewards. Feel free to join! We would love to get to know you._
 
@@ -51,12 +51,6 @@ ssh -i "cardano-stake-pool.pem" ubuntu@ec2-12-68-116-220.compute-1.amazonaws.com
 ## 🐙 Useful commands
 
 ```bash
-# if you want to delete the AWS resources. Please beware, this will delete your stake pool
-npm run cleanup # cleans all environments
-npm run cleanup:guild
-npm run cleanup:testnet
-npm run cleanup:mainnet
-
 ## Cardano Node relating commands
 start # starts the "Block Producer" or a "Relay" node
 restart # restarts the node service
@@ -73,6 +67,12 @@ journalctl --unit=cardano-node --since='2021-09-01 00:00:00' --until='2021-09-30
 gLiveView
 systeminfo # displays info about your node
 update # alpha: automatically update the node
+
+## if you want to delete the AWS resources. Please beware, this will delete your stake pool
+npm run cleanup # cleans all environments
+npm run cleanup:guild
+npm run cleanup:testnet
+npm run cleanup:mainnet
 ```
 
 ## Important notes
