@@ -46,7 +46,7 @@ alias systeminfo="sudo $HELPERS/scripts/system_info.sh"
 
 # Stake Pool specific aliases
 alias slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
-alias slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT}| jq -r '.slot')
+alias slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot')
 alias currentSlot=slotNo
 alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) ${NETWORK_ARGUMENT})
 # alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) --testnet-magic 1097911063)
