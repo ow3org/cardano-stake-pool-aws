@@ -1,6 +1,6 @@
 # Cardano Stake Pool Ops
 
-This project aims to be the most simple way to set up a Cardano Stake Pool (core & relay nodes) inside a secure, highly-available, and fault-tolerant AWS cloud network. It implements an easily configurable, yet a well-opinionated approach, based on some of the best practices found inside the community.
+This project aims to be the most simple way to set up a Cardano Stake Pool (Block Producing & Relay nodes) inside a secure, highly-available, and fault-tolerant AWS cloud network. It implements an easily configurable, yet a well-opinionated approach, based on some of the best practices found inside the community.
 
 ## 🐋 Features
 
@@ -40,15 +40,15 @@ cp .env.example .env
 ./scripts/generate_ssh_key_pair.sh
 
 # 3. next, let's create your Stake Pool environment including 1x Block Producer node & 2x Relay nodes
-npm run build:stake-pool
-## please note: the creation process may take ~3 hours for testnet nodes & ~8 hours for mainnet nodes
+npm run build:stake-pool # this will take ~3 hours for `testnet` nodes & ~8 hours for `mainnet` nodes
+
 ## during this process, you will receive 2 emails asking to confirm a "subscription" which is required in order for you to receive "system alerts"
 
 # 4. you can now securely SSH into your Cardano node (navigate to AWS EC2 to figure out the host and use the port defined in .env)
 ssh -i "cardano-stake-pool.pem" ubuntu@ec2-12-68-116-220.compute-1.amazonaws.com -p 22
 ```
 
-## 🐙 Useful snippets
+## 🐙 Useful commands
 
 ```bash
 # if you want to delete the AWS resources. Please beware, this will delete your stake pool
@@ -57,21 +57,22 @@ npm run cleanup:guild
 npm run cleanup:testnet
 npm run cleanup:mainnet
 
-## Starting the "Block Producer Node" or one of the "Relay Nodes"
-start
+## Cardano Node relating commands
+start # starts the "Block Producer" or a "Relay" node
+restart # restarts the node service
+stop # stops the node service
 
-## Restarting the node service
-restart
-
-## Stopping the node service
-stop
-
-## Viewing the status of your node & filtering logs
+### Viewing the status of your node & filtering logs
 status
 logs
 logsToday
 logsYesterday
 journalctl --unit=cardano-node --since='2021-09-01 00:00:00' --until='2021-09-30 12:00:00'
+
+## other useful commands
+gLiveView
+systeminfo # displays info about your node
+update # alpha: automatically update the node
 ```
 
 ## Important notes
