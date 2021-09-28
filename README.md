@@ -55,9 +55,9 @@ ssh -i "cardano-stake-pool.pem" ubuntu@ec2-12-68-116-220.compute-1.amazonaws.com
 start # starts the "Block Producer" or a "Relay" node
 restart # restarts the node service
 stop # stops the node service
+status # view the status of your node
 
-### Viewing the status of your node & filtering logs
-status
+## viewing & filtering logs
 logs
 logsToday
 logsYesterday
@@ -68,7 +68,7 @@ gLiveView
 systeminfo # displays info about your node
 update # alpha: automatically update the node
 
-## if you want to delete the AWS resources. Please beware, this will delete your stake pool
+## if you want to delete the AWS resources. Please beware, this will delete your stake pool resources
 npm run cleanup # cleans all environments
 npm run cleanup:guild
 npm run cleanup:testnet
@@ -79,7 +79,7 @@ npm run cleanup:mainnet
 
 - On mainnet, you will need to regenerate the KES key every 90 days (use our provided script - will be automated in future release)
 - Cold keys must be generated and stored on your air-gapped offline machine
-- Exercise plenty in testnet before launching a mainnet node
+- Exercise plenty in a "test network" before operating a `mainnet` node
 
 You may also want to check out the `.bash_aliases` file for some helpful shortcuts.
 
