@@ -32,8 +32,8 @@ alias monitorNodeCreationLogs="tail -f /var/log/cloud-init-output.log"
 
 # stake pool specific aliases
 alias slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
-alias slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot')
-alias currentSlot=slotNo
+# alias slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot')
+# alias currentSlot=slotNo
 
 if [ -f "$NODE_HOME/payment.addr" ]; then
     alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) ${NETWORK_ARGUMENT})
