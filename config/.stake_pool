@@ -1,2 +1,9 @@
 # this is a placeholder file that will automatically be set on the server as it gets created
 # view the serverless.yml "UserData" section to see where and how the node (Stake Pool) is built
+
+SSH_PORT=
+IS_RELAY_NODE=
+NODE_CONFIG=
+BLOCK_PRODUCER_NODE_IP=
+RELAY_NODE_1_IP=
+RELAY_NODE_2_IP=
