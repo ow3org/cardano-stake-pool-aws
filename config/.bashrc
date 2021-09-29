@@ -66,6 +66,12 @@ xterm*|rxvt*)
     ;;
 esac
 
+
+# Stake pool specific variables.
+if [ -f ~/.stake_pool ]; then
+    . ~/.stake_pool
+fi
+
 # Alias definitions.
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases

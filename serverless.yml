@@ -792,16 +792,16 @@ resources:
           Fn::Base64: !Sub |
             #!/bin/bash
             cd /home/ubuntu
-            echo "SSH_PORT=${env:SSH_PORT}" >> ./.bashrc
-            echo "IS_RELAY_NODE=false" >> ./.bashrc
-            echo "NODE_CONFIG=${env:NETWORK}" >> ./.bashrc
-            echo "BLOCK_PRODUCER_NODE_IP=${BlockProducerNodeIp}" >> ./.bashrc
-            echo "RELAY_NODE_1_IP=${RelayNode1Ip}" >> ./.bashrc
-            echo "RELAY_NODE_2_IP=${RelayNode2Ip}" >> ./.bashrc
-            source ./.bashrc
             git clone ${env:GIT_REPO_URL} cardano-stake-pool-helpers
-            chmod +x ./cardano-stake-pool-helpers/scripts/*
-            su ubuntu -c './cardano-stake-pool-helpers/scripts/build_node.sh'
+            cd ./cardano-stake-pool-helpers/config
+            echo "SSH_PORT=${env:SSH_PORT}" >> ./.stake_pool
+            echo "IS_RELAY_NODE=false" >> ./.stake_pool
+            echo "NODE_CONFIG=${env:NETWORK}" >> ./.stake_pool
+            echo "BLOCK_PRODUCER_NODE_IP=${BlockProducerNodeIp}" >> ./.stake_pool
+            echo "RELAY_NODE_1_IP=${RelayNode1Ip}" >> ./.stake_pool
+            echo "RELAY_NODE_2_IP=${RelayNode2Ip}" >> ./.stake_pool
+            chmod +x ../scripts/*
+            su ubuntu -c '../scripts/build_node.sh'
         Tags:
           - Key: Name
             Value: "cardano-block-producer-${self:provider.stage}"

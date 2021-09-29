@@ -33,9 +33,10 @@ echo CNODE_HOME="/home/ubuntu/cardano-my-node" >> /home/ubuntu/.bashrc
 echo CARDANO_NODE_SOCKET_PATH="/home/ubuntu/cardano-my-node/db/socket" >> /home/ubuntu/.bashrc
 
 # symlink a few config files - overwrite if they already exist
-sudo ln -sf $HELPERS/config/.bashrc /home/ubuntu/.bashrc
-sudo ln -sf $HELPERS/config/.bash_aliases /home/ubuntu/.bash_aliases
-sudo ln -sf $HELPERS/config/poolMetaData.json $NODE_HOME/poolMetaData.json
+ln -sf $HELPERS/config/.bashrc /home/ubuntu/.bashrc
+ln -sf $HELPERS/config/.bash_aliases /home/ubuntu/.bash_aliases
+ln -sf $HELPERS/config/.stake_pool /home/ubuntu/.stake_pool
+ln -sf $HELPERS/config/poolMetaData.json $NODE_HOME/poolMetaData.json
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
