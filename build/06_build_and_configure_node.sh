@@ -20,7 +20,7 @@ git checkout 1.29.0
 cabal configure -O0 -w ghc-8.10.4
 
 ## update the Cabal config, project settings, and reset build folder
-echo -e "package cardano-crypto-praos\n flags: -external-libsodium-vrf" > cabal.project.local
+sudo ln -s $HELPERS/config/cabal.project.local cabal.project.local
 sed -i /home/ubuntu/.cabal/config -e "s/overwrite-policy:/overwrite-policy: always/g"
 rm -rf /home/ubuntu/git/cardano-node/dist-newstyle/build/x86_64-linux/ghc-8.10.4
 
