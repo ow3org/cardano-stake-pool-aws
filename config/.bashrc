@@ -72,8 +72,8 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 # Cardano node specific functions.
-if [ -f $HELPERS/scripts/node-functions.sh ]; then
-    . $HELPERS/scripts/node-functions.sh
+if [ -f $HELPERS/scripts/node_functions.sh ]; then
+    . $HELPERS/scripts/node_functions.sh
 fi
 
 # enable programmable completion features
