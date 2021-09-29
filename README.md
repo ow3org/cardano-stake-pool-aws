@@ -1,12 +1,12 @@
 # Cardano Stake Pool Ops
 
-This project aims to be the most simple way to set up a Cardano Stake Pool (Block Producer & Relay nodes) inside a secure, highly-available, and fault-tolerant AWS cloud network. It implements an easily configurable, yet a well-opinionated approach, based on some of the best practices found inside the community.
+This project aims to be the most simple way to set up a Cardano Stake Pool (Block Producer & Relay nodes) inside a secure, highly-available, and fault-tolerant AWS cloud network. It implements an easily configurable, yet a well-opinionated approach, based on some of the best practices found inside the community. Soon, we intend on providing the script for other cloud providers & custom environments.
 
 ## 🐋 Features
 
 - Secure by default
 - Most simple AWS setup with 1 Core and 2 Relay nodes
-- Highly-available & fault-tolerant cloud
+- Highly-available & fault-tolerant cloud (easily portable to other clouds)
 - Automatic notifications for CPU, RAM and storage alerts when certain thresholds are met
 - Several useful management tools & beautiful graphs
 

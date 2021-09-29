@@ -799,9 +799,9 @@ resources:
             echo "RELAY_NODE_1_IP=${RelayNode1Ip}" >> ./.bashrc
             echo "RELAY_NODE_2_IP=${RelayNode2Ip}" >> ./.bashrc
             source ./.bashrc
-            git clone ${env:GIT_REPO_URL} cardano-helpers
-            chmod +x ./cardano-helpers/scripts/*
-            su ubuntu -c './cardano-helpers/scripts/build_node.sh'
+            git clone ${env:GIT_REPO_URL} cardano-stake-pool-helpers
+            chmod +x ./cardano-stake-pool-helpers/scripts/*
+            su ubuntu -c './cardano-stake-pool-helpers/scripts/build_node.sh'
         Tags:
           - Key: Name
             Value: "cardano-block-producer-${self:provider.stage}"

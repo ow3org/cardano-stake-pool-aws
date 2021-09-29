@@ -31,9 +31,11 @@ alias logsYesterday="journalctl --unit=cardano-node --since=yesterday"
 alias monitorNodeCreationLogs="tail -f /var/log/cloud-init-output.log"
 
 # stake pool specific aliases
-alias slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
-# alias slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot')
-# alias currentSlot=slotNo
+if [ -f "$NODE_HOME/${NODE_CONFIG}-shelley-genesis.json" ]; then
+    alias slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
+    alias slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot')
+    alias currentSlot=slotNo
+fi
 
 if [ -f "$NODE_HOME/payment.addr" ]; then
     alias paymentBalance=$(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) ${NETWORK_ARGUMENT})
@@ -60,6 +62,6 @@ alias node="cd $NODE_HOME"
 
 alias reloadshell="source $HOME/.bashrc"
 alias nah="sudo git clean -df && sudo git reset --hard"
-alias linkaliases="rm $HOME/.bash_aliases; sudo ln -s $HELPERS/config/.bash_aliases $HOME/.bash_aliases"
+alias linkaliases="sudo ln -sf $HELPERS/config/.bash_aliases $HOME/.bash_aliases"
 alias linkservice="sudo rm /etc/systemd/system/cardano-node.service; sudo cp $HELPERS/config/cardano-node.service /etc/systemd/system/cardano-node.service; sudo chmod 644 /etc/systemd/system/cardano-node.service"
 alias setsymlinks="reloadshell; linkaliases; linkservice; reloadshell"
