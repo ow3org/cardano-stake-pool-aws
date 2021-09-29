@@ -10,7 +10,7 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
+eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 
 cd /home/ubuntu/git
 git clone https://github.com/input-output-hk/cardano-node.git
@@ -45,7 +45,7 @@ sed -i ${NODE_CONFIG}-config.json \
 end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
 
-eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
+eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 
 echo $banner
 echo "Script runtime: $runtime seconds"

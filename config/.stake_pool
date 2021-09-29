@@ -7,3 +7,10 @@ NODE_CONFIG=
 BLOCK_PRODUCER_NODE_IP=
 RELAY_NODE_1_IP=
 RELAY_NODE_2_IP=
+
+HELPERS="/home/ubuntu/cardano-stake-pool-helpers"
+NODE_HOME="/home/ubuntu/cardano-my-node"
+
+## DO NOT CHANGE: utilized by cnode-helper-scripts
+CNODE_HOME="/home/ubuntu/cardano-my-node"
+CARDANO_NODE_SOCKET_PATH="/home/ubuntu/cardano-my-node/db/socket"

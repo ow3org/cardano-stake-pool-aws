@@ -6,12 +6,12 @@
 
 # Let's install Libsodium
 
-eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
+eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 
 echo PATH="/home/ubuntu/.local/bin:$PATH" >> /home/ubuntu/.bashrc
 echo LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH" >> /home/ubuntu/.bashrc
 
-eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
+eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 
 mkdir /home/ubuntu/git
 cd /home/ubuntu/git

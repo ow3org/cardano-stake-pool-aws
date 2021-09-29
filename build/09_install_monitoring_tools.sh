@@ -10,7 +10,7 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
+eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 
 cd $NODE_HOME
 sudo apt install bc tcptraceroute -y
