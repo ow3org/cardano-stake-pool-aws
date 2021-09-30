@@ -11,6 +11,9 @@ RELAY_NODE_2_IP="34.56.78.9"
 HELPERS="/home/ubuntu/cardano-stake-pool-helpers"
 NODE_HOME="/home/ubuntu/cardano-my-node"
 
+## this var will be set in "step 1" of the Node building process. You may leave it
+NETWORK_ARGUMENT=
+
 ## DO NOT CHANGE: utilized by cnode-helper-scripts
 CNODE_HOME="/home/ubuntu/cardano-my-node"
 CARDANO_NODE_SOCKET_PATH="/home/ubuntu/cardano-my-node/db/socket"

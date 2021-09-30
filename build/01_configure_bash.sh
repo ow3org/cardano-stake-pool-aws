@@ -15,15 +15,13 @@ eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 echo NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-deployment/latest-finished/download/1/index.html | grep -e "build" | sed 's/.*build\/\([0-9]*\)\/download.*/\1/g') >> /home/ubuntu/.bashrc
 
 if [ "$NODE_CONFIG" = "mainnet" ]; then
-    echo NETWORK="mainnet" >> $HELPERS/config/.bashrc
-    echo NETWORK_ARGUMENT="--mainnet" >> $HELPERS/config/.bashrc
+    sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--mainnet/g"
 elif [ "$NODE_CONFIG" = "testnet" ]; then
-    echo NETWORK="testnet" >> $HELPERS/config/.bashrc
-    echo NETWORK_ARGUMENT="--testnet-magic 1097911063" >> $HELPERS/config/.bashrc
-elif [ "$NODE_CONFIG" = "guild" ]; then
-    # TODO: implement "guild"-network option
-    echo NETWORK="guild" >> $HELPERS/config/.bashrc
-    # echo NETWORK_ARGUMENT="--testnet-magic 1097911063" >> $HELPERS/config/.bashrc
+    sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT='--testnet-magic 1097911063'/g"
+# elif [ "$NODE_CONFIG" = "guild" ]; then
+#     sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--guild/g"
+# elif [ "$NODE_CONFIG" = "staging" ]; then
+#     sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--staging/g"
 fi
 
 # symlink a few config files - overwrite if they already exist

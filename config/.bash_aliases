@@ -63,7 +63,7 @@ alias node="cd $NODE_HOME"
 
 alias reloadshell="source $HOME/.bashrc"
 alias nah="sudo git clean -df && sudo git reset --hard"
-alias linkstakepool="ln -sf $HELPERS/config/.node-config $HOME/.node-config"
+alias linknodeconfig="ln -sf $HELPERS/config/.node-config $HOME/.node-config"
 alias linkaliases="ln -sf $HELPERS/config/.bash_aliases $HOME/.bash_aliases"
 alias linkservice="sudo ln -sf $HELPERS/config/cardano-node.service /etc/systemd/system/cardano-node.service; sudo chmod 644 $HELPERS/config/cardano-node.service"
 alias setsymlinks="reloadshell; linkaliases; linkservice; reloadshell"
