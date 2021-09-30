@@ -3,4 +3,4 @@ node_modules
 .serverless
 .env
 cardano-stake-pool.pem
-/config/.stake_pool
+/config/.node-config

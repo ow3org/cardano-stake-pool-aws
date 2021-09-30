@@ -1,12 +1,12 @@
 # this is a placeholder file that will automatically be set on the server as it gets created
 # view the serverless.yml "UserData" section to see where and how the node (Stake Pool) is built
 
-SSH_PORT=
-IS_RELAY_NODE=
-NODE_CONFIG=
-BLOCK_PRODUCER_NODE_IP=
-RELAY_NODE_1_IP=
-RELAY_NODE_2_IP=
+SSH_PORT=22
+IS_RELAY_NODE=false
+NODE_CONFIG="testnet"
+BLOCK_PRODUCER_NODE_IP="12.34.56.789"
+RELAY_NODE_1_IP="23.45.67.89"
+RELAY_NODE_2_IP="34.56.78.9"
 
 HELPERS="/home/ubuntu/cardano-stake-pool-helpers"
 NODE_HOME="/home/ubuntu/cardano-my-node"

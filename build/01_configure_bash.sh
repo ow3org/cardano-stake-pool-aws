@@ -29,7 +29,7 @@ fi
 # symlink a few config files - overwrite if they already exist
 ln -sf $HELPERS/config/.bashrc /home/ubuntu/.bashrc
 ln -sf $HELPERS/config/.bash_aliases /home/ubuntu/.bash_aliases
-ln -sf $HELPERS/config/.stake_pool /home/ubuntu/.stake_pool
+ln -sf $HELPERS/config/.node-config /home/ubuntu/.node-config
 ln -sf $HELPERS/config/poolMetaData.json $NODE_HOME/poolMetaData.json
 
 eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"

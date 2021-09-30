@@ -794,12 +794,13 @@ resources:
             cd /home/ubuntu
             git clone ${env:GIT_REPO_URL} cardano-stake-pool-helpers
             cd ./cardano-stake-pool-helpers/config
-            sed -i ./.stake_pool -e "s/SSH_PORT=/SSH_PORT=${env:SSH_PORT}/g"
-            sed -i ./.stake_pool -e "s/IS_RELAY_NODE=/IS_RELAY_NODE=false/g"
-            sed -i ./.stake_pool -e "s/NODE_CONFIG=/NODE_CONFIG=${env:NETWORK}/g"
-            sed -i ./.stake_pool -e "s/BLOCK_PRODUCER_NODE_IP=/BLOCK_PRODUCER_NODE_IP=${env:BlockProducerNodeIp}/g"
-            sed -i ./.stake_pool -e "s/RELAY_NODE_1_IP=/RELAY_NODE_1_IP=${env:RelayNode1Ip}/g"
-            sed -i ./.stake_pool -e "s/RELAY_NODE_2_IP=/RELAY_NODE_2_IP=${env:RelayNode2Ip}/g"
+            cp ./.node-config.example ./.node-config
+            sed -i ./.node-config -e "s/SSH_PORT=/SSH_PORT=${env:SSH_PORT}/g"
+            sed -i ./.node-config -e "s/IS_RELAY_NODE=/IS_RELAY_NODE=false/g"
+            sed -i ./.node-config -e "s/NODE_CONFIG=/NODE_CONFIG=${env:NETWORK}/g"
+            sed -i ./.node-config -e "s/BLOCK_PRODUCER_NODE_IP=/BLOCK_PRODUCER_NODE_IP=${env:BlockProducerNodeIp}/g"
+            sed -i ./.node-config -e "s/RELAY_NODE_1_IP=/RELAY_NODE_1_IP=${env:RelayNode1Ip}/g"
+            sed -i ./.node-config -e "s/RELAY_NODE_2_IP=/RELAY_NODE_2_IP=${env:RelayNode2Ip}/g"
             chmod +x ../scripts/*
             su ubuntu -c '../scripts/build_node.sh'
         Tags:

@@ -68,8 +68,8 @@ esac
 
 
 # Stake pool specific variables.
-if [ -f ~/.stake_pool ]; then
-    . ~/.stake_pool
+if [ -f ~/.node-config ]; then
+    . ~/.node-config
 fi
 
 # Alias definitions.
