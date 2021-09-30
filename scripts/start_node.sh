@@ -16,17 +16,6 @@ if [[ -S "${CARDANO_NODE_SOCKET_PATH}" ]]; then
   fi
 fi
 
-DIRECTORY=$NODE_HOME
-PORT=6000
-HOSTADDR=0.0.0.0
-TOPOLOGY=${DIRECTORY}/${NODE_CONFIG}-topology.json
-DB_PATH=${DIRECTORY}/db
-SOCKET_PATH=${DIRECTORY}/db/socket
-CONFIG=${DIRECTORY}/${NODE_CONFIG}-config.json
-KES=${DIRECTORY}/kes.skey
-VRF=${DIRECTORY}/vrf.skey
-CERT=${DIRECTORY}/node.cert
-
 if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
   # start the block producing node
   /usr/local/bin/cardano-node run \

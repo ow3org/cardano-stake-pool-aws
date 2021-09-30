@@ -23,7 +23,7 @@ alias start="sudo systemctl start cardano-node"
 alias restart="sudo systemctl reload-or-restart cardano-node"
 alias stop="sudo systemctl stop cardano-node"
 alias status="sudo systemctl status cardano-node"
-alias update="cd $HELPERS; sudo git pull origin main; setsymlinks;"
+alias update="cd $HELPERS; nah; sudo git pull origin main; setsymlinks;"
 
 # viewing & filtering logs
 alias logs="journalctl --unit=cardano-node --follow"
@@ -32,7 +32,7 @@ alias logsYesterday="journalctl --unit=cardano-node --since=yesterday"
 alias monitorNodeCreationLogs="tail -f /var/log/cloud-init-output.log"
 
 # stake pool specific aliases
-if [ -f "$NODE_HOME/${NODE_CONFIG}-shelley-genesis.json" ]; then
+if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
     alias slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
     alias slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot')
     alias currentSlot=slotNo

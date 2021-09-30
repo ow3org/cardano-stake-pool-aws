@@ -11,6 +11,16 @@ RELAY_NODE_2_IP="34.56.78.9"
 HELPERS="/home/ubuntu/cardano-stake-pool-helpers"
 NODE_HOME="/home/ubuntu/cardano-my-node"
 
+PORT=6000
+HOSTADDR=0.0.0.0
+TOPOLOGY=${NODE_HOME}/${NODE_CONFIG}-topology.json
+DB_PATH=${NODE_HOME}/db
+SOCKET_PATH=${NODE_HOME}/db/socket
+CONFIG=${NODE_HOME}/${NODE_CONFIG}-config.json
+KES=${NODE_HOME}/kes.skey
+VRF=${NODE_HOME}/vrf.skey
+CERT=${NODE_HOME}/node.cert
+
 ## this var will be set in "step 1" of the Node building process. You may leave it
 NETWORK_ARGUMENT=
 
