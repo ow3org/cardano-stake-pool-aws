@@ -18,7 +18,7 @@ fi
 
 if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
   # start the block producing node
-  /usr/local/bin/cardano-node run \
+  /usr/local/bin/cardano-node run +RTS -N -RTS \
     --topology "${TOPOLOGY}" \
     --database-path "${DB_PATH}" \
     --socket-path "${SOCKET_PATH}" \
@@ -30,7 +30,8 @@ if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
     --shelley-operational-certificate "${CERT}"
 else
   # start the relay node
-  /usr/local/bin/cardano-node run --topology "${TOPOLOGY}" \
+  /usr/local/bin/cardano-node run +RTS -N -RTS \
+    --topology "${TOPOLOGY}" \
     --database-path "${DB_PATH}" \
     --socket-path "${SOCKET_PATH}" \
     --host-addr ${HOSTADDR} \
