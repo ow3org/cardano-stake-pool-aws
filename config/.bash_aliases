@@ -23,7 +23,7 @@ alias start="sudo systemctl start cardano-node"
 alias restart="sudo systemctl reload-or-restart cardano-node"
 alias stop="sudo systemctl stop cardano-node"
 alias status="sudo systemctl status cardano-node"
-alias update="cd $HELPERS; nah; sudo git pull origin main; setsymlinks;"
+alias update="cd $HELPERS; nah; sudo git pull origin main; setsymlinks; sudo systemctl daemon-reload;"
 
 # viewing & filtering logs
 alias logs="journalctl --unit=cardano-node --follow"

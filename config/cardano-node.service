@@ -11,9 +11,9 @@ Wants       = network-online.target
 After       = network-online.target
 
 [Service]
-User              = ${USER}
+User              = ubuntu
 Type              = simple
-WorkingDirectory  = ${HELPERS}
+WorkingDirectory  = "/home/ubuntu/cardano-stake-pool-helpers"
 ExecStart         = /bin/bash -c '/home/ubuntu/cardano-stake-pool-helpers/scripts/start_node.sh'
 KillSignal        = SIGINT
 RestartKillSignal = SIGINT
