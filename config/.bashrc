@@ -81,8 +81,8 @@ if [ -f ~/.node-config ]; then
 fi
 
 # Alias definitions.
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f $HELPERS/config/aliases ]; then
+    . $HELPERS/config/aliases
 fi
 
 # Cardano node specific functions.

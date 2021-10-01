@@ -82,7 +82,7 @@ npm run cleanup:mainnet
 - Cold Keys must be generated and stored on your air-gapped offline machine
 - Exercise plenty in a "test network" before operating a `mainnet` node
 
-You may also want to check out the `.bash_aliases` file for some helpful shortcuts.
+You may also want to check out the `aliases`-file for some helpful shortcuts.
 
 ## 📈 Changelog
 
