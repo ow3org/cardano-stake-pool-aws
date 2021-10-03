@@ -4,3 +4,4 @@ node_modules
 .env
 cardano-stake-pool.pem
 /config/.node-config
+.DS_Store
