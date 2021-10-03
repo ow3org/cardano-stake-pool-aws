@@ -4,11 +4,12 @@ This project aims to be the most simple way to set up a Cardano Stake Pool (Bloc
 
 ## 🐋 Features
 
+- Installs latest `cardano-node` v1.30.1
 - Secure by default
-- Most simple AWS setup with 1 Core and 2 Relay nodes
-- Highly-available & fault-tolerant cloud (easily portable to other clouds)
-- Automatic notifications for CPU, RAM and storage alerts when certain thresholds are met
-- Several useful management tools & beautiful graphs
+- Most simple AWS setup with 1 Core & 2 Relay nodes
+- Highly-available & fault-tolerant cloud (easily portable to other infrastructure)
+- Automatic alarms & notifications for CPU, RAM and storage alerts
+- Useful management tools & beautiful graphs
 
 Thanks to Guild Operators who have created some great tooling for Stake Pool Operators (SPO)!
 

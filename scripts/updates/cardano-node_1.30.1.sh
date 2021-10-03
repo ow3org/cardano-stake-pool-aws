@@ -28,11 +28,11 @@ eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 
 ghcup upgrade
 
-echo "Installing GHC v${BOOTSTRAP_HASKELL_GHC_VERSION} ..."
+echo "Ensuring GHC v${BOOTSTRAP_HASKELL_GHC_VERSION}  is installed  ..."
 ghcup install ghc ${BOOTSTRAP_HASKELL_GHC_VERSION}
 ghcup set ghc ${BOOTSTRAP_HASKELL_GHC_VERSION}
 
-echo "Installing Cabal v${BOOTSTRAP_HASKELL_CABAL_VERSION}.."
+echo "Ensuring Cabal v${BOOTSTRAP_HASKELL_CABAL_VERSION}  is installed ..."
 ghcup install cabal ${BOOTSTRAP_HASKELL_CABAL_VERSION}
 ghcup set cabal ${BOOTSTRAP_HASKELL_CABAL_VERSION}
 
