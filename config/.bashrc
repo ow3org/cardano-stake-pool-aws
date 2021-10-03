@@ -89,3 +89,7 @@ fi
 if [ -f $HELPERS/scripts/node_functions.sh ]; then
     . $HELPERS/scripts/node_functions.sh
 fi
+
+if [ -f ~/.ghcup/env ]; then
+    . ~/.ghcup/env
+fi
