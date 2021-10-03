@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-hello() {
-    echo -n "Hello, "
-    echo $1 $2
+error() {
+  printf "\n Error:  Exiting"
+  ls -ltr; pwd
+  exit 1
 }
 
 # isBlockProducerNode()

@@ -14,6 +14,8 @@ eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 
 echo NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-deployment/latest-finished/download/1/index.html | grep -e "build" | sed 's/.*build\/\([0-9]*\)\/download.*/\1/g') >> /home/ubuntu/.bashrc
 
+cp $HELPERS/config/.node-config.example $HELPERS/config/.node-config
+
 if [ "$NODE_CONFIG" = "mainnet" ]; then
     sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--mainnet/g"
 elif [ "$NODE_CONFIG" = "testnet" ]; then
