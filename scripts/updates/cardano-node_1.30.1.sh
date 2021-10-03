@@ -12,6 +12,8 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 
+sudo apt-get -y install build-essential curl libffi-dev libffi7 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5
+
 export BOOTSTRAP_HASKELL_NONINTERACTIVE=true
 export BOOTSTRAP_HASKELL_GHC_VERSION=8.10.4
 export BOOTSTRAP_HASKELL_CABAL_VERSION=3.4.0.0
