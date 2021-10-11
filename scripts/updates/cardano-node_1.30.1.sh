@@ -20,10 +20,6 @@ export BOOTSTRAP_HASKELL_CABAL_VERSION=3.4.0.0
 
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
-GHCUP_PROFILE_FILE="/home/ubuntu/.bashrc"
-GHCUP_DIR="/home/ubuntu/.ghcup"
-echo "[ -f \"${GHCUP_DIR}/env\" ] && source \"${GHCUP_DIR}/env\" # ghcup-env" >> "${GHCUP_PROFILE_FILE}"
-
 eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 
 ghcup upgrade
