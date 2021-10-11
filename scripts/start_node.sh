@@ -18,22 +18,22 @@ fi
 
 if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
   # start the block producing node
-  /usr/local/bin/cardano-node run +RTS -N -RTS \
-    --topology "${TOPOLOGY}" \
-    --database-path "${DB_PATH}" \
-    --socket-path "${SOCKET_PATH}" \
+  /usr/local/bin/cardano-node run +RTS -N -A16m -qg -qb -RTS \
+    --topology ${TOPOLOGY} \
+    --database-path ${DB_PATH} \
+    --socket-path ${SOCKET_PATH} \
     --host-addr ${HOSTADDR} \
     --port ${PORT} \
     --config ${CONFIG} \
-    --shelley-kes-key "${KES}" \
-    --shelley-vrf-key "${VRF}" \
-    --shelley-operational-certificate "${CERT}"
+    --shelley-kes-key ${KES} \
+    --shelley-vrf-key ${VRF} \
+    --shelley-operational-certificate ${CERT}
 else
   # start the relay node
-  /usr/local/bin/cardano-node run +RTS -N -RTS \
-    --topology "${TOPOLOGY}" \
-    --database-path "${DB_PATH}" \
-    --socket-path "${SOCKET_PATH}" \
+  /usr/local/bin/cardano-node run +RTS -N -A16m -qg -qb -RTS \
+    --topology ${TOPOLOGY} \
+    --database-path ${DB_PATH} \
+    --socket-path ${SOCKET_PATH} \
     --host-addr ${HOSTADDR} \
     --port ${PORT} \
     --config ${CONFIG}
