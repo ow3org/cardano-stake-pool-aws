@@ -21,7 +21,7 @@ if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
   /usr/local/bin/cardano-node run +RTS -N -A16m -qg -qb -RTS \
     --topology ${TOPOLOGY} \
     --database-path ${DB_PATH} \
-    --socket-path ${SOCKET_PATH} \
+    --socket-path ${CARDANO_NODE_SOCKET_PATH} \
     --host-addr ${HOSTADDR} \
     --port ${PORT} \
     --config ${CONFIG} \
@@ -33,7 +33,7 @@ else
   /usr/local/bin/cardano-node run +RTS -N -A16m -qg -qb -RTS \
     --topology ${TOPOLOGY} \
     --database-path ${DB_PATH} \
-    --socket-path ${SOCKET_PATH} \
+    --socket-path ${CARDANO_NODE_SOCKET_PATH} \
     --host-addr ${HOSTADDR} \
     --port ${PORT} \
     --config ${CONFIG}
