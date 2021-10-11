@@ -42,7 +42,9 @@ cabal update
 
 mkdir -p ${HOME}/git
 cd ${HOME}/git || error
-mv -vf ${HOME}/git/cardano-node ${HOME}/git/cardano-node-old || true
+
+TIMESTAMP=date +%Y-%m-%d_%H-%M-%S
+mv -vf ${HOME}/git/cardano-node ${HOME}/git/cardano-node-${TIMESTAMP} || true
 git clone https://github.com/input-output-hk/cardano-node.git || error
 cd cardano-node || error
 git fetch --all --recurse-submodules --tags
