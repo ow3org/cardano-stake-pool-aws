@@ -13,7 +13,7 @@ HELPERS="/home/ubuntu/cardano-stake-pool-helpers"
 NODE_HOME="/home/ubuntu/cardano-my-node"
 
 PORT=6000
-HOSTADDR=0.0.0.0
+HOSTADDR="0.0.0.0"
 TOPOLOGY=${NODE_HOME}/${NODE_CONFIG}-topology.json
 DB_PATH=${NODE_HOME}/db
 SOCKET_PATH=${NODE_HOME}/db/socket
