@@ -232,6 +232,23 @@ resources:
           - Name: InstanceId
             Value: !Ref RelayNode1
 
+    RecoveryAlarmRelay2:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Recovering instance when underlying hardware fails."
+        Namespace: "AWS/EC2"
+        MetricName: StatusCheckFailed_System
+        Statistic: Minimum
+        Period: 60
+        EvaluationPeriods: 5
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 0
+        AlarmActions:
+          - !Sub "arn:aws:automate:${AWS::Region}:ec2:recover"
+        Dimensions:
+          - Name: InstanceId
+            Value: !Ref RelayNode2
+
     CPUTooHighAlarmBlockProducer:
       Type: "AWS::CloudWatch::Alarm"
       Properties:
@@ -266,6 +283,23 @@ resources:
           - Name: InstanceId
             Value: !Ref RelayNode1
 
+    CPUTooHighAlarmRelay2:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Average CPU utilization over last 10 minutes higher than 80%"
+        Namespace: "AWS/EC2"
+        MetricName: CPUUtilization
+        Statistic: Average
+        Period: 600
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 80
+        AlarmActions:
+          - !Ref Topic
+        Dimensions:
+          - Name: InstanceId
+            Value: !Ref RelayNode2
+
     MemoryTooHighAlarmBlockProducer:
       Type: "AWS::CloudWatch::Alarm"
       Properties:
@@ -299,6 +333,23 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
+
+    MemoryTooHighAlarmRelay2:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Average memory utilization over last 10 minutes higher than 80%"
+        Namespace: !Ref "AWS::StackName"
+        MetricName: mem_used_percent
+        Statistic: Average
+        Period: 600
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 80
+        AlarmActions:
+          - !Ref Topic
+        Dimensions:
+          - Name: InstanceId
+            Value: !Ref RelayNode2
 
     DiskTooHighAlarmBlockProducer:
       Type: "AWS::CloudWatch::Alarm"
@@ -337,6 +388,27 @@ resources:
         Dimensions:
           - Name: InstanceId
             Value: !Ref RelayNode1
+          - Name: fstype
+            Value: xfs
+          - Name: path
+            Value: "/"
+
+    DiskTooHighAlarmRelay2:
+      Type: "AWS::CloudWatch::Alarm"
+      Properties:
+        AlarmDescription: "Average disk utilization over last 10 minutes higher than 80%"
+        Namespace: !Ref "AWS::StackName"
+        MetricName: disk_used_percent
+        Statistic: Average
+        Period: 600
+        EvaluationPeriods: 1
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 80
+        AlarmActions:
+          - !Ref Topic
+        Dimensions:
+          - Name: InstanceId
+            Value: !Ref RelayNode2
           - Name: fstype
             Value: xfs
           - Name: path
@@ -386,11 +458,11 @@ resources:
         InstanceId: !Ref "RelayNode1"
         EIP: !Ref "RelayNode1Ip"
 
-    # RelayNode2IpAssociation:
-    #   Type: AWS::EC2::EIPAssociation
-    #   Properties:
-    #     InstanceId: !Ref 'RelayNode2'
-    #     EIP: !Ref 'RelayNode2Ip'
+    RelayNode2IpAssociation:
+      Type: AWS::EC2::EIPAssociation
+      Properties:
+        InstanceId: !Ref 'RelayNode2'
+        EIP: !Ref 'RelayNode2Ip'
 
     VPCCidrBlock:
       Type: "AWS::EC2::VPCCidrBlock"
@@ -837,6 +909,36 @@ resources:
           - Key: Name
             Value: "cardano-relay-node-1-${self:provider.stage}"
 
+    RelayNode2:
+      Type: AWS::EC2::Instance
+      DependsOn: GatewayToInternet
+      Properties:
+        ImageId: ${env:AWS_EC2_IMAGE_ID}
+        InstanceInitiatedShutdownBehavior: stop
+        InstanceType: ${env:AWS_EC2_INSTANCE_TYPE} # t3a.xlarge
+        KeyName: ${env:AWS_KEY_NAME}
+        Monitoring: true
+        BlockDeviceMappings:
+          - DeviceName: /dev/sda1
+            Ebs:
+              DeleteOnTermination: true
+              # Encrypted: true
+              SnapshotId: snap-0a52a8f51496c3782
+              VolumeSize: ${env:AWS_EC2_STORAGE}
+              VolumeType: gp2
+        NetworkInterfaces:
+          - GroupSet:
+              - Ref: RelayNodeSecurityGroup
+            DeviceIndex: "0"
+            DeleteOnTermination: "true"
+            SubnetId:
+              Ref: SubnetBPublic
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-general.html#scenario-one-pseudo-parameter
+        # UserData: todo once Block Produce Node's script is done
+        Tags:
+          - Key: Name
+            Value: "cardano-relay-node-2-${self:provider.stage}"
+
     BlockProducerNodeSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
@@ -848,16 +950,16 @@ resources:
             CidrIp: ${env:PERSONAL_LOCAL_IP}/32
             FromPort: ${env:SSH_PORT}
             ToPort: ${env:SSH_PORT}
-          - Description: "Allow Relay Node 1 access machine"
+          - Description: "Allow Relay Node 1 access to Core Node"
             IpProtocol: -1
             CidrIp: !Join ["/", [!Ref RelayNode1Ip, 32]]
             FromPort: 0
             ToPort: 65535
-          # - Description: "Allow Relay Node 2 access machine"
-          #   IpProtocol: tcp
-          #  CidrIp: !Join ["/", [!Ref RelayNode2Ip, 32]]
-          #   FromPort: 0
-          #   ToPort: 65535
+          - Description: "Allow Relay Node 2 access to Core Node"
+            IpProtocol: tcp
+            CidrIp: !Join ["/", [!Ref RelayNode2Ip, 32]]
+            FromPort: 0
+            ToPort: 65535
         VpcId: !Ref VPC
 
     RelayNodeSecurityGroup:
@@ -871,30 +973,12 @@ resources:
             CidrIp: ${env:PERSONAL_LOCAL_IP}/32
             FromPort: ${env:SSH_PORT}
             ToPort: ${env:SSH_PORT}
-          # - Description: 'Allow Relay Node myself to '
-          #   IpProtocol: -1
-          #   CidrIp: !Ref 'RelayNode1Ip' /32 this needs to be fixed but this should be part of the Block Producer Node SG
-          #   FromPort: 0
-          #   ToPort: 65535
+          - Description: "Allow Block Producer (Core) Node access"
+            IpProtocol: -1
+            CidrIp: !Join ["/", [!Ref BlockProducerNodeIp, 32]]
+            FromPort: 0
+            ToPort: 65535
         VpcId: !Ref VPC
-
-    # RelayNode1Volume:
-    #   Type: AWS::EC2::Volume
-    #   DependsOn: RelayNode1
-    #   Properties:
-    #     Size: ${env:AWS_EC2_STORAGE}
-    #     Encrypted: true
-    #     AvailabilityZone: !GetAtt RelayNode1.AvailabilityZone
-    #     Tags:
-    #       - Key: MyTag
-    #         Value: TagValue
-
-    # VolumeMountPoint1:
-    #   Type: AWS::EC2::VolumeAttachment
-    #   Properties:
-    #     InstanceId: !Ref AwsInstance1
-    #     VolumeId: !Ref DiskVolume1
-    #     Device: /dev/sdh
 
   Outputs:
     StackName:
