@@ -18,6 +18,7 @@ fi
 
 if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
   # start the block producing node
+  echo "Starting Cardano Core Node..."
   /usr/local/bin/cardano-node run +RTS -N -A16m -qg -qb -RTS \
     --topology "${TOPOLOGY}" \
     --config "${CONFIG}" \
@@ -30,6 +31,7 @@ if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
     --host-addr "${HOSTADDR}"
 else
   # start the relay node
+  echo "Starting Cardano Relay Node..."
   /usr/local/bin/cardano-node run +RTS -N -A16m -qg -qb -RTS \
     --topology ${TOPOLOGY} \
     --config ${CONFIG} \
