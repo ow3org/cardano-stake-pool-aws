@@ -47,17 +47,13 @@ function minPoolCost() {
 }
 
 function isCoreNode() {
-  if [ "$IS_RELAY_NODE" ]; then
-    echo 'false'
+  if [ $IS_RELAY_NODE ]; then
+    echo "false";
   else
-    echo "true"
+    echo "true";
   fi
 }
 
 function isRelayNode() {
-  if [ "$IS_RELAY_NODE" ]; then
-    echo 'true'
-  else
-    echo "false"
-  fi
+  echo "$IS_RELAY_NODE";
 }

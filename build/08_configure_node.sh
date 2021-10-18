@@ -6,7 +6,7 @@
 
 # Configures the block producer & relay nodes.
 
-if [ "$IS_RELAY_NODE" = true ]; then
+if [ $IS_RELAY_NODE ]; then
 cat > $NODE_HOME/${NODE_CONFIG}-topology.json << EOF
 {
   "Producers": [
