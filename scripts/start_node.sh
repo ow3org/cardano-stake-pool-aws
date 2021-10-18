@@ -30,8 +30,8 @@ else
   # start the block producing node
   echo "Starting Cardano Core Node..."
 
-  if [ ! -f "${KES}" ]; then
-      echo "Missing required file: ${NODE_HOME}/kes.skey"
+  if [ ! -f "$KES" ]; then
+      echo "Missing required file: $NODE_HOME/kes.skey"
       MISSING_FILES=1
   fi
 
