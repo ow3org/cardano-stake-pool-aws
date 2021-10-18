@@ -16,7 +16,7 @@ if [[ -S "${CARDANO_NODE_SOCKET_PATH}" ]]; then
   fi
 fi
 
-if [ "${IS_RELAY_NODE}" = false ] ; then
+if [ "${IS_RELAY_NODE}" == false ] ; then
   # start the block producing node
   echo "Starting Cardano Core Node..."
 
