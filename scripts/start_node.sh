@@ -16,7 +16,7 @@ if [[ -S "${CARDANO_NODE_SOCKET_PATH}" ]]; then
   fi
 fi
 
-if [ "$IS_RELAY_NODE" ] ; then
+if [ "$IS_RELAY_NODE" ]; then
   # start the relay node
   echo "Starting Cardano Relay Node..."
   /usr/local/bin/cardano-node run +RTS -N -A16m -qg -qb -RTS \
@@ -41,8 +41,7 @@ else
   fi
 
   if [ ! -f ${CERT} ]; then
-      echo "Missing required file: ${NODE_HOME}/vrf.skey"
-      echo "Missing required pool-keys/node.cert."
+      echo "Missing required $NODE_HOME/node.cert."
       MISSING_FILES=1
   fi
 
