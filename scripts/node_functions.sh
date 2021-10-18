@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-error() {
+function error() {
   printf "\n Error:  Exiting"
   ls -ltr; pwd
   exit 1
 }
 
-slotsPerKESPeriod() {
+function slotsPerKESPeriod() {
   if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
     echo $(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod');
   else
@@ -14,7 +14,7 @@ slotsPerKESPeriod() {
   fi
 }
 
-slotNo() {
+function slotNo() {
   if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
     echo $(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot');
   else
@@ -22,7 +22,7 @@ slotNo() {
   fi
 }
 
-currentSlot() {
+function currentSlot() {
   if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
     echo $(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot');
   else
@@ -30,7 +30,7 @@ currentSlot() {
   fi
 }
 
-paymentBalance() {
+function paymentBalance() {
   if [[ -f "$NODE_HOME/payment.addr" ]]; then
     echo $(cardano-cli query utxo --address $(cat $NODE_HOME/payment.addr) ${NETWORK_ARGUMENT});
   else
@@ -38,7 +38,7 @@ paymentBalance() {
   fi
 }
 
-minPoolCost() {
+function minPoolCost() {
   if [[ -f "$NODE_HOME/params.json" ]]; then
     echo $(cat $NODE_HOME/params.json | jq -r .minPoolCost);
   else
@@ -46,7 +46,7 @@ minPoolCost() {
   fi
 }
 
-isCoreNode() {
+function isCoreNode() {
   if [ "$IS_RELAY_NODE" ]; then
     echo 'false'
   else
@@ -54,7 +54,7 @@ isCoreNode() {
   fi
 }
 
-isRelayNode() {
+function isRelayNode() {
   if [ "$IS_RELAY_NODE" ]; then
     echo 'true'
   else
