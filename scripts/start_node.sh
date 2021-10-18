@@ -16,7 +16,17 @@ if [[ -S "${CARDANO_NODE_SOCKET_PATH}" ]]; then
   fi
 fi
 
-if [ "${IS_RELAY_NODE}" == false ] ; then
+if [ "$IS_RELAY_NODE" ] ; then
+  # start the relay node
+  echo "Starting Cardano Relay Node..."
+  /usr/local/bin/cardano-node run +RTS -N -A16m -qg -qb -RTS \
+    --topology ${TOPOLOGY} \
+    --config ${CONFIG} \
+    --port ${PORT} \
+    --database-path ${DB_PATH} \
+    --socket-path ${CARDANO_NODE_SOCKET_PATH} \
+    --host-addr ${HOSTADDR}
+else
   # start the block producing node
   echo "Starting Cardano Core Node..."
 
@@ -55,16 +65,6 @@ if [ "${IS_RELAY_NODE}" == false ] ; then
     --shelley-vrf-key "${VRF}" \
     --shelley-operational-certificate ${CERT} \
     --host-addr "${HOSTADDR}"
-else
-  # start the relay node
-  echo "Starting Cardano Relay Node..."
-  /usr/local/bin/cardano-node run +RTS -N -A16m -qg -qb -RTS \
-    --topology ${TOPOLOGY} \
-    --config ${CONFIG} \
-    --port ${PORT} \
-    --database-path ${DB_PATH} \
-    --socket-path ${CARDANO_NODE_SOCKET_PATH} \
-    --host-addr ${HOSTADDR}
 fi
 
 # aws ec2 associate-address --instance-id i-0602a5460425d2010 --allocation-id eipalloc-0770c00035328c3a2 --allow-reassociation --region us-east-1
