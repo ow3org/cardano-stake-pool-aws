@@ -47,7 +47,7 @@ function minPoolCost() {
 }
 
 function isCoreNode() {
-  if [ $IS_RELAY_NODE ]; then
+  if [ $IS_RELAY_NODE = "false" ]; then
     echo "false";
   else
     echo "true";
