@@ -10,9 +10,9 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
+eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
 
-# echo NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-deployment/latest-finished/download/1/index.html | grep -e "build" | sed 's/.*build\/\([0-9]*\)\/download.*/\1/g') >> /home/ubuntu/.bashrc
+# echo NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-deployment/latest-finished/download/1/index.html | grep -e "build" | sed 's/.*build\/\([0-9]*\)\/download.*/\1/g') >> $HOME/.bashrc
 # cp $HELPERS/config/.node-config.example $HELPERS/config/.node-config
 
 # if [ "$NODE_CONFIG" = "mainnet" ]; then
@@ -26,11 +26,11 @@ eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
 # fi
 
 # symlink a few config files - overwrite if they already exist
-ln -sf $HELPERS/config/.bashrc /home/ubuntu/.bashrc
-ln -sf $HELPERS/config/.node-config /home/ubuntu/.node-config
+ln -sf /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc $HOME/.bashrc
+ln -sf $HELPERS/config/.node-config $HOME/.node-config
 ln -sf $HELPERS/config/poolMetaData.json $NODE_HOME/poolMetaData.json
 
-eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
+eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
 
 end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true

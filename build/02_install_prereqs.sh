@@ -10,7 +10,7 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-eval "$(cat $HELPERS/config/.bashrc | tail -n +10)"
+eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
 
 mkdir $HOME/tmp
 cd $HOME/tmp
