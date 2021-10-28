@@ -6,7 +6,7 @@ configValidationMode: error
 
 provider:
   name: aws
-  stage: ${opt:stage, development}
+  stage: ${opt:stage, "development"}
   region: "us-east-1"
 
 resources:
@@ -865,6 +865,10 @@ resources:
             #!/bin/bash
             cd /home/ubuntu
             git clone ${env:GIT_REPO_URL} cardano-stake-pool-helpers
+            cp ./cardano-stake-pool-helpers/config/.node-config.example ./.node-config
+            sed -i ./.node-config -e "s/SSH_PORT=/SSH_PORT=${env:SSH_PORT}/g"
+            sed -i ./.node-config -e "s/IS_RELAY_NODE=/IS_RELAY_NODE=false/g"
+            sed -i ./.node-config -e "s/NODE_CONFIG=/NODE_CONFIG=${env:NETWORK}/g"
             cd ./cardano-stake-pool-helpers/scripts
             chmod +x ./*
             su ubuntu -c './build_node.sh'
