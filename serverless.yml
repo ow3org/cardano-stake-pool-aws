@@ -869,8 +869,9 @@ resources:
             sed -i ./.node-config -e "s/SSH_PORT=/SSH_PORT=${env:SSH_PORT}/g"
             sed -i ./.node-config -e "s/IS_RELAY_NODE=/IS_RELAY_NODE=false/g"
             sed -i ./.node-config -e "s/NODE_CONFIG=/NODE_CONFIG=${env:NETWORK}/g"
-            cd ./cardano-stake-pool-helpers/scripts
-            chmod +x ./*
+            chmod +x ./cardano-stake-pool-helpers/scripts/*
+            cd ./cardano-stake-pool-helpers/build
+            chmod +x ./build_node.sh
             # su ubuntu -c './build_node.sh'
         Tags:
           - Key: Name
