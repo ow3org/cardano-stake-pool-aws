@@ -871,7 +871,7 @@ resources:
             sed -i ./.node-config -e "s/NODE_CONFIG=/NODE_CONFIG=${env:NETWORK}/g"
             cd ./cardano-stake-pool-helpers/scripts
             chmod +x ./*
-            su ubuntu -c './build_node.sh'
+            # su ubuntu -c './build_node.sh'
         Tags:
           - Key: Name
             Value: "cardano-block-producer-${self:provider.stage}"
