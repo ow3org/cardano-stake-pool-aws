@@ -10,7 +10,7 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 mkdir $HOME/tmp
 cd $HOME/tmp
@@ -32,7 +32,7 @@ curl -sS -o prereqs.sh https://raw.githubusercontent.com/cardano-community/guild
 chmod 755 prereqs.sh
 ./prereqs.sh
 
-eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
