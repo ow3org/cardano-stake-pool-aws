@@ -13,7 +13,6 @@ banner="------------------------------------------------------------------------
 eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
 
 # echo NODE_BUILD_NUM=$(curl https://hydra.iohk.io/job/Cardano/iohk-nix/cardano-deployment/latest-finished/download/1/index.html | grep -e "build" | sed 's/.*build\/\([0-9]*\)\/download.*/\1/g') >> $HOME/.bashrc
-# cp $HELPERS/config/.node-config.example $HELPERS/config/.node-config
 
 # if [ "$NODE_CONFIG" = "mainnet" ]; then
 #     sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--mainnet/g"
@@ -27,8 +26,7 @@ eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10
 
 # symlink a few config files - overwrite if they already exist
 ln -sf /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc $HOME/.bashrc
-ln -sf $HELPERS/config/.node-config $HOME/.node-config
-ln -sf $HELPERS/config/poolMetaData.json $NODE_HOME/poolMetaData.json
+ln -sf /home/ubuntu/cardano-stake-pool-helpers/config/.node-config $HOME/.node-config
 
 eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
 
@@ -38,10 +36,5 @@ runtime=$( echo "$end - $start" | bc -l ) || true
 echo $banner
 echo "Script runtime: $runtime seconds"
 echo "HELPERS: $HELPERS"
-echo "NODE_HOME: $NODE_HOME"
-echo "CNODE_HOME: $CNODE_HOME"
-echo "NODE_BUILD_NUM: $NODE_BUILD_NUM"
-echo "NETWORK: $NETWORK"
 echo "NETWORK_ARGUMENT: $NETWORK_ARGUMENT"
-echo "CARDANO_NODE_SOCKET_PATH: $CARDANO_NODE_SOCKET_PATH"
 echo $banner
