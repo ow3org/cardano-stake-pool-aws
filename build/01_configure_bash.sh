@@ -13,7 +13,7 @@ banner="------------------------------------------------------------------------
 eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
 
 # symlink the .bashrc file
-ln -sf ~/cardano-stake-pool-helpers/config/.bashrc ~/.bashrc\
+ln -sf ~/cardano-stake-pool-helpers/config/.bashrc ~/.bashrc
 cp ~/cardano-stake-pool-helpers/.env.example ~/.node-config
 
 if [ "$NODE_CONFIG" = "mainnet" ]; then
