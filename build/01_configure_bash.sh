@@ -25,8 +25,8 @@ eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10
 # fi
 
 # symlink a few config files - overwrite if they already exist
-ln -sf /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc $HOME/.bashrc
-ln -sf /home/ubuntu/cardano-stake-pool-helpers/config/.node-config $HOME/.node-config
+ln -sf ~/cardano-stake-pool-helpers/config/.bashrc ~/.bashrc
+ln -sf ~/cardano-stake-pool-helpers/config/.node-config ~/.node-config
 
 eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
 
