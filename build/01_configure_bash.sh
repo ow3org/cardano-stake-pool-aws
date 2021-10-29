@@ -11,7 +11,7 @@ start=`date +%s.%N`
 banner="--------------------------------------------------------------------------"
 
 # symlink the .bashrc file and copy some node specific variables
-cp ~/cardano-stake-pool-helpers/config/.bashrc ~/.bashrc
+cp -f ~/cardano-stake-pool-helpers/config/.bashrc ~/.bashrc
 
 eval "$(cat home/ubuntu/.bashrc | tail -n +10)"
 
