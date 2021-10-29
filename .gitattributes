@@ -7,6 +7,5 @@
 /.serverless                      export-ignore
 /.editorconfig                    export-ignore
 /.env                             export-ignore
-/.env.example                     export-ignore
 /scripts/generate-ssh-key-pair.sh export-ignore
 /cardano-stake-pool.pem           export-ignore
