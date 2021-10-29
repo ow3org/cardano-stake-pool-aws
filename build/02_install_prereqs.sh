@@ -31,9 +31,11 @@ INSTALL_VCHC='Y'       # Install/Upgrade Vacuumlabs cardano-hw-cli for hardware 
 curl -sS -o prereqs.sh https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/prereqs.sh
 chmod 755 prereqs.sh
 ./prereqs.sh
-# . "${HOME}/.bashrc"
 
 eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
+
+end=`date +%s.%N`
+runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
 echo "Script runtime: $runtime seconds"
