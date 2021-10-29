@@ -12,7 +12,6 @@ banner="------------------------------------------------------------------------
 
 # symlink the .bashrc file and copy some node specific variables
 cp ~/cardano-stake-pool-helpers/config/.bashrc ~/.bashrc
-cp ~/cardano-stake-pool-helpers/.env.example ~/.node-config
 
 eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
 
