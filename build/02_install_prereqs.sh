@@ -33,6 +33,8 @@ chmod 755 prereqs.sh
 ./prereqs.sh
 # . "${HOME}/.bashrc"
 
+eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
+
 echo $banner
 echo "Script runtime: $runtime seconds"
 echo "Finished installing server dependencies"
