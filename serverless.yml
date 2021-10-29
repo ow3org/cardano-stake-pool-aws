@@ -868,7 +868,6 @@ resources:
             cp ./cardano-stake-pool-helpers/config/.node-config.example ./.node-config
             sed -i ./.node-config -e "s/SSH_PORT=/SSH_PORT=${env:SSH_PORT}/g"
             sed -i ./.node-config -e "s/IS_RELAY_NODE=/IS_RELAY_NODE=false/g"
-            sed -i ./.node-config -e "s/NODE_CONFIG=/NODE_CONFIG=${env:NETWORK}/g"
             chmod +x ./cardano-stake-pool-helpers/scripts/*
             chmod +x ./cardano-stake-pool-helpers/build/*
             cd ./cardano-stake-pool-helpers/build
