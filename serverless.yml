@@ -868,9 +868,9 @@ resources:
             cp ./cardano-stake-pool-helpers/.env.example ./.node-config
             sed -i ./.node-config -e "s/SSH_PORT=/SSH_PORT=${env:SSH_PORT}/g"
             sed -i ./.node-config -e "s/IS_RELAY_NODE=/IS_RELAY_NODE=false/g"
-            sed -i ./.node-config -e "s/BLOCK_PRODUCER_NODE_IP=/BLOCK_PRODUCER_NODE_IP=${Ref: BlockProducerNodeIp}/g"
-            sed -i ./.node-config -e "s/RELAY_NODE_1_IP=/RELAY_NODE_1_IP=${Ref: RelayNode1Ip}/g"
-            sed -i ./.node-config -e "s/RELAY_NODE_2_IP=/RELAY_NODE_2_IP=${Ref: RelayNode2Ip}/g"
+            sed -i ./.node-config -e "s/BLOCK_PRODUCER_NODE_IP=/BLOCK_PRODUCER_NODE_IP=${BlockProducerNodeIp}/g"
+            sed -i ./.node-config -e "s/RELAY_NODE_1_IP=/RELAY_NODE_1_IP=${RelayNode1Ip}/g"
+            sed -i ./.node-config -e "s/RELAY_NODE_2_IP=/RELAY_NODE_2_IP=${RelayNode2Ip}/g"
             chmod +x ./cardano-stake-pool-helpers/scripts/*
             chmod +x ./cardano-stake-pool-helpers/build/*
             cd ./cardano-stake-pool-helpers/build
