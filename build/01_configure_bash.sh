@@ -16,14 +16,16 @@ eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10
 ln -sf ~/cardano-stake-pool-helpers/config/.bashrc ~/.bashrc
 cp ~/cardano-stake-pool-helpers/.env.example ~/.node-config
 
+eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
+
 if [ "$NODE_CONFIG" = "mainnet" ]; then
-    sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--mainnet/g"
+    sed -i ~/.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--mainnet/g"
 elif [ "$NODE_CONFIG" = "testnet" ]; then
-    sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT='--testnet-magic 1097911063'/g"
+    sed -i ~/.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT='--testnet-magic 1097911063'/g"
 # elif [ "$NODE_CONFIG" = "guild" ]; then
-#     sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--guild/g"
+#     sed -i ~/.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--guild/g"
 # elif [ "$NODE_CONFIG" = "staging" ]; then
-#     sed -i ./.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--staging/g"
+#     sed -i ~/.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--staging/g"
 fi
 
 eval "$(cat /home/ubuntu/cardano-stake-pool-helpers/config/.bashrc | tail -n +10)"
