@@ -86,9 +86,9 @@ if [ -f ~/cardano-stake-pool-helpers/config/aliases ]; then
 fi
 
 # Cardano node specific functions.
-if [ -f ~/cardano-stake-pool-helpers/scripts/node_functions.sh ]; then
-    . ~/cardano-stake-pool-helpers/scripts/node_functions.sh
-fi
+# if [ -f ~/cardano-stake-pool-helpers/scripts/node_functions.sh ]; then
+#     . ~/cardano-stake-pool-helpers/scripts/node_functions.sh
+# fi
 
 if [ -f ~/.ghcup/env ]; then
     . ~/.ghcup/env

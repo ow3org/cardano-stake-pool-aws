@@ -874,7 +874,7 @@ resources:
             chmod +x ./cardano-stake-pool-helpers/scripts/*
             chmod +x ./cardano-stake-pool-helpers/build/*
             cd ./cardano-stake-pool-helpers/build
-            # su ubuntu -c './build_node.sh'
+            su ubuntu -c './build.sh'
         Tags:
           - Key: Name
             Value: "cardano-block-producer-${self:provider.stage}"

@@ -29,7 +29,7 @@ npm install -g serverless
 serverless
 ```
 
-Serverless is an amazing tool that _automates the setup of our AWS account._ It is important to note that while you configure your AWS account, you need to select a region that, at least, offers 3 Availability Zones, like `us-east-1`. View the regions you may select [here](./AWS_AZ_ZONES.md).
+Serverless is an amazing tool that _automates the setup of our AWS account._ It is important to note that while you configure your AWS account, you need to select a region that, at least, offers 3 Availability Zones, like `us-east-1`. View the regions you may select [here](./docs/AWS_AZ_ZONES.md).
 
 ## Get Started
 
@@ -63,7 +63,7 @@ update # alpha: updates the node
 logs
 logsToday
 logsYesterday
-journalctl --unit=cardano-node --since='2021-09-01 00:00:00' --until='2021-09-30 12:00:00'
+journalctl --unit=cnode --since='2021-09-01 00:00:00' --until='2021-09-30 12:00:00'
 monitorNodeCreationLogs # view the log output of the "User Data" script (mostly the `build_node.sh` log output)
 
 ## other useful commands

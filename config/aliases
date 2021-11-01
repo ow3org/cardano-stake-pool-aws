@@ -19,21 +19,22 @@ alias la='ls -A'
 alias l='ls -CF'
 
 # "Cardano Node"-specifiic commands
-alias start="sudo systemctl start cardano-node"
-alias restart="sudo systemctl reload-or-restart cardano-node"
-alias stop="sudo systemctl stop cardano-node"
-alias status="sudo systemctl status cardano-node"
-alias update="cd $HELPERS; nah; git pull origin main; setpermissions; setsymlinks; reloadshell; sudo systemctl daemon-reload;"
+alias start="sudo systemctl start cnode"
+alias restart="sudo systemctl reload-or-restart cnode"
+alias stop="sudo systemctl stop cnode"
+alias status="sudo systemctl status cnode"
+# alias update="cd $HELPERS; nah; git pull origin main; setpermissions; setsymlinks; reloadshell; sudo systemctl daemon-reload;"
 
 # viewing & filtering logs
-alias logs="journalctl --unit=cardano-node --follow"
-alias logsToday="journalctl --unit=cardano-node --since=today"
-alias logsYesterday="journalctl --unit=cardano-node --since=yesterday"
+alias logs="journalctl --unit=cnode --follow"
+alias logsToday="journalctl --unit=cnode --since=today"
+alias logsYesterday="journalctl --unit=cnode --since=yesterday"
 alias monitorNodeCreationLogs="tail -f /var/log/cloud-init-output.log"
 
 # other useful commands
-alias gLiveView="$NODE_HOME/gLiveView.sh"
-alias systeminfo="sudo $HELPERS/scripts/system_info.sh"
+alias gLiveView="$CNODE_HOME/scripts/gLiveView.sh"
+alias systemInfo="sudo $CNODE_HOME/scripts/system-info.sh"
+alias logMonitor="$CNODE_HOME/scripts/logMonitor.sh"
 
 alias ~="cd $HOME"
 alias home="cd $HOME"
@@ -43,13 +44,9 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias helpers="cd $HELPERS"
 alias config="cd $HELPERS/config"
-alias scripts="cd $HELPERS/scripts"
-alias node="cd $NODE_HOME"
+alias scripts="cd $CNODE_HOME/scripts"
+alias node="cd $CNODE_HOME"
 
 alias reloadshell="source $HOME/.bashrc"
 alias nah="sudo git clean -df && sudo git reset --hard"
-alias linkstartnode="ln -sf $HELPERS/scripts/start_node.sh $NODE_HOME/start_node.sh"
-alias linknodeconfig="sudo ln -sf $HELPERS/config/.node-config $HOME/.node-config"
-alias linkservice="sudo ln -sf $HELPERS/config/cardano-node.service /etc/systemd/system/cardano-node.service; sudo chmod 644 $HELPERS/config/cardano-node.service"
-alias setsymlinks="reloadshell; linkservice; linknodeconfig; reloadshell"
 alias setpermissions="sudo chmod +x $HELPERS/scripts/*; sudo chmod +x $HELPERS/scripts/updates/*; sudo chown -R ubuntu:ubuntu $HELPERS;"
