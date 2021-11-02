@@ -19,10 +19,10 @@ alias la='ls -A'
 alias l='ls -CF'
 
 # "Cardano Node"-specifiic commands
-alias start="sudo systemctl start cnode"
-alias restart="sudo systemctl reload-or-restart cnode"
-alias stop="sudo systemctl stop cnode"
-alias status="sudo systemctl status cnode"
+alias start="sudo systemctl start cnode.service"
+alias restart="sudo systemctl reload-or-restart cnode.service"
+alias stop="sudo systemctl stop cnode.service"
+alias status="sudo systemctl status cnode.service"
 # alias update="cd $HELPERS; nah; git pull origin main; setpermissions; setsymlinks; reloadshell; sudo systemctl daemon-reload;"
 
 # viewing & filtering logs

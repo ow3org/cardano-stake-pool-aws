@@ -6,18 +6,27 @@
 
 # Configures the Cardano core and relay nodes.
 
+start=`date +%s.%N`
+
+banner="--------------------------------------------------------------------------"
+
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
-cd $CNODE_HOME/scripts
-
 setpermissions
+ln -sf $CNODE_HOME/scripts/env $HELPERS/scripts/env
 $HELPERS/scripts/deploy-as-systemd.sh
 sudo systemctl daemon-reload
 sudo systemctl restart cnode.service
 
-echo "Status of Cardano Node: $(sudo systemctl status cnode)"
-
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
+
+end=`date +%s.%N`
+runtime=$( echo "$end - $start" | bc -l ) || true
+
+echo $banner
+echo "Script runtime: $runtime seconds"
+echo "Status of Cardano Node: $(sudo systemctl status cnode.service)"
+echo $banner
 
 # if [ $IS_RELAY_NODE ]; then
 # cat > $CNODE_HOME/${NODE_CONFIG}-topology.json << EOF
