@@ -27,6 +27,7 @@ INSTALL_VCHC='Y'        # Install/Upgrade Vacuumlabs cardano-hw-cli for hardware
 #CURL_TIMEOUT=60        # Maximum time in seconds that you allow the file download operation to take before aborting (Default: 60s)
 #UPDATE_CHECK='Y'       # Check if there is an updated version of prereqs.sh script to download
 #SUDO='Y'               # Used by docker builds to disable sudo, leave unchanged if unsure.
+CUSTOM_PEERS="${RELAY_NODE_1_IP}:6000|${RELAY_NODE_2_IP}:6000"    # Additional custom peers to (IP:port[:valency]) to add to your target topology.json
 
 curl -sS -o prereqs.sh https://raw.githubusercontent.com/cardano-community/guild-operators/master/scripts/cnode-helper-scripts/prereqs.sh
 chmod 755 prereqs.sh
