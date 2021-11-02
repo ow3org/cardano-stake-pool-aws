@@ -31,6 +31,7 @@ alias logsToday="journalctl --unit=cnode --since=today"
 alias logsYesterday="journalctl --unit=cnode --since=yesterday"
 alias logMonitor="$CNODE_HOME/scripts/logMonitor.sh"
 alias creationLogMonitor="tail -f /var/log/cloud-init-output.log"
+alias cml="tail -f /var/log/cloud-init-output.log"
 
 # other useful commands
 alias gLiveView="$CNODE_HOME/scripts/gLiveView.sh"

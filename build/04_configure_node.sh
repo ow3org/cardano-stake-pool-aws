@@ -12,8 +12,7 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
-setpermissions
-ln -sf $CNODE_HOME/scripts/env $HELPERS/scripts/env
+sudo ln -sf $CNODE_HOME/scripts/env $HELPERS/scripts/env
 $HELPERS/scripts/deploy-as-systemd.sh
 sudo systemctl daemon-reload
 sudo systemctl restart cnode.service
