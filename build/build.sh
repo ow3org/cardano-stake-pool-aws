@@ -15,7 +15,6 @@ banner="------------------------------------------------------------------------
 ./03_build_node.sh
 ./04_configure_node.sh
 ./05_update_ssh_port.sh
-./06_install_monitoring_tools.sh
 
 end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true

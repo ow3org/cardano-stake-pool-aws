@@ -64,11 +64,12 @@ logs
 logsToday
 logsYesterday
 journalctl --unit=cnode --since='2021-09-01 00:00:00' --until='2021-09-30 12:00:00'
-monitorNodeCreationLogs # view the log output of the "User Data" script (mostly the `build_node.sh` log output)
+logMonitor # monitors the Cardano Node log
+creationLogMonitor # monitors the log output of the "User Data" script (mostly the `build_node.sh` log output)
 
 ## other useful commands
 gLiveView
-systeminfo # displays system info about your server
+systemInfo # displays system info about your server
 
 ## please beware, this will delete your AWS stake pool resources
 npm run cleanup # cleans all environments

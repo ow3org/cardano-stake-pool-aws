@@ -29,12 +29,12 @@ alias status="sudo systemctl status cnode"
 alias logs="journalctl --unit=cnode --follow"
 alias logsToday="journalctl --unit=cnode --since=today"
 alias logsYesterday="journalctl --unit=cnode --since=yesterday"
-alias monitorNodeCreationLogs="tail -f /var/log/cloud-init-output.log"
+alias logMonitor="$CNODE_HOME/scripts/logMonitor.sh"
+alias creationLogMonitor="tail -f /var/log/cloud-init-output.log"
 
 # other useful commands
 alias gLiveView="$CNODE_HOME/scripts/gLiveView.sh"
 alias systemInfo="sudo $CNODE_HOME/scripts/system-info.sh"
-alias logMonitor="$CNODE_HOME/scripts/logMonitor.sh"
 
 alias ~="cd $HOME"
 alias home="cd $HOME"
