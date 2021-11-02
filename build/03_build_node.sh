@@ -12,6 +12,7 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
+mkdir -p ~/git
 cd ~/git
 git clone https://github.com/input-output-hk/cardano-node
 cd cardano-node
@@ -23,6 +24,9 @@ git checkout $(curl -s https://api.github.com/repos/input-output-hk/cardano-node
 
 # use `-l` argument if you'd like to use system libsodium instead of IOG fork of libsodium while compiling
 $CNODE_HOME/scripts/cabal-build-all.sh
+
+# we are only adding this symlink for convenience reasons
+ln -sf $CNODE_HOME /home/ubuntu/cardano-node
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 

@@ -4,12 +4,20 @@
 # Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
-# Configures the block producer & relay nodes.
+# Configures the Cardano core and relay nodes.
+
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 cd $CNODE_HOME/scripts
-./deploy-as-systemd.sh
+
+setpermissions
+$HELPERS/scripts/deploy-as-systemd.sh
+sudo systemctl daemon-reload
+sudo systemctl restart cnode.service
 
 echo "Status of Cardano Node: $(sudo systemctl status cnode)"
+
+eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
 # if [ $IS_RELAY_NODE ]; then
 # cat > $CNODE_HOME/${NODE_CONFIG}-topology.json << EOF
