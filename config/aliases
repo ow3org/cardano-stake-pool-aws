@@ -50,4 +50,4 @@ alias node="cd $CNODE_HOME"
 
 alias reloadshell="source $HOME/.bashrc"
 alias nah="sudo git clean -df && sudo git reset --hard"
-alias setpermissions="sudo chmod +x $HELPERS/scripts/*; sudo chmod +x $HELPERS/scripts/updates/*; sudo chown -R ubuntu:ubuntu $HELPERS;"
+alias setpermissions="sudo chmod +x $HELPERS/scripts/*; sudo chown -R ubuntu:ubuntu $HELPERS;"

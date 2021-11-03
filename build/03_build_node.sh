@@ -26,7 +26,7 @@ git checkout $(curl -s https://api.github.com/repos/input-output-hk/cardano-node
 $CNODE_HOME/scripts/cabal-build-all.sh
 
 # we are only adding this symlink for convenience reasons
-ln -sf $CNODE_HOME /home/ubuntu/cardano-node
+ln -sf $CNODE_HOME /home/ubuntu/my-cardano-node
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
