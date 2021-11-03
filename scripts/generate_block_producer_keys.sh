@@ -4,12 +4,13 @@
 # Telegram: https://telegram.meema.io
 # Discord: https://discord.meema.io
 
-# Generates all the keys required on your stake pool node.
+# Generates all the keys required for your Cardano Stake Pool operations.
 
 # *Before continuing, please read & be cautious*
-# For any "live stake pools," *only* execute this script on servers not connected to any network ("cold machines")
-# Payment and stake keys must be generated and used to build transactions in a cold environment
-# The only steps performed in a hot environment (a machine connected to the internet) are those steps that require live data:
+## For any "live stake pools," *only* execute this script on servers not connected to any network ("cold machines")
+## Payment and stake keys must be generated and used to build transactions in a cold environment
+
+# The only steps performed in a hot environment (a server connected to the internet) are those steps that require live data:
 ## querying the current slot tip
 ## querying the balance of an address
 ## submitting a transaction
@@ -22,31 +23,29 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat $HOME/.bashrc | tail -n +10)"
 
-cd $NODE_HOME
+cd $CNODE_HOME
 
 cardano-cli node key-gen-KES \
     --verification-key-file kes.vkey \
     --signing-key-file kes.skey
 
-mkdir $HOME/cold-keys
-pushd $HOME/cold-keys
+mkdir -p $HOME/cold-keys
 
 cardano-cli node key-gen \
     --cold-verification-key-file node.vkey \
     --cold-signing-key-file node.skey \
     --operational-certificate-issue-counter node.counter
 
-pushd +1
 slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
-echo slotsPerKESPeriod: ${slotsPerKESPeriod}
+echo "slotsPerKESPeriod: ${slotsPerKESPeriod}"
 
 slotNo=$(cardano-cli query tip --mainnet | jq -r '.slot')
 echo slotNo: ${slotNo}
 
 kesPeriod=$((${slotNo} / ${slotsPerKESPeriod}))
-echo kesPeriod: ${kesPeriod}
+echo "kesPeriod: ${kesPeriod}"
 startKesPeriod=${kesPeriod}
-echo startKesPeriod: ${startKesPeriod}
+echo "startKesPeriod: ${startKesPeriod}"
 
 cardano-cli node issue-op-cert \
     --kes-verification-key-file kes.vkey \

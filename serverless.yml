@@ -6,7 +6,8 @@ configValidationMode: error
 
 provider:
   name: aws
-  stage: ${opt:stage, "development"}
+  # possible values are: `testnet`, `mainnet`, and `guild`
+  stage: ${opt:stage, "testnet"}
   region: "us-east-1"
 
 resources:
