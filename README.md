@@ -7,13 +7,12 @@ This project aims to be the most simple way to set up a Cardano Stake Pool (Bloc
 - Installs latest `cardano-node` v1.30.1
 - Secure by default
 - Most simple AWS setup with 1 Core & 2 Relay nodes
-- Highly-available & fault-tolerant cloud (easily portable to other infrastructure)
 - Automatic alarms & notifications for CPU, RAM and storage alerts
 - Useful management tools & beautiful graphs
 
-Thanks to Guild Operators who have created some great tooling for Stake Pool Operators (SPO)!
+Thanks to the Guild Operators who have created some great tooling for Stake Pool Operators (SPO).
 
-_Our managed pools offer a "High Pledge" and great rewards. Feel free to join! We would love to get to know you._
+_Our managed pools offer not only a "High Pledge" but also provide a lot of utility & rewards for simply being a member. Feel free to reach out! We would love to get to know you._
 
 ## Prerequisite
 
@@ -29,7 +28,7 @@ npm install -g serverless
 serverless
 ```
 
-Serverless is an amazing tool that _automates the setup of our AWS account._ It is important to note that while you configure your AWS account, you need to select a region that, at least, offers 3 Availability Zones, like `us-east-1`. View the regions you may select [here](./docs/AWS_AZ_ZONES.md).
+Serverless is an amazing tool that _automates the setup of our AWS account._ It is important to note that while you configure your AWS account, you need to select a region that, at minimum, offers 3 Availability Zones, like `us-east-1`. View the regions you may select [here](./docs/AWS_AZ_ZONES.md).
 
 ## Get Started
 
@@ -47,6 +46,11 @@ npm run build:stake-pool # this will take ~3 hours for `testnet` nodes & ~8 hour
 
 # 4. you can now securely SSH into your Cardano node (navigate to AWS EC2 to figure out the host and use the port defined in .env)
 ssh -i "cardano-stake-pool.pem" ubuntu@ec2-12-68-116-220.compute-1.amazonaws.com -p 22
+
+# 5. at this point, we assume the node is in sync with the blockchain which then allows us to create the block producer node keys and certificate.
+./scripts/generate_block_producer_keys.sh # please only run this command on your core node & read the comments for details
+
+
 ```
 
 ## 🐙 Useful commands

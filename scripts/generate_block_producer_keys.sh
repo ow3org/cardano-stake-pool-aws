@@ -89,5 +89,7 @@ runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
 echo "Script runtime: $runtime seconds"
+echo "Successfully created the keys and certificate."
+echo "In order to continue, the next steps require you to send Ada to the following address you just created"
 echo "Payment Address: $(cat payment.addr)"
 echo $banner
