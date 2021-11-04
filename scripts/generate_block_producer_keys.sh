@@ -39,7 +39,7 @@ cardano-cli node key-gen \
 slotsPerKESPeriod=$(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod')
 echo "slotsPerKESPeriod: ${slotsPerKESPeriod}"
 
-slotNo=$(cardano-cli query tip --mainnet | jq -r '.slot')
+slotNo=$(cardano-cli query tip ${NETWORK_ARGUMENT} | jq -r '.slot')
 echo slotNo: ${slotNo}
 
 kesPeriod=$((${slotNo} / ${slotsPerKESPeriod}))
