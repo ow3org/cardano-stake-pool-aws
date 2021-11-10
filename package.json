@@ -8,7 +8,7 @@
     "cleanup:guild": "serverless remove --stage guild",
     "cleanup:testnet": "serverless remove --stage testnet",
     "cleanup:mainnet": "serverless remove --stage mainnet",
-    "build:stake-pool": "SLS_DEBUG=* serverless deploy --verbose"
+    "build:stake-pool": "SLS_DEBUG=* serverless deploy --verbose --stage testnet"
   },
   "author": {
     "name": "Chris Breuer",

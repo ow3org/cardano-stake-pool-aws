@@ -16,3 +16,6 @@ NETWORK_ARGUMENT=
 
 # to "harden" your server, use a random port and make sure you use it when ssh'ing into the machine
 SSH_PORT=
+
+# what is/will be the name of you Stake Pool?
+POOL_NAME=

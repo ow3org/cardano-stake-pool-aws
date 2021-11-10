@@ -36,6 +36,7 @@ alias cml="tail -f /var/log/cloud-init-output.log"
 # other useful commands
 alias gLiveView="$CNODE_HOME/scripts/gLiveView.sh"
 alias systemInfo="sudo $CNODE_HOME/scripts/system-info.sh"
+alias cntools="$CNODE_HOME/scripts/cntools.sh"
 
 alias ~="cd $HOME"
 alias home="cd $HOME"
