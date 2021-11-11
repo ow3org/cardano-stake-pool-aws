@@ -2,6 +2,8 @@
 
 # shellcheck disable=SC1090,SC2086
 
+# Maintainer: Guild Operators
+
 PARENT="$(dirname "$0")"
 
 if [[ $(grep "_HOME=" "${PARENT}"/env) =~ ^#?([^[:space:]]+)_HOME ]]; then
@@ -32,8 +34,9 @@ echo "A service file is deployed that once every 60 min send a message to API. A
 echo "For more info, visit https://cardano-community.github.io/guild-operators/Scripts/topologyupdater"
 echo
 echo "Deploy Topology Updater as systemd services? (only for relay nodes) [y|n]"
-read -rsn1 yn
-if [[ ${yn} = [Yy]* ]]; then
+
+# this is custom logic so our init script automatically
+if [ "$IS_RELAY_NODE" = true ]; then
   sudo bash -c "cat << 'EOF' > /etc/systemd/system/${vname}-tu-push.service
 [Unit]
 Description=Cardano Node - Topology Updater - node alive push
