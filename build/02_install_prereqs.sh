@@ -16,7 +16,7 @@ mkdir $HOME/tmp
 cd $HOME/tmp
 
 #INTERACTIVE='N'        # Interactive mode (Default: silent mode)
-NETWORK=$NODE_CONFIG    # Connect to specified network instead of public network (Default: connect to public Cardano network)
+NETWORK="testnet"       # Connect to specified network instead of public network (Default: connect to public Cardano network)
 #WANT_BUILD_DEPS='Y'    # Skip installing OS level dependencies (Default: will check and install any missing OS level prerequisites)
 #FORCE_OVERWRITE='N'    # Force overwrite of all files including normally saved user config sections in env, cnode.sh and gLiveView.sh
                         # topology.json, config.json and genesis files normally saved will also be overwritten
