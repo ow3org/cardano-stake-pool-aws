@@ -12,10 +12,9 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
-# sudo ln -sf $CNODE_HOME/scripts/env $HELPERS/scripts/env
-sudo cp $HELPERS/scripts/deploy-as-systemd.sh $CNODE_HOME/scripts/deploy-as-systemd.sh
+cd $HELPERS/scripts
+sudo cp ./deploy-as-systemd.sh $CNODE_HOME/scripts/deploy-as-systemd.sh
 $CNODE_HOME/scripts/deploy-as-systemd.sh
-./deploy-as-systemd.sh
 sudo systemctl daemon-reload
 sudo systemctl restart cnode.service
 
