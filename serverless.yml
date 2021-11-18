@@ -865,6 +865,8 @@ resources:
           Fn::Base64: !Sub |
             #!/bin/bash
             cd /home/ubuntu
+            mkdir ./git
+            cd ./git
             git clone ${env:GIT_REPO_URL} cardano-stake-pool-helpers
             cp ./cardano-stake-pool-helpers/config/node-config ./.node-config
             sed -i ./.node-config -e "s/SSH_PORT=/SSH_PORT=${env:SSH_PORT}/g"
@@ -909,6 +911,8 @@ resources:
           Fn::Base64: !Sub |
             #!/bin/bash
             cd /home/ubuntu
+            mkdir ./git
+            cd ./git
             git clone ${env:GIT_REPO_URL} cardano-stake-pool-helpers
             cp ./cardano-stake-pool-helpers/config/node-config ./.node-config
             sed -i ./.node-config -e "s/SSH_PORT=/SSH_PORT=${env:SSH_PORT}/g"
@@ -953,6 +957,8 @@ resources:
           Fn::Base64: !Sub |
             #!/bin/bash
             cd /home/ubuntu
+            mkdir ./git
+            cd ./git
             git clone ${env:GIT_REPO_URL} cardano-stake-pool-helpers
             cp ./cardano-stake-pool-helpers/config/node-config ./.node-config
             sed -i ./.node-config -e "s/SSH_PORT=/SSH_PORT=${env:SSH_PORT}/g"

@@ -81,8 +81,8 @@ if [ -f ~/.node-config ]; then
 fi
 
 # Alias definitions.
-if [ -f ~/cardano-stake-pool-helpers/config/aliases ]; then
-    . ~/cardano-stake-pool-helpers/config/aliases
+if [ -f ~/git/cardano-stake-pool-helpers/config/aliases ]; then
+    . ~/git/cardano-stake-pool-helpers/config/aliases
 fi
 
 # Cardano node specific functions.

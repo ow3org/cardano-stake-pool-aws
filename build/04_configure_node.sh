@@ -12,8 +12,9 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
-sudo ln -sf $CNODE_HOME/scripts/env $HELPERS/scripts/env
-$HELPERS/scripts/deploy-as-systemd.sh
+# sudo ln -sf $CNODE_HOME/scripts/env $HELPERS/scripts/env
+sudo cp $HELPERS/scripts/deploy-as-systemd.sh $CNODE_HOME/scripts/deploy-as-systemd.sh
+$CNODE_HOME/scripts/deploy-as-systemd.sh
 sudo systemctl daemon-reload
 sudo systemctl restart cnode.service
 
@@ -23,12 +24,15 @@ end=`date +%s.%N`
 runtime=$( echo "$end - $start" | bc -l ) || true
 
 echo $banner
+
+. "$(dirname $0)"/env offline
+
 echo "Script runtime: $runtime seconds"
 echo "Status of Cardano Node: $(sudo systemctl status cnode.service)"
 echo $banner
 
 # if [ $IS_RELAY_NODE ]; then
-# cat > $CNODE_HOME/${NODE_CONFIG}-topology.json << EOF
+# cat > $CNODE_HOME/${CONFIG}-topology.json << EOF
 # {
 #   "Producers": [
 #     {
@@ -45,7 +49,7 @@ echo $banner
 # }
 # EOF
 # else
-# cat > $CNODE_HOME/${NODE_CONFIG}-topology.json << EOF
+# cat > $CNODE_HOME/${CONFIG}-topology.json << EOF
 # {
 #   "Producers": [
 #     {

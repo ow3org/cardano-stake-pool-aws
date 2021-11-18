@@ -7,11 +7,9 @@
 PARENT="$(dirname "$0")"
 
 
-I need to check if the testnet is properly now installed in block producer node when doing gliveview it will say
-if not, then create the configure node script to do it
-no reinstall required
-
-
+# I need to check if the testnet is properly now installed in block producer node when doing gliveview it will say
+# if not, then create the configure node script to do it
+# no reinstall required
 
 
 if [[ $(grep "_HOME=" "${PARENT}"/env) =~ ^#?([^[:space:]]+)_HOME ]]; then
