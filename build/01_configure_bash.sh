@@ -11,17 +11,17 @@ start=`date +%s.%N`
 banner="--------------------------------------------------------------------------"
 
 # symlink the .bashrc file and copy some node specific variables
-cp -f ~/cardano-stake-pool-helpers/config/.bashrc ~/.bashrc
+cp -f $HELPERS/config/.bashrc ~/.bashrc
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
-# if [ "$CONFIG" = "mainnet" ]; then
+# if [ "$NODE_CONFIG" = "mainnet" ]; then
 #     sed -i ~/.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--mainnet/g"
-# elif [ "$CONFIG" = "testnet" ]; then
-    sed -i ~/.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT='--testnet-magic 1097911063'/g"
-# elif [ "$CONFIG" = "guild" ]; then
+# elif [ "$NODE_CONFIG" = "testnet" ]; then
+sed -i ~/.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT='--testnet-magic 1097911063'/g"
+# elif [ "$NODE_CONFIG" = "guild" ]; then
 #     sed -i ~/.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--guild/g"
-# elif [ "$CONFIG" = "staging" ]; then
+# elif [ "$NODE_CONFIG" = "staging" ]; then
 #     sed -i ~/.node-config -e "s/NETWORK_ARGUMENT=/NETWORK_ARGUMENT=--staging/g"
 # fi
 

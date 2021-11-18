@@ -3,7 +3,7 @@ HELPERS="/home/ubuntu/cardano-stake-pool-helpers"
 # true or false
 IS_RELAY_NODE=
 # defined the network you are will want your stake pool to operate in (e.g. testnet, mainnet, guild)
-CONFIG="testnet"
+NODE_CONFIG="testnet"
 # e.g. "12.34.56.789"
 BLOCK_PRODUCER_NODE_IP=
 # e.g. "23.45.67.89"

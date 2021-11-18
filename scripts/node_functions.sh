@@ -8,7 +8,7 @@ function error() {
 
 function slotsPerKESPeriod() {
   if [[ -f "${KES}" && -f "${VRF}" && -f "${CERT}" ]]; then
-    echo $(cat $NODE_HOME/${CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod');
+    echo $(cat $NODE_HOME/${NODE_CONFIG}-shelley-genesis.json | jq -r '.slotsPerKESPeriod');
   else
     error
   fi

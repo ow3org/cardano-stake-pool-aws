@@ -10,6 +10,8 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
+cd $HERLPERS/build
+
 ./01_configure_bash.sh
 ./02_install_prereqs.sh
 ./03_build_node.sh
