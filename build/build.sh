@@ -10,7 +10,8 @@ start=`date +%s.%N`
 
 banner="--------------------------------------------------------------------------"
 
-cd $HELPERS/build
+# note: cannot use variable path name at this point yet
+cd /home/ubuntu/git/cardano-stake-pool-aws/build
 
 ./01_configure_bash.sh
 ./02_install_prereqs.sh

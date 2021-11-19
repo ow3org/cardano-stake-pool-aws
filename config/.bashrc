@@ -81,13 +81,13 @@ if [ -f ~/.node-config ]; then
 fi
 
 # Alias definitions.
-if [ -f ~/git/cardano-stake-pool-helpers/config/aliases ]; then
-    . ~/git/cardano-stake-pool-helpers/config/aliases
+if [ -f ~/git/cardano-stake-pool-aws/config/aliases ]; then
+    . ~/git/cardano-stake-pool-aws/config/aliases
 fi
 
 # Cardano node specific functions.
-# if [ -f ~/cardano-stake-pool-helpers/scripts/node_functions.sh ]; then
-#     . ~/cardano-stake-pool-helpers/scripts/node_functions.sh
+# if [ -f ~/cardano-stake-pool-aws/scripts/node_functions.sh ]; then
+#     . ~/cardano-stake-pool-aws/scripts/node_functions.sh
 # fi
 
 if [ -f ~/.ghcup/env ]; then
