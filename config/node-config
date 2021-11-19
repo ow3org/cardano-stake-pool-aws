@@ -1,5 +1,5 @@
 # the directory of where this repo is stored
-HELPERS="/home/ubuntu/cardano-stake-pool-helpers"
+HELPERS="/home/ubuntu/git/cardano-stake-pool-helpers"
 # true or false
 IS_RELAY_NODE=
 # defined the network you are will want your stake pool to operate in (e.g. testnet, mainnet, guild)
