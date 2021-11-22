@@ -876,7 +876,7 @@ resources:
             sed -i ./.node-config -e "s/RELAY_NODE_2_IP=/RELAY_NODE_2_IP=${RelayNode2Ip}/g"
             chmod +x ./git/cardano-stake-pool-aws/scripts/*
             chmod +x ./git/cardano-stake-pool-aws/build/*
-            cd ./cardano-stake-pool-aws/build
+            cd ./git/cardano-stake-pool-aws/build
             su ubuntu -c './build.sh'
         Tags:
           - Key: Name
@@ -922,7 +922,7 @@ resources:
             sed -i ./.node-config -e "s/RELAY_NODE_2_IP=/RELAY_NODE_2_IP=${RelayNode2Ip}/g"
             chmod +x ./git/cardano-stake-pool-aws/scripts/*
             chmod +x ./git/cardano-stake-pool-aws/build/*
-            cd ./cardano-stake-pool-aws/build
+            cd ./git/cardano-stake-pool-aws/build
             su ubuntu -c './build.sh'
         Tags:
           - Key: Name
@@ -968,7 +968,7 @@ resources:
             sed -i ./.node-config -e "s/RELAY_NODE_2_IP=/RELAY_NODE_2_IP=${RelayNode2Ip}/g"
             chmod +x ./git/cardano-stake-pool-aws/scripts/*
             chmod +x ./git/cardano-stake-pool-aws/build/*
-            cd ./cardano-stake-pool-aws/build
+            cd ./git/cardano-stake-pool-aws/build
             su ubuntu -c './build.sh'
         Tags:
           - Key: Name
