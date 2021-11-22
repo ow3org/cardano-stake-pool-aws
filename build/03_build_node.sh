@@ -12,8 +12,7 @@ banner="------------------------------------------------------------------------
 
 eval "$(cat /home/ubuntu/.bashrc | tail -n +10)"
 
-mkdir -p ~/git
-cd ~/git
+cd /home/ubtuntu/git
 git clone https://github.com/input-output-hk/cardano-node
 cd cardano-node
 
